@@ -1,0 +1,703 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>PlantReady · AI resume & interview coach for plant and turnaround workers</title>
+<meta name="description" content="Free AI resume builder and interview practice for process operators and turnaround craft workers. Pick your region, answer a few questions, get a plant-ready resume.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23E8650F'/%3E%3Ctext x='16' y='23' font-family='Arial' font-weight='700' font-size='18' text-anchor='middle' fill='white'%3EPR%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+html{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}*,*::before,*::after{box-sizing:inherit}body{margin:0}[hidden]{display:none!important}img{max-width:100%}
+footer{border-top:1px solid var(--line);padding-top:16px;display:flex;flex-wrap:wrap;gap:8px 20px;font-size:13px;color:var(--muted)}footer a{color:var(--muted)}
+/* Layout: control-room console with a region "dispatch" strip on top; interview left, live resume right; stacks on phones */
+:root{
+  --bg:#EEF0EE; --panel:#FFFFFF; --ink:#1C2326; --muted:#55605F; --line:#D4D9D6;
+  --accent:#E8650F; --accent-ink:#FFFFFF; --accent-text:#B44A05; --steel:#2F4A55; --steel-ink:#FFFFFF; --bubble:#E3E9E8; --hiviz:#F2C200;
+  --display:"Barlow Condensed","Arial Narrow",sans-serif;
+  --body:"IBM Plex Sans",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#141A1C; --panel:#1C2427; --ink:#E6EBE9; --muted:#9EAAA8; --line:#2E393C;
+  --accent:#F07A2A; --accent-ink:#141A1C; --accent-text:#F59A5A; --steel:#9CC1CE; --steel-ink:#141A1C; --bubble:#25313A; --hiviz:#F5CB1F; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141A1C; --panel:#1C2427; --ink:#E6EBE9; --muted:#9EAAA8; --line:#2E393C;
+  --accent:#F07A2A; --accent-ink:#141A1C; --accent-text:#F59A5A; --steel:#9CC1CE; --steel-ink:#141A1C; --bubble:#25313A; --hiviz:#F5CB1F; color-scheme:dark}
+html,body{background:var(--bg);color:var(--ink)}
+body{font-family:var(--body);font-size:15px;line-height:1.5}
+.wrap{max-width:1180px;margin:0 auto;padding-block:20px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:18px}
+header{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 16px;border-bottom:3px solid var(--accent);padding-bottom:12px}
+.brand{font-family:var(--display);font-weight:700;font-size:38px;letter-spacing:.02em;text-transform:uppercase;margin:0;line-height:1}
+.brand span{color:var(--accent-text)}
+.tag{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.lede{margin:0;color:var(--muted);max-width:68ch}
+a.talent{font-weight:600;color:var(--accent-text)}
+/* dispatch strip */
+.dispatch{background:var(--steel);color:var(--steel-ink);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.dispatch .tag{color:inherit;opacity:.8}
+.regions{display:flex;flex-wrap:wrap;gap:6px}
+.rbtn{background:transparent;color:inherit;border:1.5px solid currentColor;opacity:.85;min-height:40px;padding:0 12px;font-size:14px}
+.rbtn[aria-pressed="true"]{background:var(--hiviz);color:#1C2326;border-color:var(--hiviz);opacity:1}
+.drow{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;justify-content:space-between}
+.track{display:flex;gap:0;border:1.5px solid currentColor;border-radius:8px;overflow:hidden}
+.track button{border-radius:0;background:transparent;color:inherit;min-height:40px;font-size:14px;border:0}
+.track button[aria-pressed="true"]{background:var(--panel);color:var(--ink)}
+.rnote{margin:0;font-size:14px;max-width:72ch;opacity:.92}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:20px;align-items:start}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;display:flex;flex-direction:column;min-width:0}
+.panel-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px 12px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.panel-head h2{margin:0;font-family:var(--display);font-size:22px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.log{display:flex;flex-direction:column;gap:12px;padding:16px;height:460px;overflow-y:auto}
+.msg{max-width:88%;padding:10px 14px;border-radius:12px;white-space:pre-wrap;overflow-wrap:anywhere}
+.msg.ai{background:var(--bubble);align-self:flex-start;border-top-left-radius:3px}
+.msg.me{background:var(--steel);color:var(--steel-ink);align-self:flex-end;border-top-right-radius:3px}
+.who{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;opacity:.75;margin-bottom:2px}
+form{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--line)}
+textarea{flex:1;min-width:0;resize:none;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;height:48px}
+textarea:focus-visible,button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button{font:600 15px var(--body);border-radius:8px;padding:0 18px;min-height:46px;cursor:pointer;border:1.5px solid transparent}
+button:disabled{opacity:.5;cursor:not-allowed}
+.primary{background:var(--accent);color:var(--accent-ink)}
+.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.actions{display:flex;flex-wrap:wrap;gap:8px;padding:12px 16px;border-top:1px solid var(--line)}
+.note{font-size:13px;color:var(--muted);padding:0 16px 12px;margin:0}
+.badge{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:4px 8px;border-radius:4px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.badge.live{border-color:var(--accent);color:var(--accent-text)}
+.resume{padding:24px;display:flex;flex-direction:column;gap:18px;min-height:460px}
+.r-name{font-family:var(--display);font-size:34px;font-weight:700;margin:0;line-height:1.05;text-wrap:balance}
+.r-head{margin:2px 0 0;color:var(--accent-text);font-weight:600}
+.r-contact{margin:0;color:var(--muted);font-size:14px}
+.avail{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
+.avail div{background:var(--bubble);border-radius:6px;padding:8px 10px;min-width:0}
+.avail b{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.r-sec h3{margin:0 0 6px;font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:4px}
+.r-sec p{margin:0}
+.r-sec ul{margin:4px 0 0;padding-left:18px}
+.tawrap{overflow-x:auto}
+table.ta{border-collapse:collapse;width:100%;font-size:14px}
+table.ta th{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left;font-weight:500;padding:4px 8px 4px 0}
+table.ta td{padding:6px 8px 6px 0;border-top:1px solid var(--line);vertical-align:top}
+table.ta td.d{font-family:var(--mono);font-size:13px;white-space:nowrap}
+.job{display:flex;flex-direction:column;gap:2px}
+.job + .job{margin-top:12px}
+.job-top{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 12px;font-weight:600}
+.job-dates{font-family:var(--mono);font-size:13px;color:var(--muted);font-weight:500}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{background:var(--bubble);border-radius:4px;padding:3px 8px;font-size:13px}
+.miss{color:var(--accent-text);font-style:italic}
+.status{font-size:14px;color:var(--muted);padding:0 16px 12px;margin:0}
+.modes{display:flex;flex-wrap:wrap;gap:6px}
+.mode{background:var(--panel);color:var(--ink);border-color:var(--line)}
+.mode[aria-pressed="true"]{background:var(--steel);color:var(--steel-ink);border-color:var(--steel)}
+.sr{position:absolute;left:-9999px}
+.qcard{padding:20px 16px 8px;display:flex;flex-direction:column;gap:8px}
+.q{margin:0;font-family:var(--display);font-size:28px;font-weight:600;line-height:1.15;text-wrap:balance}
+#mform{padding:0 16px 4px;border-top:0}
+textarea.tall{height:170px;width:100%;box-sizing:border-box}
+.fb{padding:16px;display:flex;flex-direction:column;gap:16px;min-height:320px}
+.score{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.score b{font-family:var(--display);font-size:44px;line-height:1}
+.gauge{display:flex;gap:4px}
+.gauge i{width:26px;height:10px;border-radius:2px;background:var(--line)}
+.gauge i.f{background:var(--accent)}
+.verdict{margin:0;font-weight:600}
+.better{white-space:pre-line;background:var(--bubble);border-radius:8px;padding:12px 14px;margin:0}
+.hist{border-top:1px solid var(--line);padding:12px 16px 16px;display:flex;flex-direction:column;gap:6px;font-size:14px}
+.hrow{display:flex;justify-content:space-between;gap:12px}
+.hrow span:first-child{min-width:0;overflow-wrap:anywhere;color:var(--muted)}
+.hrow span:last-child{font-family:var(--mono);white-space:nowrap}
+.emps{display:flex;flex-direction:column;max-height:560px;overflow-y:auto;border-bottom:1px solid var(--line)}
+.filters{display:flex;flex-direction:column;gap:10px;padding:14px 16px}
+.fgroup{display:flex;flex-wrap:wrap;gap:6px}
+.fbtn{min-height:40px;padding:0 14px;font-size:14px;background:var(--panel);color:var(--ink);border-color:var(--line)}
+.fbtn[aria-pressed="true"]{background:var(--steel);color:var(--steel-ink);border-color:var(--steel)}
+.emp{padding:14px 16px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px}
+.emp-info{min-width:0;flex:1 1 220px}
+.emp h3{margin:0;font-size:16px;font-weight:600}
+.emp p{margin:2px 0 0;font-size:14px;color:var(--muted)}
+.emp-act{display:flex;flex-wrap:wrap;gap:8px}
+a.btn{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border:1.5px solid var(--line);border-radius:8px;color:var(--ink);text-decoration:none;font-weight:600;font-size:14px}
+a.btn:hover{border-color:var(--accent)}
+.emp-act button{font-size:14px;min-height:44px}
+.tform{padding:16px;display:flex;flex-direction:column;gap:8px}
+.flabel{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+input.field{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;min-height:44px;box-sizing:border-box;width:100%}
+.tform textarea{height:200px;width:100%;box-sizing:border-box}
+.fit{font-family:var(--display);font-size:30px;font-weight:700;text-transform:uppercase;margin:0}
+.fit.strong{color:var(--accent-text)}
+.passbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px;background:var(--panel);border:1px solid var(--line);border-left:6px solid var(--accent);border-radius:10px;padding:12px 16px}
+.passbar p{margin:0;min-width:0;flex:1 1 260px}
+.passbar b{font-family:var(--display);font-size:20px;text-transform:uppercase;letter-spacing:.03em}
+.passbar.ok{border-left-color:var(--steel)}
+.paywall{position:fixed;inset:0;background:rgba(10,14,16,.55);display:flex;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));z-index:20}
+.pw-card{background:var(--panel);color:var(--ink);border-radius:12px;max-width:440px;width:100%;padding:24px;display:flex;flex-direction:column;gap:14px;border-top:6px solid var(--accent)}
+.pw-card h2{margin:0;font-family:var(--display);font-size:32px;text-transform:uppercase;line-height:1.05}
+.pw-price{font-family:var(--display);font-size:48px;font-weight:700;line-height:1}
+.pw-price small{font-size:18px;color:var(--muted);font-weight:600}
+.pw-card ul{margin:0;padding-left:20px}
+.pw-card .row{display:flex;flex-wrap:wrap;gap:8px}
+@media (prefers-reduced-motion: reduce){*{scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1 class="brand">Plant<span>Ready</span></h1>
+    <span class="tag">AI resume &amp; interview coach · nationwide</span>
+  </header>
+  <p class="lede">Pick your region and the kind of work you want. The AI asks about your units, permits and outages, writes a resume using only what you tell it, and coaches you for the interview.</p>
+  <div class="passbar" id="passbar" hidden><p id="passtext"></p><button class="primary" type="button" id="passbtn">Unlock full access</button></div>
+
+  <section class="dispatch" aria-label="Your region and work type">
+    <span class="tag">1 · Where do you want to work?</span>
+    <div class="regions" role="group" aria-label="Region" id="regions"></div>
+    <div class="drow">
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <span class="tag">2 · What kind of work?</span>
+        <div class="track" role="group" aria-label="Work type">
+          <button type="button" data-track="plant" aria-pressed="true">Full-time plant job</button>
+          <button type="button" data-track="ta" aria-pressed="false">Turnarounds &amp; contract</button>
+        </div>
+      </div>
+    </div>
+    <p class="rnote" id="rnote"></p>
+  </section>
+
+  <div class="modes" role="group" aria-label="Mode">
+    <button type="button" class="mode" id="m-resume" aria-pressed="true">Build a resume</button>
+    <button type="button" class="mode" id="m-mock" aria-pressed="false">Interview practice</button>
+    <button type="button" class="mode" id="m-jobs" aria-pressed="false">Who's hiring</button>
+  </div>
+
+  <div class="grid" id="jobsMode" hidden>
+    <section class="panel" aria-label="Employers">
+      <div class="panel-head"><h2 id="jtitle">Who's hiring</h2><span class="badge" id="jregion"></span></div>
+      <div class="filters">
+        <div class="fgroup" role="group" aria-label="Type" id="tfilters"></div>
+        <label for="esearch" class="sr">Search employers or towns</label>
+        <input type="text" id="esearch" class="field" placeholder="Search a company or town">
+        <span class="flabel" id="ecount"></span>
+      </div>
+      <div class="emps" id="emps"></div>
+      <p class="note" style="padding-top:12px">Open a careers page, copy a posting you like, then tailor your resume to it. Plant names change hands, so confirm the site on the careers page.</p>
+    </section>
+    <section class="panel" aria-label="Tailor my resume">
+      <div class="panel-head"><h2>Tailor my resume</h2><span class="badge" id="tbadge">Using example</span></div>
+      <div class="tform">
+        <label for="temp" class="flabel">Employer</label>
+        <input type="text" id="temp" class="field" placeholder="Company name">
+        <label for="tpost" class="flabel">Job posting or call-out</label>
+        <textarea id="tpost" placeholder="Paste the full posting here, including requirements…"></textarea>
+      </div>
+      <div class="actions">
+        <button class="primary" type="button" id="tailor">Tailor my resume</button>
+        <button class="ghost" type="button" id="viewres" hidden>View tailored resume</button>
+      </div>
+      <p class="status" id="tstatus" hidden></p>
+      <div class="fb" id="tout" hidden></div>
+    </section>
+  </div>
+
+  <div class="grid" id="mockMode" hidden>
+    <section class="panel" aria-label="Interview question">
+      <div class="panel-head"><h2>Question <span id="qnum">1</span></h2><button class="ghost" id="skip" type="button">Different question</button></div>
+      <div class="qcard"><span class="tag" id="qcat"></span><p class="q" id="qtext"></p></div>
+      <p class="note">Say it out loud first if you like, then type it. Strong answers cover the situation, what you did, and how it turned out.</p>
+      <form id="mform"><label for="manswer" class="sr">Your answer</label><textarea id="manswer" class="tall" placeholder="Type your answer…"></textarea></form>
+      <div class="actions"><button class="primary" id="grade" type="button">Score my answer</button></div>
+      <p class="status" id="mstatus" hidden></p>
+    </section>
+    <section class="panel" aria-label="Feedback">
+      <div class="panel-head"><h2>Feedback</h2><span class="badge" id="avg">Example</span></div>
+      <div class="fb" id="fb"></div>
+      <div class="hist" id="hist" hidden></div>
+    </section>
+  </div>
+
+  <div class="grid" id="resumeMode">
+    <section class="panel" aria-label="Interview">
+      <div class="panel-head"><h2>Interview</h2><button class="ghost" id="restart" type="button">Start over</button></div>
+      <div class="log" id="log" aria-live="polite"></div>
+      <p class="status" id="status" hidden></p>
+      <form id="form">
+        <label for="answer" class="sr">Your answer</label>
+        <textarea id="answer" placeholder="Type your answer…" rows="2"></textarea>
+        <button class="primary" type="submit" id="send">Send</button>
+      </form>
+    </section>
+    <section class="panel" aria-label="Resume">
+      <div class="panel-head"><h2>Resume</h2><span class="badge" id="badge">Example</span></div>
+      <div class="resume" id="resume"></div>
+      <div class="actions">
+        <button class="primary" type="button" id="build">Build my resume</button>
+        <button class="ghost" type="button" id="copy">Copy text</button>
+      </div>
+      <p class="note" id="note">This example shows the format. Yours replaces it once you build.</p>
+    </section>
+  </div>
+
+  <div class="paywall" id="paywall" hidden role="dialog" aria-modal="true" aria-labelledby="pwtitle">
+    <div class="pw-card">
+      <h2 id="pwtitle">Unlock PlantReady</h2>
+      <div class="pw-price" id="pwprice">$19<small> one time</small></div>
+      <p class="note" style="padding:0" id="pwdays">Full access for 30 days. No subscription.</p>
+      <ul>
+        <li>Your finished, plant-ready resume</li>
+        <li>Unlimited scored interview practice</li>
+        <li>Tailor your resume to any job posting</li>
+      </ul>
+      <p class="status" id="pwmsg" style="padding:0" hidden></p>
+      <div class="row">
+        <button class="primary" type="button" id="pwpay">Pay with card</button>
+        <button class="ghost" type="button" id="pwclose">Not now</button>
+      </div>
+      <p class="note" style="padding:0">Secure checkout by Stripe. Your interview answers so far stay on this page.</p>
+    </div>
+  </div>
+
+  <footer>
+    <span>© <span id="yr"></span> PlantReady</span>
+    <a href="/privacy.html">Privacy</a>
+    <span>Your answers are sent to our AI provider to write your resume. We don't store them.</span>
+  </footer>
+</div>
+
+<script>
+/* ================= REGION DATA ================= */
+const g=q=>"https://www.google.com/search?q="+encodeURIComponent(q);
+const REGIONS={
+ LA:{name:"Louisiana",short:"LA",city:"Lake Charles, LA",
+   note:"LNG export terminals, refineries and chemical plants from Lake Charles to Baton Rouge and the river parishes. Turnaround work runs mostly through Baton Rouge-based contractors.",
+   ctx:"Louisiana: LNG export terminals (Cameron Parish, Plaquemines), Mississippi River refineries and chemical plants (Baton Rouge, Geismar, Norco), Lake Charles petrochemicals. Common site safety card: Basic Plus.",
+   ticket:"Basic Plus"},
+ TXG:{name:"Texas Gulf Coast",short:"TX Gulf",city:"Beaumont, TX",
+   note:"Houston Ship Channel, Beaumont–Port Arthur, Freeport and Corpus Christi: the country's biggest cluster of refineries, chemical plants and LNG.",
+   ctx:"Texas Gulf Coast: Houston Ship Channel, Beaumont–Port Arthur, Freeport and Corpus Christi refineries, chemical plants and LNG terminals. Common site safety card: Basic Plus.",
+   ticket:"Basic Plus"},
+ PER:{name:"Permian Basin",short:"Permian",city:"Midland, TX",
+   note:"West Texas and southeast New Mexico: gas processing plants, compressor stations, pipelines and a few refineries. Long drives and rotating schedules are common, and H2S training matters.",
+   ctx:"Permian Basin (West Texas and southeast New Mexico): cryogenic gas processing plants, compressor stations, pipelines, a few refineries. Remote sites, long commutes, sour gas so H2S awareness is critical.",
+   ticket:"H2S"},
+ MC:{name:"Oklahoma & Kansas",short:"OK–KS",city:"Ponca City, OK",
+   note:"Mid-Continent refineries and gas processing, with steady maintenance work and regional turnarounds.",
+   ctx:"Mid-Continent (Oklahoma and Kansas): mid-size refineries, gas processing and fertilizer plants.",
+   ticket:"OSHA 10"},
+ OV:{name:"Ohio River Valley",short:"Ohio Valley",city:"Washington, PA",
+   note:"Pennsylvania, Ohio and West Virginia: Marcellus and Utica gas processing, a new ethane cracker and older chemical plants. Many craft jobs go through union halls.",
+   ctx:"Ohio River Valley (PA, OH, WV): Marcellus/Utica gas processing and fractionation, an ethane cracker, chemical plants along the river. Cold winters; many crafts are union.",
+   ticket:"OSHA 10"},
+ GL:{name:"Great Lakes",short:"Great Lakes",city:"Whiting, IN",
+   note:"Large refineries around Chicago, northwest Indiana, Toledo and Detroit, plus chemical plants. Crafts are heavily union, and winter outages are their own skill.",
+   ctx:"Great Lakes (IL, IN, OH, MI): large refineries around Chicago, NW Indiana, Toledo and Detroit, chemical plants. Heavily union crafts; winterization and cold-weather work.",
+   ticket:"OSHA 10"},
+ CA:{name:"California",short:"California",city:"Martinez, CA",
+   note:"Bay Area and Los Angeles refineries under California's own refinery safety rules. Expect detailed questions on process safety and permits, and union crafts.",
+   ctx:"California: Bay Area and Los Angeles refineries under Cal/OSHA's refinery process safety management rules, strict air-quality rules; heavily union crafts.",
+   ticket:"OSHA 10"},
+ PNW:{name:"Pacific Northwest",short:"PNW",city:"Anacortes, WA",
+   note:"Five Washington refineries around Anacortes, Ferndale and Tacoma. Small market, so local reputation and a clean record go a long way.",
+   ctx:"Pacific Northwest (Washington): refineries at Anacortes, Ferndale/Blaine and Tacoma; small, tight-knit market; union crafts common.",
+   ticket:"OSHA 10"}
+};
+const RK=Object.keys(REGIONS);
+
+/* Employers: n, track (plant|ta), types, regions, sites */
+const P=(n,t,r,s)=>({n,tr:"plant",t,r,s,u:g(n+" careers operator")});
+const C=(n,t,r,s)=>({n,tr:"ta",t,r,s,u:g(n+" careers turnaround")});
+const ALL=RK;
+const EMPLOYERS=[
+ // Louisiana
+ P("Cheniere Energy",["LNG"],["LA","TXG"],"Sabine Pass LNG (Cameron Parish, LA) · Corpus Christi LNG (TX)"),
+ P("Venture Global",["LNG"],["LA"],"Calcasieu Pass & CP2 (Cameron Parish) · Plaquemines LNG"),
+ P("Cameron LNG",["LNG"],["LA"],"Hackberry, LA"),
+ P("ExxonMobil",["Refining","Chemical"],["LA","TXG","GL"],"Baton Rouge, LA · Baytown & Beaumont, TX · Joliet, IL"),
+ P("Marathon Petroleum",["Refining"],["LA","TXG","GL","CA","PNW"],"Garyville, LA · Texas City, TX · Robinson, IL · Detroit, MI · Canton, OH · Los Angeles, CA · Anacortes, WA"),
+ P("Valero",["Refining"],["LA","TXG","MC","CA"],"Norco & Meraux, LA · Port Arthur, Texas City, Houston, Corpus Christi, TX · Ardmore, OK · Wilmington, CA"),
+ P("Shell",["Refining","Chemical"],["LA","OV"],"Norco & Geismar, LA · Shell Polymers Monaca, PA"),
+ P("Chalmette Refining (PBF)",["Refining"],["LA"],"Chalmette, LA"),
+ P("Citgo",["Refining"],["LA","TXG","GL"],"Lake Charles, LA · Corpus Christi, TX · Lemont, IL"),
+ P("Phillips 66",["Refining","Gas processing"],["LA","TXG","MC","GL","PNW","PER"],"Westlake, LA · Sweeny, TX · Ponca City, OK · Wood River, IL · Ferndale, WA · Permian gas plants"),
+ P("Placid Refining",["Refining"],["LA"],"Port Allen, LA"),
+ P("Sasol",["Chemical"],["LA"],"Westlake (Lake Charles), LA"),
+ P("Westlake Corporation",["Chemical"],["LA"],"Lake Charles, LA"),
+ P("CF Industries",["Chemical"],["LA"],"Donaldsonville, LA"),
+ P("Dow",["Chemical"],["LA","TXG","GL"],"Plaquemine, LA · Freeport, TX · Midland, MI"),
+ P("BASF",["Chemical"],["LA","TXG"],"Geismar, LA · Freeport, TX"),
+ // Texas Gulf
+ P("Freeport LNG",["LNG"],["TXG"],"Freeport, TX"),
+ P("Golden Pass LNG",["LNG"],["TXG"],"Sabine Pass, TX"),
+ P("Motiva",["Refining"],["TXG"],"Port Arthur, TX"),
+ P("TotalEnergies",["Refining"],["TXG"],"Port Arthur, TX"),
+ P("Chevron",["Refining"],["TXG","CA"],"Pasadena, TX · Richmond & El Segundo, CA"),
+ P("Deer Park Refining",["Refining"],["TXG"],"Deer Park, TX"),
+ P("Flint Hills Resources",["Refining"],["TXG"],"Corpus Christi, TX"),
+ P("Chevron Phillips Chemical",["Chemical"],["TXG"],"Baytown, Sweeny & Port Arthur, TX"),
+ P("LyondellBasell",["Chemical"],["TXG","GL"],"Channelview, TX · Morris, IL"),
+ // Permian
+ P("Targa Resources",["Gas processing"],["PER","MC"],"Permian and Mid-Continent gas plants"),
+ P("Enterprise Products",["Gas processing"],["PER","TXG"],"Permian gas plants · Mont Belvieu, TX"),
+ P("Energy Transfer",["Gas processing"],["PER","TXG","OV"],"Permian gas plants · Gulf Coast · Appalachia"),
+ P("Kinder Morgan",["Gas processing"],["PER","TXG"],"Compressor stations and pipelines"),
+ P("HF Sinclair",["Refining"],["PER","MC","PNW"],"Artesia, NM · Tulsa, OK · El Dorado, KS · Anacortes, WA"),
+ P("Delek US",["Refining"],["PER"],"Big Spring, TX"),
+ // Mid-Continent
+ P("CVR Energy",["Refining"],["MC"],"Coffeyville, KS · Wynnewood, OK"),
+ P("CHS",["Refining"],["MC"],"McPherson, KS"),
+ P("ONEOK",["Gas processing"],["MC","PER"],"Oklahoma and Permian gas plants"),
+ // Ohio Valley
+ P("MPLX (MarkWest)",["Gas processing"],["OV"],"Marcellus and Utica processing plants, PA · OH · WV"),
+ P("Williams",["Gas processing"],["OV"],"Appalachian gas processing and compression"),
+ P("Chemours",["Chemical"],["OV"],"Washington Works, WV"),
+ P("United Refining",["Refining"],["OV"],"Warren, PA"),
+ // Great Lakes
+ P("BP",["Refining"],["GL","PNW"],"Whiting, IN · Cherry Point (Blaine), WA"),
+ P("Cenovus",["Refining"],["GL"],"Toledo, OH"),
+ P("PBF Energy",["Refining"],["GL","CA"],"Toledo, OH · Martinez & Torrance, CA"),
+ // PNW
+ P("Par Pacific",["Refining"],["PNW"],"Tacoma, WA"),
+ // Turnaround contractors
+ C("Turner Industries",["Crafts","Scaffold"],["LA","TXG"],"Pipefitters, millwrights, boilermakers, scaffold, heavy haul"),
+ C("Performance Contractors",["Crafts","Scaffold"],["LA","TXG"],"Turnaround crafts, scaffold, insulation"),
+ C("ISC Constructors",["Crafts"],["LA","TXG"],"Electrical and instrumentation for outages"),
+ C("Excel Group",["Crafts","Scaffold"],["LA","TXG"],"Maintenance, turnaround crafts and scaffold"),
+ C("Cajun Industries",["Crafts"],["LA"],"Industrial maintenance and specialty services"),
+ C("Zachry Group",["Crafts"],["TXG","PER","MC","LA"],"Turnarounds, maintenance and capital work"),
+ C("Austin Industrial",["Crafts"],["TXG","LA"],"Maintenance and turnaround crafts"),
+ C("Matrix Service",["Crafts","Specialty"],ALL,"Plant services, tanks and turnarounds"),
+ C("BrandSafway",["Scaffold"],ALL,"Scaffold, insulation, coatings and access"),
+ C("The Brock Group",["Scaffold"],["LA","TXG","GL","MC","PER"],"Scaffold, insulation, coatings and refractory"),
+ C("Apache Industrial Services",["Scaffold"],["LA","TXG","GL"],"Scaffold, insulation and coatings"),
+ C("Team Inc",["Inspection","Specialty"],ALL,"Inspection, NDT, leak repair, hot tapping"),
+ C("Mistras Group",["Inspection"],ALL,"Inspection and NDT technicians for outages"),
+ C("Repcon",["Specialty"],["TXG","LA","MC"],"Turnaround specialty services"),
+ C("Mammoet",["Specialty"],ALL,"Heavy lift and rigging"),
+ C("Sarens",["Specialty"],ALL,"Crane and heavy lift"),
+ C("Total Safety",["Safety"],ALL,"Safety attendants, fire watch, hole watch, gas detection")
+];
+const UNION={OV:1,GL:1,CA:1,PNW:1};
+
+/* ================= TRACK DATA ================= */
+const BANKS={
+ plant:[
+  {c:"Safety",q:"Tell me about a time you stopped a job because something didn't look safe."},
+  {c:"Abnormal situation",q:"You're on outside rounds at night and find a small leak on a flange. Walk me through what you do."},
+  {c:"Lockout/tagout",q:"What does lockout/tagout mean to you, and how do you know a piece of equipment is truly at zero energy?"},
+  {c:"Permit-to-work",q:"What is a work permit protecting, and what would make you refuse to sign one?"},
+  {c:"Board operations",q:"A high-level alarm comes in on a vessel you're watching. What are your first three moves?"},
+  {c:"Procedures",q:"Describe a time you had to follow a procedure you thought could be done better. What did you do?"},
+  {c:"Shift work",q:"How do you make sure nothing gets missed at shift turnover?"},
+  {c:"Teamwork",q:"Tell me about a time you had a conflict with a coworker on shift and how you handled it."},
+  {c:"Ownership",q:"Tell me about a mistake you made at work and what you learned from it."},
+  {c:"Equipment basics",q:"In plain terms, how does a centrifugal pump work, and what would make you suspect it's cavitating?"}
+ ],
+ ta:[
+  {c:"Stop work",q:"Tell me about a time you stopped a job on a turnaround. What did you see, and who did you call?"},
+  {c:"Permits",q:"Your permit says the line is isolated and drained. What do you check yourself before you break that flange?"},
+  {c:"Confined space",q:"You're the hole watch on a vessel entry and the entrant stops answering. Walk me through the next minute."},
+  {c:"Hot work",q:"You're on fire watch and the wind shifts toward a drain that smells like hydrocarbon. What do you do?"},
+  {c:"Scaffold",q:"You climb a scaffold and the tag isn't green. What does that mean for you, and what do you do?"},
+  {c:"Pace",q:"We run 12s, 7 days a week, for six weeks of nights. How do you hold up and stay sharp at 3 a.m.?"},
+  {c:"Quality",q:"Tell me about a time you found work that wasn't done right, maybe a bolt-up, a weld or a blind. What did you do?"},
+  {c:"Reliability",q:"Turnarounds lose money when hands don't show. What does your attendance look like on your last outage?"},
+  {c:"Craft",q:"Walk me through pulling a blind on a flanged line, from permit in hand to the line back in service."},
+  {c:"Teamwork",q:"You're the new hand on a crew that's been together for years. How do you earn your spot?"}
+ ]
+};
+const REGION_Q={
+ PER:{c:"H2S",q:"Your personal H2S monitor alarms while you're walking a compressor station alone. What do you do, step by step?"},
+ GL:{c:"Winter work",q:"It's 5°F on an outage. How do you keep yourself and the equipment safe in that cold?"},
+ OV:{c:"Winter work",q:"A cold snap is coming and your unit has exposed water and instrument lines. What do you check?"},
+ CA:{c:"Process safety",q:"California refineries put a lot of weight on process safety. Tell me about a hazard review or near-miss report you were part of."},
+ PNW:{c:"Reputation",q:"This is a small market where everyone knows everyone. Who would vouch for your work, and what would they say?"},
+ LA:{c:"Weather",q:"A hurricane is forecast to hit in 48 hours. What's your role in getting the unit ready, and can you ride it out on site?"},
+ TXG:{c:"Weather",q:"A hurricane is forecast to hit in 48 hours. What's your role in getting the unit ready, and can you ride it out on site?"},
+ MC:{c:"Shift work",q:"How do you stay sharp on rotating 12-hour shifts, especially nights?"}
+};
+function exampleFor(rk,tr){
+  const R=REGIONS[rk];
+  if(tr==="ta") return {name:"Example: Dustin Guidry",headline:"Pipefitter Journeyman · Turnarounds",contact:R.city+" · [phone] · [email]",available:"Now",travel:"Will travel",schedule:"12s / 7 on, nights OK",
+    summary:"Pipefitter with 6 years of refinery and chemical plant turnaround work. Strong on blinding, line breaks and flange bolt-up under permit, with a clean safety record.",
+    certifications:["TWIC",R.ticket,"OSHA 10","Respirator fit test"].filter((x,i,a)=>a.indexOf(x)===i),
+    turnarounds:[{site:"Example refinery",dates:"Spring 2026",role:"Pipefitter",scope:"Crude unit exchanger blinds, 6 weeks of nights"},{site:"Example chemical plant",dates:"Fall 2025",role:"Pipefitter",scope:"Spool replacement, bolt-up crew"}],
+    skills:["Blinding & line breaks","Flange bolt-up & torque","Spool fit-up","Reading isos & P&IDs","Confined space entry"],
+    experience:[{title:"Pipefitter Journeyman",company:"Example Industrial Contractor",dates:"2020 – Present",bullets:["Worked 9 turnarounds on 12-hour shifts.","Pulled and set blinds under permit, verifying isolation with the operator before every break.","Fit spools and torqued flanges to spec, signing bolt-up sheets for QC."]}],
+    education:["High school diploma"]};
+  const unit=rk==="PER"||rk==="OV"?"cryogenic gas processing":rk==="LA"||rk==="TXG"?"LNG liquefaction":"refinery crude and hydrotreating";
+  return {name:"Example: Marcus Thibodeaux",headline:"Process Operator · "+(rk==="LA"||rk==="TXG"?"LNG":rk==="PER"||rk==="OV"?"Gas Processing":"Refining"),contact:R.city+" · [phone] · [email]",available:"",travel:"",schedule:"",
+    summary:`Outside operator with 4 years on process units, moving into ${unit}. Experienced with permit-to-work, LOTO and two unit turnarounds.`,
+    certifications:["TWIC","OSHA 10",R.ticket].filter((x,i,a)=>a.indexOf(x)===i),turnarounds:[],
+    skills:["Outside rounds & logs","Permit-to-work","Lockout/tagout","Compressor monitoring","Unit startup & shutdown","DCS (trainee)"],
+    experience:[{title:"Outside Operator",company:"Example Processing Plant",dates:"2022 – Present",bullets:["Ran outside rounds on amine and dehydration units, logging readings every shift.","Prepared equipment for maintenance and hung locks under the site LOTO program.","Supported two planned turnarounds, including line-up checks during restart."]}],
+    education:["A.A.S. Process Technology — [College]"]};
+}
+
+/* ================= STATE ================= */
+const $=id=>document.getElementById(id);
+const ls={get(k){try{return localStorage.getItem(k)}catch{return null}},set(k,v){try{localStorage.setItem(k,v)}catch{}}};
+let region=REGIONS[ls.get("pr_region")]?ls.get("pr_region"):"LA";
+let track=ls.get("pr_track")==="ta"?"ta":"plant";
+const firstQ=()=>track==="ta"
+  ?`Let's get you on the next outage in ${REGIONS[region].name}. What's your craft, and what position are you going after? For example: pipefitter journeyman, boilermaker helper, scaffold builder, hole watch, or turnaround operator.`
+  :`Let's get you plant-ready in ${REGIONS[region].name}. What job are you going after? For example: process operator, outside operator, board operator, or I&E tech.`;
+let turns=[{role:"assistant",content:firstQ()}];
+let shown=null,resumeData=null,busy=false;
+let cfg={paywall:false,priceLabel:"$19",days:30};
+let pass=null;
+try{const p=JSON.parse(localStorage.getItem("pr_pass")||"null");if(p&&p.exp>Date.now())pass=p}catch{}
+async function ai(task,data){
+  let res;
+  try{res=await fetch("/api/ai",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({task,region,track,pass:pass?.token,...data})})}
+  catch{throw {code:"network"}}
+  const j=await res.json().catch(()=>({}));
+  if(res.status===404&&!j.code) throw {code:"missing_api"};
+  if(res.status===402){showPaywall();throw {code:"payment_required"}}
+  if(!res.ok) throw {code:j.code||"error",status:j.status||res.status,detail:j.detail||""};
+  return j.result;
+}
+
+function esc(s){return String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+function txt(v){return v&&String(v).trim()?esc(v):'<span class="miss">[Add this]</span>'}
+function errMsg(e){
+  if(e?.code==="rate_limited") return "You're going fast. Wait a minute, then try again.";
+  if(e?.code==="network") return "Couldn't reach the server. Check your connection and try again.";
+  if(e?.code==="too_long") return "That's a lot of text. Shorten it and try again.";
+  if(e?.code==="payment_required") return "This part is included with full access. Unlock it to continue.";
+  if(e?.code==="missing_api") return "Setup problem: the AI file (api/ai.js) isn't on the server. Check the api folder on GitHub.";
+  if(e?.code==="not_configured") return "Setup problem: the AI key isn't on the server. Add ANTHROPIC_API_KEY in Vercel, then redeploy.";
+  if(e?.code==="upstream"){
+    const d=String(e.detail||"");
+    if(e.status===401) return "Setup problem: the AI key was rejected (401). Make a new key at console.anthropic.com, paste it in Vercel, then redeploy.";
+    if(/credit|billing|balance/i.test(d)) return "Setup problem: the Anthropic account needs credits. Add them under Billing at console.anthropic.com.";
+    return `AI provider error ${e.status||""}: ${d||"no details"}`;
+  }
+  if(e?.detail) return "Something went wrong reaching the AI: "+e.detail;
+  return "Something went wrong reaching the AI. Try again.";
+}
+const ctx=()=>`Region: ${REGIONS[region].ctx}\nWork type: ${track==="ta"?"turnaround / shutdown contract work":"full-time plant job"}`;
+
+/* ================= REGION UI ================= */
+$("regions").innerHTML=RK.map(k=>`<button type="button" class="rbtn" data-region="${k}" aria-pressed="false">${esc(REGIONS[k].name)}</button>`).join("");
+function applyContext(resetChat){
+  document.querySelectorAll("[data-region]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.region===region)));
+  document.querySelectorAll("[data-track]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.track===track)));
+  const R=REGIONS[region];
+  $("rnote").textContent=R.note+(track==="ta"&&UNION[region]?" Many turnaround crafts here are dispatched through union halls, so the hall list below is worth a call.":"");
+  $("jtitle").textContent=track==="ta"?"Who staffs turnarounds":"Who's hiring";
+  $("jregion").textContent=R.short;
+  ls.set("pr_region",region); ls.set("pr_track",track);
+  fType="All"; renderFilters(); renderEmps();
+  order=shuffled(); qi=0; showQ();
+  if(resetChat&&!busy){
+    const untouched=!turns.some(t=>t.role==="user");
+    if(untouched){turns=[{role:"assistant",content:firstQ()}];renderLog()}
+    else{turns.push({role:"assistant",content:`Got it, now looking at ${track==="ta"?"turnaround work":"plant jobs"} in ${R.name}. Keep going, or tap Start over to begin fresh.`});renderLog()}
+  }
+  if(!resumeData&&!shown) renderResume(exampleFor(region,track));
+}
+$("regions").addEventListener("click",e=>{const b=e.target.closest("[data-region]");if(!b||b.dataset.region===region)return;region=b.dataset.region;applyContext(true)});
+document.querySelectorAll("[data-track]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.track===track)return;track=b.dataset.track;applyContext(true)}));
+
+/* ================= RESUME ================= */
+function renderLog(streaming){
+  const log=$("log");log.innerHTML="";
+  const all=streaming!=null?[...turns,{role:"assistant",content:streaming||"Thinking…"}]:turns;
+  for(const t of all){const d=document.createElement("div");d.className="msg "+(t.role==="assistant"?"ai":"me");
+    const w=document.createElement("span");w.className="who";w.textContent=t.role==="assistant"?"Interviewer":"You";
+    d.append(w,document.createTextNode(t.content));log.append(d)}
+  log.scrollTop=log.scrollHeight;
+}
+function renderResume(r){
+  const list=a=>Array.isArray(a)&&a.length?a:null;
+  const ta=track==="ta"||list(r.turnarounds);
+  let h=`<div><p class="r-name">${txt(r.name)}</p><p class="r-head">${txt(r.headline)}</p><p class="r-contact">${txt(r.contact)}</p></div>`;
+  if(track==="ta") h+=`<div class="avail"><div><b>Available</b>${txt(r.available)}</div><div><b>Travel</b>${txt(r.travel)}</div><div><b>Schedule</b>${txt(r.schedule)}</div></div>`;
+  h+=`<div class="r-sec"><h3>Summary</h3><p>${txt(r.summary)}</p></div>`;
+  if(ta) h+=`<div class="r-sec"><h3>Turnaround history</h3>${list(r.turnarounds)?`<div class="tawrap"><table class="ta"><thead><tr><th>Site</th><th>When</th><th>Role · scope</th></tr></thead><tbody>${r.turnarounds.map(t=>`<tr><td>${txt(t.site)}</td><td class="d">${txt(t.dates)}</td><td><b>${txt(t.role)}</b><br>${esc(t.scope||"")}</td></tr>`).join("")}</tbody></table></div>`:'<p class="miss">[Add the outages you have worked]</p>'}</div>`;
+  h+=`<div class="r-sec"><h3>Skills</h3>${list(r.skills)?`<div class="chips">${r.skills.map(s=>`<span class="chip">${esc(s)}</span>`).join("")}</div>`:'<p class="miss">[Add skills]</p>'}</div>`;
+  h+=`<div class="r-sec"><h3>Experience</h3>${list(r.experience)?r.experience.map(j=>`<div class="job"><div class="job-top"><span>${txt(j.title)} · ${txt(j.company)}</span><span class="job-dates">${txt(j.dates)}</span></div>${list(j.bullets)?`<ul>${j.bullets.map(b=>`<li>${esc(b)}</li>`).join("")}</ul>`:""}</div>`).join(""):'<p class="miss">[Add work history]</p>'}</div>`;
+  h+=`<div class="r-sec"><h3>Certifications &amp; tickets</h3>${list(r.certifications)?`<div class="chips">${r.certifications.map(c=>`<span class="chip">${esc(c)}</span>`).join("")}</div>`:'<p class="miss">[Add certifications]</p>'}</div>`;
+  h+=`<div class="r-sec"><h3>Education</h3>${list(r.education)?`<p>${r.education.map(esc).join(" · ")}</p>`:'<p class="miss">[Add education]</p>'}</div>`;
+  $("resume").innerHTML=h;
+}
+const transcript=()=>turns.map(t=>(t.role==="assistant"?"Interviewer: ":"Candidate: ")+t.content).join("\n\n");
+function setStatus(m){const s=$("status");s.textContent=m||"";s.hidden=!m}
+function setBusy(b){busy=b;$("send").disabled=b;$("build").disabled=b;$("answer").disabled=b}
+
+async function ask(){
+  setBusy(true);setStatus("");renderLog("");
+  try{const t=await ai("ask",{turns});turns.push({role:"assistant",content:String(t).trim()})}
+  catch(e){setStatus(errMsg(e))}
+  renderLog();setBusy(false);$("answer").focus();
+}
+async function build(){
+  if(!turns.some(t=>t.role==="user")){setStatus("Answer at least one question first.");return}
+  setBusy(true);setStatus("Writing your resume…");
+  try{const r=await ai("build",{turns});resumeData=r;shown=null;renderResume(r);
+    $("badge").textContent="Your draft";$("badge").classList.add("live");
+    $("note").textContent="[Add this] spots are details you haven't given yet. Answer more questions and rebuild to fill them.";setStatus("")}
+  catch(e){setStatus(errMsg(e)||"Couldn't build the resume. Try again.")}
+  setBusy(false);
+}
+function plain(r){
+  const L=[r.name,r.headline,r.contact];
+  if(r.available||r.travel||r.schedule) L.push(`Available: ${r.available||"—"} · Travel: ${r.travel||"—"} · Schedule: ${r.schedule||"—"}`);
+  L.push("","SUMMARY",r.summary);
+  if((r.turnarounds||[]).length){L.push("","TURNAROUND HISTORY");for(const t of r.turnarounds)L.push(`${t.site} (${t.dates}) — ${t.role}: ${t.scope}`)}
+  L.push("","SKILLS",(r.skills||[]).join(" · "),"","EXPERIENCE");
+  for(const j of r.experience||[]){L.push(`${j.title} — ${j.company} (${j.dates})`);for(const b of j.bullets||[])L.push("• "+b);L.push("")}
+  L.push("CERTIFICATIONS & TICKETS",(r.certifications||[]).join(" · "),"","EDUCATION",(r.education||[]).join(" · "));
+  return L.filter(x=>x!==undefined).join("\n");
+}
+$("form").addEventListener("submit",e=>{e.preventDefault();if(busy)return;const v=$("answer").value.trim();if(!v)return;turns.push({role:"user",content:v});$("answer").value="";renderLog();ask()});
+$("answer").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();$("form").requestSubmit()}});
+$("build").addEventListener("click",build);
+$("restart").addEventListener("click",()=>{if(busy)return;turns=[{role:"assistant",content:firstQ()}];resumeData=null;shown=null;renderLog();renderResume(exampleFor(region,track));$("badge").textContent="Example";$("badge").classList.remove("live");$("note").textContent="This example shows the format. Yours replaces it once you build.";setStatus("")});
+$("copy").addEventListener("click",async()=>{const t=plain(shown||resumeData||exampleFor(region,track));
+  try{await navigator.clipboard.writeText(t);setStatus("Copied. Paste it into Word, Google Docs or an email.")}
+  catch{const r=document.createRange();r.selectNodeContents($("resume"));const s=getSelection();s.removeAllRanges();s.addRange(r);setStatus("Text selected. Press copy on your device.")}});
+
+/* ================= INTERVIEW PRACTICE ================= */
+const EXAMPLE_FB={score:3,verdict:"Example feedback: solid instinct, but light on detail.",strengths:["You put safety first and stopped the job."],improve:["Say who you notified and how (supervisor, control room, radio).","Finish with the result: was the hazard fixed, and did anything change afterward?"],better:"\"On a [unit] job, I saw [hazard]. I stopped work, made the area safe, and called [supervisor/control room]. We [fix], and afterward [what changed]. I'd make the same call again.\""};
+let order=[],qi=0,hist=[],graded=false,mbusy=false;
+function bank(){const b=[...BANKS[track]];if(REGION_Q[region])b.unshift(REGION_Q[region]);return b}
+function shuffled(){const b=bank();const rq=REGION_Q[region]?[0]:[];const rest=[...b.keys()].filter(i=>!rq.includes(i)).sort(()=>Math.random()-.5);return [...rest.slice(0,2),...rq,...rest.slice(2)]}
+function curQ(){const b=bank();return b[order[qi%order.length]]}
+function showQ(){const b=curQ();$("qcat").textContent=b.c+" · "+REGIONS[region].short;$("qtext").textContent=b.q;$("qnum").textContent=hist.length+1;$("manswer").value="";graded=false;$("grade").textContent="Score my answer";setM("")}
+function setM(m){const s=$("mstatus");s.textContent=m||"";s.hidden=!m}
+function renderFb(f){
+  const s=Math.max(1,Math.min(5,Math.round(+f.score||0)));
+  const li=a=>(Array.isArray(a)&&a.length)?`<ul>${a.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`:"<p>—</p>";
+  $("fb").innerHTML=`<div class="score"><b>${s}/5</b><div class="gauge" role="img" aria-label="${s} out of 5">${[1,2,3,4,5].map(i=>`<i class="${i<=s?"f":""}"></i>`).join("")}</div></div>
+  <p class="verdict">${esc(f.verdict)}</p>
+  <div class="r-sec"><h3>What worked</h3>${li(f.strengths)}</div>
+  <div class="r-sec"><h3>Make it stronger</h3>${li(f.improve)}</div>
+  <div class="r-sec"><h3>A stronger version</h3><p class="better">${esc(f.better)}</p></div>`;
+}
+function renderHist(){const h=$("hist");h.hidden=!hist.length;if(!hist.length)return;
+  const avg=(hist.reduce((a,x)=>a+x.s,0)/hist.length).toFixed(1);$("avg").textContent=`Average ${avg}/5`;$("avg").classList.add("live");
+  h.innerHTML=`<div class="r-sec"><h3>This session</h3></div>`+hist.map(x=>`<div class="hrow"><span>${esc(x.c)}</span><span>${x.s}/5</span></div>`).join("")}
+async function grade(){
+  if(graded){qi++;showQ();$("manswer").focus();return}
+  if(mbusy)return;
+  const ans=$("manswer").value.trim();if(!ans){setM("Type your answer first.");return}
+  const b=curQ();mbusy=true;$("grade").disabled=true;$("skip").disabled=true;setM("Scoring your answer…");
+  try{const f=await ai("grade",{category:b.c,question:b.q,answer:ans});renderFb(f);hist.push({c:b.c,s:Math.max(1,Math.min(5,Math.round(+f.score||0)))});renderHist();graded=true;$("grade").textContent="Next question";setM("")}
+  catch(e){setM(errMsg(e)||"Couldn't score that answer. Try again.")}
+  mbusy=false;$("grade").disabled=false;$("skip").disabled=false;
+}
+
+/* ================= WHO'S HIRING + TAILOR ================= */
+let fType="All",tailored=null,tbusy=false;
+const LAB={LNG:"LNG",Refining:"Refining",Chemical:"Chemical","Gas processing":"Gas processing",Crafts:"Mechanical crafts",Scaffold:"Scaffold & insulation",Inspection:"Inspection & NDT",Specialty:"Specialty & lift",Safety:"Safety & watch",Union:"Union halls"};
+function pool(){
+  const list=EMPLOYERS.filter(e=>e.tr===track&&e.r.includes(region));
+  if(track==="ta"&&UNION[region]){
+    const R=REGIONS[region];
+    ["Pipefitters (UA)","Boilermakers","Ironworkers","Electricians (IBEW)","Millwrights","Laborers (LiUNA)"].forEach(u=>list.push({n:u+" local hall",tr:"ta",t:["Union"],r:[region],s:"Search for the local covering "+R.name+" plants",u:g(u+" local union hall "+R.name)}));
+  }
+  return list;
+}
+function renderFilters(){
+  const types=[...new Set(pool().flatMap(e=>e.t))];
+  $("tfilters").innerHTML=["All",...types].map(t=>`<button type="button" class="fbtn" data-ftype="${esc(t)}" aria-pressed="${t===fType}">${esc(t==="All"?"All":LAB[t]||t)}</button>`).join("");
+}
+$("tfilters").addEventListener("click",e=>{const b=e.target.closest("[data-ftype]");if(!b)return;fType=b.dataset.ftype;renderFilters();renderEmps()});
+let shownEmps=[];
+function renderEmps(){
+  const q=($("esearch").value||"").trim().toLowerCase();
+  const P=pool();
+  shownEmps=P.filter(e=>(fType==="All"||e.t.includes(fType))&&(!q||(e.n+" "+e.s).toLowerCase().includes(q)));
+  $("ecount").textContent=shownEmps.length+" of "+P.length+(track==="ta"?" contractors":" employers")+" in "+REGIONS[region].name;
+  $("emps").innerHTML=shownEmps.length?shownEmps.map((e,i)=>`<div class="emp"><div class="emp-info"><h3>${esc(e.n)}</h3><p>${esc(e.s)}</p><div class="chips" style="margin-top:6px">${e.t.map(t=>`<span class="chip">${esc(LAB[t]||t)}</span>`).join("")}</div></div><div class="emp-act"><a class="btn" href="${e.u}" target="_blank" rel="noopener">${e.t.includes("Union")?"Find hall ↗":"Careers ↗"}</a><button class="ghost" type="button" data-emp="${i}">Tailor for this</button></div></div>`).join(""):`<p class="note" style="padding:16px">No matches. Try another filter or search.</p>`;
+}
+$("esearch").addEventListener("input",renderEmps);
+$("emps").addEventListener("click",ev=>{const b=ev.target.closest("button[data-emp]");if(!b)return;$("temp").value=shownEmps[+b.dataset.emp].n;$("tpost").focus();$("tpost").scrollIntoView({block:"center"})});
+function setT(m){const s=$("tstatus");s.textContent=m||"";s.hidden=!m}
+async function tailor(){
+  if(tbusy)return;
+  const post=$("tpost").value.trim();if(post.length<60){setT("Paste the full posting first, including the requirements.");return}
+  const emp=$("temp").value.trim()||"this employer";const base=resumeData||exampleFor(region,track);
+  tbusy=true;$("tailor").disabled=true;setT("Matching your resume to the posting…");
+  try{const r=await ai("tailor",{employer:emp,posting:post,resume:base});tailored={...r.resume,_emp:emp};const fit=String(r.fit||"Partial");
+    const chips=a=>(Array.isArray(a)&&a.length)?`<div class="chips">${a.map(x=>`<span class="chip">${esc(x)}</span>`).join("")}</div>`:"<p>—</p>";
+    const list=a=>(Array.isArray(a)&&a.length)?`<ul>${a.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`:"<p>None found.</p>";
+    $("tout").innerHTML=`<p class="fit ${fit.toLowerCase()==="strong"?"strong":""}">${esc(fit)} fit</p><p class="verdict">${esc(r.fitNote)}</p>
+    <div class="r-sec"><h3>What they want that you have</h3>${chips(r.matched)}</div>
+    <div class="r-sec"><h3>Not on your resume yet</h3>${list(r.gaps)}<p class="note" style="padding:6px 0 0">Add these in the interview only if they're true for you.</p></div>`;
+    $("tout").hidden=false;$("viewres").hidden=false;setT("")}
+  catch(e){setT(errMsg(e)||"Couldn't tailor the resume. Try again.")}
+  tbusy=false;$("tailor").disabled=false;
+}
+$("tailor").addEventListener("click",tailor);
+$("viewres").addEventListener("click",()=>{if(!tailored)return;renderResume(tailored);shown=tailored;$("badge").textContent="Tailored: "+tailored._emp;$("badge").classList.add("live");$("note").textContent="Tailored from your resume for this posting. Rebuild in the interview to change the facts.";setMode("resume")});
+
+function setMode(m){
+  $("resumeMode").hidden=m!=="resume";$("mockMode").hidden=m!=="mock";$("jobsMode").hidden=m!=="jobs";
+  $("m-resume").setAttribute("aria-pressed",String(m==="resume"));$("m-mock").setAttribute("aria-pressed",String(m==="mock"));$("m-jobs").setAttribute("aria-pressed",String(m==="jobs"));
+  if(m==="jobs"){$("tbadge").textContent=resumeData?"Using your draft":"Using example";$("tbadge").classList.toggle("live",!!resumeData)}
+}
+$("m-resume").addEventListener("click",()=>setMode("resume"));
+$("m-mock").addEventListener("click",()=>setMode("mock"));
+$("m-jobs").addEventListener("click",()=>setMode("jobs"));
+$("grade").addEventListener("click",grade);
+$("skip").addEventListener("click",()=>{if(mbusy)return;qi++;showQ()});
+$("mform").addEventListener("submit",e=>{e.preventDefault();grade()});
+
+/* ================= PAYMENTS ================= */
+const fmtDate=t=>new Date(t).toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"});
+function renderPass(){
+  const bar=$("passbar");
+  if(!cfg.paywall){bar.hidden=true;return}
+  bar.hidden=false;
+  if(pass){bar.classList.add("ok");$("passtext").innerHTML=`<b>Full access</b><br>Active until ${esc(fmtDate(pass.exp))} on this device.`;$("passbtn").hidden=true}
+  else{bar.classList.remove("ok");$("passtext").innerHTML=`<b>Free preview</b><br>Answer the interview free. Unlock your finished resume, scored practice and tailoring for ${esc(cfg.priceLabel)}.`;$("passbtn").hidden=false}
+}
+function showPaywall(){
+  $("pwprice").innerHTML=`${esc(cfg.priceLabel)}<small> one time</small>`;
+  $("pwdays").textContent=`Full access for ${cfg.days} days. No subscription.`;
+  $("pwmsg").hidden=true;$("paywall").hidden=false;$("pwpay").focus();
+}
+function hidePaywall(){$("paywall").hidden=true}
+$("passbtn").addEventListener("click",showPaywall);
+$("pwclose").addEventListener("click",hidePaywall);
+$("paywall").addEventListener("click",e=>{if(e.target===$("paywall"))hidePaywall()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("paywall").hidden)hidePaywall()});
+$("pwpay").addEventListener("click",async()=>{
+  const b=$("pwpay"),m=$("pwmsg");b.disabled=true;m.hidden=false;m.textContent="Opening secure checkout…";
+  try{
+    try{sessionStorage.setItem("pr_draft",JSON.stringify({turns,resumeData}))}catch{}
+    const r=await fetch("/api/checkout",{method:"POST"});const j=await r.json();
+    if(!r.ok||!j.url) throw j;
+    location.href=j.url;
+  }catch(e){m.textContent="Couldn't open checkout. "+(e?.detail||"Try again in a minute.");b.disabled=false}
+});
+async function bootPayments(){
+  try{const r=await fetch("/api/config");if(r.ok)cfg={...cfg,...await r.json()}}catch{}
+  try{const d=JSON.parse(sessionStorage.getItem("pr_draft")||"null");
+    if(d&&Array.isArray(d.turns)&&d.turns.length>1){turns=d.turns;resumeData=d.resumeData||null;renderLog();if(resumeData){renderResume(resumeData);$("badge").textContent="Your draft";$("badge").classList.add("live")}}
+    sessionStorage.removeItem("pr_draft")}catch{}
+  const q=new URLSearchParams(location.search);
+  const sid=q.get("paid");
+  if(sid||q.has("canceled")) history.replaceState(null,"",location.pathname);
+  if(sid){
+    setStatus("Confirming your payment…");
+    try{const r=await fetch("/api/verify",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({session_id:sid})});
+      const j=await r.json();if(!r.ok)throw j;
+      pass=j;try{localStorage.setItem("pr_pass",JSON.stringify(j))}catch{}
+      setStatus("You're all set. Full access is on. Tap Build my resume when you're ready.");
+    }catch(e){setStatus("We couldn't confirm the payment yet. If you were charged, email us with your receipt and we'll turn on access.")}
+  } else if(q.has("canceled")) setStatus("Checkout canceled. You can keep answering questions for free.");
+  renderPass();
+}
+
+/* ================= BOOT ================= */
+$("yr").textContent=new Date().getFullYear();
+renderFb(EXAMPLE_FB);
+renderLog();
+applyContext(false);
+bootPayments();
+</script>
+</body>
+</html>
