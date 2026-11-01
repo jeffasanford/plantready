@@ -127,6 +127,17 @@ input.field{font:inherit;color:var(--ink);background:var(--bg);border:1px solid 
 .tform textarea{height:200px;width:100%;box-sizing:border-box}
 .fit{font-family:var(--display);font-size:30px;font-weight:700;text-transform:uppercase;margin:0}
 .fit.strong{color:var(--accent-text)}
+.passbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px;background:var(--panel);border:1px solid var(--line);border-left:6px solid var(--accent);border-radius:10px;padding:12px 16px}
+.passbar p{margin:0;min-width:0;flex:1 1 260px}
+.passbar b{font-family:var(--display);font-size:20px;text-transform:uppercase;letter-spacing:.03em}
+.passbar.ok{border-left-color:var(--steel)}
+.paywall{position:fixed;inset:0;background:rgba(10,14,16,.55);display:flex;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));z-index:20}
+.pw-card{background:var(--panel);color:var(--ink);border-radius:12px;max-width:440px;width:100%;padding:24px;display:flex;flex-direction:column;gap:14px;border-top:6px solid var(--accent)}
+.pw-card h2{margin:0;font-family:var(--display);font-size:32px;text-transform:uppercase;line-height:1.05}
+.pw-price{font-family:var(--display);font-size:48px;font-weight:700;line-height:1}
+.pw-price small{font-size:18px;color:var(--muted);font-weight:600}
+.pw-card ul{margin:0;padding-left:20px}
+.pw-card .row{display:flex;flex-wrap:wrap;gap:8px}
 @media (prefers-reduced-motion: reduce){*{scroll-behavior:auto!important}}
 </style>
 </head>
@@ -137,6 +148,7 @@ input.field{font:inherit;color:var(--ink);background:var(--bg);border:1px solid 
     <span class="tag">AI resume &amp; interview coach · nationwide</span>
   </header>
   <p class="lede">Pick your region and the kind of work you want. The AI asks about your units, permits and outages, writes a resume using only what you tell it, and coaches you for the interview.</p>
+  <div class="passbar" id="passbar" hidden><p id="passtext"></p><button class="primary" type="button" id="passbtn">Unlock full access</button></div>
 
   <section class="dispatch" aria-label="Your region and work type">
     <span class="tag">1 · Where do you want to work?</span>
@@ -224,6 +236,25 @@ input.field{font:inherit;color:var(--ink);background:var(--bg);border:1px solid 
       </div>
       <p class="note" id="note">This example shows the format. Yours replaces it once you build.</p>
     </section>
+  </div>
+
+  <div class="paywall" id="paywall" hidden role="dialog" aria-modal="true" aria-labelledby="pwtitle">
+    <div class="pw-card">
+      <h2 id="pwtitle">Unlock PlantReady</h2>
+      <div class="pw-price" id="pwprice">$19<small> one time</small></div>
+      <p class="note" style="padding:0" id="pwdays">Full access for 30 days. No subscription.</p>
+      <ul>
+        <li>Your finished, plant-ready resume</li>
+        <li>Unlimited scored interview practice</li>
+        <li>Tailor your resume to any job posting</li>
+      </ul>
+      <p class="status" id="pwmsg" style="padding:0" hidden></p>
+      <div class="row">
+        <button class="primary" type="button" id="pwpay">Pay with card</button>
+        <button class="ghost" type="button" id="pwclose">Not now</button>
+      </div>
+      <p class="note" style="padding:0">Secure checkout by Stripe. Your interview answers so far stay on this page.</p>
+    </div>
   </div>
 
   <footer>
@@ -412,12 +443,17 @@ const firstQ=()=>track==="ta"
   :`Let's get you plant-ready in ${REGIONS[region].name}. What job are you going after? For example: process operator, outside operator, board operator, or I&E tech.`;
 let turns=[{role:"assistant",content:firstQ()}];
 let shown=null,resumeData=null,busy=false;
+let cfg={paywall:false,priceLabel:"$19",days:30};
+let pass=null;
+try{const p=JSON.parse(localStorage.getItem("pr_pass")||"null");if(p&&p.exp>Date.now())pass=p}catch{}
 async function ai(task,data){
   let res;
-  try{res=await fetch("/api/ai",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({task,region,track,...data})})}
+  try{res=await fetch("/api/ai",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({task,region,track,pass:pass?.token,...data})})}
   catch{throw {code:"network"}}
   const j=await res.json().catch(()=>({}));
-  if(!res.ok) throw {code:j.code||"error"};
+  if(res.status===404&&!j.code) throw {code:"missing_api"};
+  if(res.status===402){showPaywall();throw {code:"payment_required"}}
+  if(!res.ok) throw {code:j.code||"error",status:j.status||res.status,detail:j.detail||""};
   return j.result;
 }
 
@@ -427,6 +463,16 @@ function errMsg(e){
   if(e?.code==="rate_limited") return "You're going fast. Wait a minute, then try again.";
   if(e?.code==="network") return "Couldn't reach the server. Check your connection and try again.";
   if(e?.code==="too_long") return "That's a lot of text. Shorten it and try again.";
+  if(e?.code==="payment_required") return "This part is included with full access. Unlock it to continue.";
+  if(e?.code==="missing_api") return "Setup problem: the AI file (api/ai.js) isn't on the server. Check the api folder on GitHub.";
+  if(e?.code==="not_configured") return "Setup problem: the AI key isn't on the server. Add ANTHROPIC_API_KEY in Vercel, then redeploy.";
+  if(e?.code==="upstream"){
+    const d=String(e.detail||"");
+    if(e.status===401) return "Setup problem: the AI key was rejected (401). Make a new key at console.anthropic.com, paste it in Vercel, then redeploy.";
+    if(/credit|billing|balance/i.test(d)) return "Setup problem: the Anthropic account needs credits. Add them under Billing at console.anthropic.com.";
+    return `AI provider error ${e.status||""}: ${d||"no details"}`;
+  }
+  if(e?.detail) return "Something went wrong reaching the AI: "+e.detail;
   return "Something went wrong reaching the AI. Try again.";
 }
 const ctx=()=>`Region: ${REGIONS[region].ctx}\nWork type: ${track==="ta"?"turnaround / shutdown contract work":"full-time plant job"}`;
@@ -599,11 +645,59 @@ $("grade").addEventListener("click",grade);
 $("skip").addEventListener("click",()=>{if(mbusy)return;qi++;showQ()});
 $("mform").addEventListener("submit",e=>{e.preventDefault();grade()});
 
+/* ================= PAYMENTS ================= */
+const fmtDate=t=>new Date(t).toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"});
+function renderPass(){
+  const bar=$("passbar");
+  if(!cfg.paywall){bar.hidden=true;return}
+  bar.hidden=false;
+  if(pass){bar.classList.add("ok");$("passtext").innerHTML=`<b>Full access</b><br>Active until ${esc(fmtDate(pass.exp))} on this device.`;$("passbtn").hidden=true}
+  else{bar.classList.remove("ok");$("passtext").innerHTML=`<b>Free preview</b><br>Answer the interview free. Unlock your finished resume, scored practice and tailoring for ${esc(cfg.priceLabel)}.`;$("passbtn").hidden=false}
+}
+function showPaywall(){
+  $("pwprice").innerHTML=`${esc(cfg.priceLabel)}<small> one time</small>`;
+  $("pwdays").textContent=`Full access for ${cfg.days} days. No subscription.`;
+  $("pwmsg").hidden=true;$("paywall").hidden=false;$("pwpay").focus();
+}
+function hidePaywall(){$("paywall").hidden=true}
+$("passbtn").addEventListener("click",showPaywall);
+$("pwclose").addEventListener("click",hidePaywall);
+$("paywall").addEventListener("click",e=>{if(e.target===$("paywall"))hidePaywall()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("paywall").hidden)hidePaywall()});
+$("pwpay").addEventListener("click",async()=>{
+  const b=$("pwpay"),m=$("pwmsg");b.disabled=true;m.hidden=false;m.textContent="Opening secure checkout…";
+  try{
+    try{sessionStorage.setItem("pr_draft",JSON.stringify({turns,resumeData}))}catch{}
+    const r=await fetch("/api/checkout",{method:"POST"});const j=await r.json();
+    if(!r.ok||!j.url) throw j;
+    location.href=j.url;
+  }catch(e){m.textContent="Couldn't open checkout. "+(e?.detail||"Try again in a minute.");b.disabled=false}
+});
+async function bootPayments(){
+  try{const r=await fetch("/api/config");if(r.ok)cfg={...cfg,...await r.json()}}catch{}
+  try{const d=JSON.parse(sessionStorage.getItem("pr_draft")||"null");
+    if(d&&Array.isArray(d.turns)&&d.turns.length>1){turns=d.turns;resumeData=d.resumeData||null;renderLog();if(resumeData){renderResume(resumeData);$("badge").textContent="Your draft";$("badge").classList.add("live")}}
+    sessionStorage.removeItem("pr_draft")}catch{}
+  const q=new URLSearchParams(location.search);
+  const sid=q.get("paid");
+  if(sid||q.has("canceled")) history.replaceState(null,"",location.pathname);
+  if(sid){
+    setStatus("Confirming your payment…");
+    try{const r=await fetch("/api/verify",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({session_id:sid})});
+      const j=await r.json();if(!r.ok)throw j;
+      pass=j;try{localStorage.setItem("pr_pass",JSON.stringify(j))}catch{}
+      setStatus("You're all set. Full access is on. Tap Build my resume when you're ready.");
+    }catch(e){setStatus("We couldn't confirm the payment yet. If you were charged, email us with your receipt and we'll turn on access.")}
+  } else if(q.has("canceled")) setStatus("Checkout canceled. You can keep answering questions for free.");
+  renderPass();
+}
+
 /* ================= BOOT ================= */
 $("yr").textContent=new Date().getFullYear();
 renderFb(EXAMPLE_FB);
 renderLog();
 applyContext(false);
+bootPayments();
 </script>
 </body>
 </html>

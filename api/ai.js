@@ -2,6 +2,9 @@
 // The browser sends a task name plus the worker's answers. All prompts live here,
 // so your Anthropic API key can only be used for PlantReady's four jobs.
 
+import { paywallOn, checkPass } from "../lib/pass.js";
+
+const PAID_TASKS = new Set(["build", "grade", "tailor"]);   // interview questions stay free
 const API_URL = "https://api.anthropic.com/v1/messages";
 const QUICK_MODEL = process.env.QUICK_MODEL || "claude-haiku-5-5";   // interview questions
 const SMART_MODEL = process.env.SMART_MODEL || "claude-sonnet-5-5";  // resumes, scoring, tailoring
@@ -136,6 +139,9 @@ export default async function handler(req, res) {
 
   const job = buildPrompt(body);
   if (!job) return res.status(400).json({ code: "bad_task" });
+  if (paywallOn() && PAID_TASKS.has(body.task) && !checkPass(body.pass)) {
+    return res.status(402).json({ code: "payment_required" });
+  }
 
   try {
     const r = await fetch(API_URL, {
@@ -153,8 +159,11 @@ export default async function handler(req, res) {
     });
     if (r.status === 429 || r.status === 529) return res.status(429).json({ code: "rate_limited" });
     if (!r.ok) {
-      console.error("Anthropic error", r.status, await r.text());
-      return res.status(502).json({ code: "upstream" });
+      const raw = await r.text();
+      console.error("Anthropic error", r.status, raw);
+      let msg = "";
+      try { msg = JSON.parse(raw)?.error?.message || ""; } catch {}
+      return res.status(502).json({ code: "upstream", status: r.status, detail: msg.slice(0, 200) });
     }
     const data = await r.json();
     const text = (data.content || []).filter(c => c.type === "text").map(c => c.text).join("");
@@ -162,6 +171,6 @@ export default async function handler(req, res) {
     return res.status(200).json({ result });
   } catch (e) {
     console.error(e);
-    return res.status(500).json({ code: "error" });
+    return res.status(500).json({ code: "error", detail: String(e?.message || e).slice(0, 200) });
   }
 }
