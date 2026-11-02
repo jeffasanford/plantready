@@ -2,7 +2,7 @@
 // The browser sends a task name plus the worker's answers. All prompts live here,
 // so your Anthropic API key can only be used for PlantReady's four jobs.
 
-import { paywallOn, checkPass, kindForTask } from "../lib/pass.js";
+import { paywallOn, canDo, kindForTask } from "../lib/pass.js";
 // Interview questions ("ask") stay free. Prices and what each pass unlocks live in lib/pass.js.
 const API_URL = "https://api.anthropic.com/v1/messages";
 const QUICK_MODEL = process.env.QUICK_MODEL || "claude-haiku-5-5";   // interview questions
@@ -161,7 +161,7 @@ export default async function handler(req, res) {
   const job = buildPrompt(body);
   if (!job) return res.status(400).json({ code: "bad_task" });
   const need = kindForTask(body.task);
-  if (paywallOn() && need && !checkPass(body.passes?.[need], need)) {
+  if (paywallOn() && need && !canDo(body.task, body.passes)) {
     return res.status(402).json({ code: "payment_required", kind: need });
   }
 

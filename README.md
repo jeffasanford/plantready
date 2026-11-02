@@ -13,6 +13,8 @@ AI resume builder, interview practice and hiring lists for plant and turnaround 
 | `api/checkout.js`, `api/verify.js`, `api/config.js` | Stripe payments and the access pass |
 | `lib/pass.js` | Products, prices and the access pass |
 | `api/restore.js` | Restore purchase by checkout email |
+| `api/refresh.js`, `api/portal.js` | Monthly renewal check, and Manage or cancel |
+| `testimonials.json` | Approved worker stories shown on the site |
 | `api/jobs.js` | Live job postings from Adzuna (needs `ADZUNA_APP_ID` and `ADZUNA_APP_KEY`) |
 | `export.js` | Makes the PDF and Word resume downloads in the buyer's browser |
 
@@ -38,25 +40,31 @@ AI resume builder, interview practice and hiring lists for plant and turnaround 
 - The server only runs PlantReady's four built-in tasks, so nobody can use your key as a free chatbot.
 - The spending limit in the Anthropic console is your hard ceiling. Check usage there weekly at first.
 
-## Payments (Stripe)
+## Payments (Stripe): monthly plans
 
-Interview questions are free. Two things are paid:
+Interview questions and job listings are free. Three monthly plans, cancel anytime:
 
-| Product | Price | Unlocks |
+| Plan | Price | Unlocks |
 |---|---|---|
-| Resume | $50 one time | Building the finished resume, plus rebuilding and tailoring for 30 days |
-| Interview practice | $20 one time | Scored practice answers for 5 days |
+| Resume | $9.99/mo | Build, rebuild, download and tailor the resume |
+| Interview coaching | $4.99/mo | Scored practice, including questions from your own resume |
+| Resume + coaching | $12.99/mo | Everything |
 
-Prices, names and day counts live at the top of `lib/pass.js` (amount is in cents). No products need to be created in Stripe.
+Prices live at the top of `lib/pass.js` (amount in cents). Products and monthly prices are created in Stripe automatically on first checkout.
 
-To turn payments on, add one setting in Vercel → Settings → Environment Variables:
-- `STRIPE_SECRET_KEY`: your Stripe secret key (`sk_test_…` while testing, `sk_live_…` for real money)
+- Turn on with `STRIPE_SECRET_KEY` in Vercel.
+- **Manage or cancel** uses Stripe's customer portal. Turn it on once in Stripe: Settings → Billing → Customer portal → Save (do it in test mode and live mode).
+- Passes renew automatically: when a month rolls over, the site checks Stripe and keeps access on if the subscription is still active (`api/refresh.js`).
+- Restore purchase finds active subscriptions by checkout email (`api/restore.js`).
 
-Optional: `PASS_SECRET` (a long random phrase that signs access passes; if you set it, never change it or existing buyers lose access) and `SITE_URL` (`https://www.plantready.net`).
+## Worker stories
 
-Test with card 4242 4242 4242 4242, any future date and any CVC.
+Customers write stories in the "Share your story" section; it opens an email to management@aspisllc.com. To post an approved story, add it to `testimonials.json`:
 
-Access is saved on the buyer's device. If they clear their browser or switch phones, they tap **Restore purchase** and enter their checkout email (`api/restore.js` looks it up in Stripe). Anyone who knows a buyer's email can restore that purchase, which the privacy page and the checkout notice both say.
+```json
+[{ "name": "Marcus", "trade": "Process operator", "area": "Lake Charles, LA", "rating": 5, "text": "..." }]
+```
+Only post real stories from customers who checked the permission box.
 
 ## Live job postings (Adzuna)
 

@@ -128,6 +128,20 @@ input.field{font:inherit;color:var(--ink);background:var(--bg);border:1px solid 
 .fit{font-family:var(--display);font-size:30px;font-weight:700;text-transform:uppercase;margin:0}
 .fit.strong{color:var(--accent-text)}
 .livejobs{grid-column:1/-1}
+.stories .st-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));gap:0}
+.st-list{padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.st-form{border-left:1px solid var(--line)}
+@media (max-width:760px){.st-form{border-left:0;border-top:1px solid var(--line)}}
+.st-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.st-form textarea{height:130px;width:100%;box-sizing:border-box;resize:vertical}
+.stars{display:flex;gap:4px}
+.stars button{min-height:40px;min-width:40px;padding:0;font-size:24px;line-height:1;background:transparent;border:0;color:var(--line);cursor:pointer}
+.stars button[aria-checked="true"],.stars button.on{color:var(--accent)}
+.quote{margin:0;background:var(--bubble);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.quote p{margin:0}
+.quote footer{font-size:13px;color:var(--muted);border:0;padding:0}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:14px}
+.check input{width:20px;height:20px;margin-top:2px;accent-color:var(--accent);flex:none}
 .ljob .meta{font-family:var(--mono);font-size:12px;color:var(--muted)}
 .ljob .pay{color:var(--accent-text);font-weight:600}
 .passbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px;background:var(--panel);border:1px solid var(--line);border-left:6px solid var(--accent);border-radius:10px;padding:12px 16px}
@@ -141,6 +155,15 @@ input.field{font:inherit;color:var(--ink);background:var(--bg);border:1px solid 
 .pw-price small{font-size:18px;color:var(--muted);font-weight:600}
 .pw-card ul{margin:0;padding-left:20px}
 .pw-card .row{display:flex;flex-wrap:wrap;gap:8px}
+.plans{display:flex;flex-direction:column;gap:8px}
+.plan{display:flex;align-items:center;gap:12px;border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;cursor:pointer;background:var(--panel);color:var(--ink);text-align:left;min-height:0;font:inherit}
+.plan[aria-checked="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.plan .pn{flex:1;min-width:0}
+.plan .pn b{display:block;font-size:16px}
+.plan .pn small{color:var(--muted);font-size:13px}
+.plan .pp{font-family:var(--display);font-size:26px;font-weight:700;white-space:nowrap}
+.plan .pp small{font-size:14px;color:var(--muted)}
+.plan .save{display:inline-block;background:var(--accent);color:var(--accent-ink);border-radius:4px;padding:1px 6px;font-size:11px;font-family:var(--mono);margin-left:6px;vertical-align:2px}
 .pw-card .disclaim{background:var(--bubble);border-radius:8px;padding:10px 12px!important;color:var(--ink)}
 .linkbtn{background:none;border:0;padding:0;min-height:0;font:inherit;color:var(--accent-text);text-decoration:underline;cursor:pointer}
 @media (prefers-reduced-motion: reduce){*{scroll-behavior:auto!important}}
@@ -156,8 +179,10 @@ input.field{font:inherit;color:var(--ink);background:var(--bg);border:1px solid 
   <div class="passbar" id="passbar" hidden>
     <p id="passtext"></p>
     <div class="row" style="display:flex;flex-wrap:wrap;gap:8px">
-      <button class="primary" type="button" id="buyResume">Resume · $50</button>
-      <button class="ghost" type="button" id="buyPractice">Practice · $20</button>
+      <button class="primary" type="button" id="buyResume">Resume · $9.99/mo</button>
+      <button class="ghost" type="button" id="buyPractice">Coaching · $4.99/mo</button>
+      <button class="ghost" type="button" id="buyBoth">Both · $12.99/mo</button>
+      <button class="ghost" type="button" id="manageSub" hidden>Manage or cancel</button>
       <button class="ghost" type="button" id="openRestore">Restore purchase</button>
     </div>
   </div>
@@ -276,18 +301,44 @@ input.field{font:inherit;color:var(--ink);background:var(--bg);border:1px solid 
     </section>
   </div>
 
+  <section class="panel stories" id="stories" aria-labelledby="sttitle">
+    <div class="panel-head"><h2 id="sttitle">Worker stories</h2><span class="badge">Real customers</span></div>
+    <div class="st-grid">
+      <div class="st-list" id="stlist">
+        <p class="note" style="padding:0" id="stempty">No stories posted yet. Used PlantReady to land an interview or a job? Be the first to share how it went.</p>
+      </div>
+      <form class="tform st-form" id="stform">
+        <h3 style="margin:0;font-family:var(--display);font-size:22px;text-transform:uppercase">Share your story</h3>
+        <div class="st-row">
+          <div><label class="flabel" for="stname">First name</label><input id="stname" class="field" autocomplete="given-name" required maxlength="40"></div>
+          <div><label class="flabel" for="sttrade">Trade or job</label><input id="sttrade" class="field" placeholder="e.g. Process operator" maxlength="60"></div>
+        </div>
+        <label class="flabel" for="stregion">Area</label>
+        <input id="stregion" class="field" placeholder="e.g. Lake Charles, LA" maxlength="60">
+        <span class="flabel">Rating</span>
+        <div class="stars" role="radiogroup" aria-label="Rating" id="ststars"></div>
+        <label class="flabel" for="sttext">Your story</label>
+        <textarea id="sttext" class="field" required maxlength="1200" placeholder="How did PlantReady help? Did you get the interview or the job?"></textarea>
+        <label class="check"><input type="checkbox" id="stok" required><span>PlantReady may post my first name, trade, area and story on this site.</span></label>
+        <div class="actions" style="padding:0;border:0"><button class="primary" type="submit">Send my story</button></div>
+        <p class="status" id="stmsg" style="padding:0" hidden></p>
+        <p class="note" style="padding:0">Stories are read before they're posted. We only post real stories from real customers, and never your last name, email or phone.</p>
+      </form>
+    </div>
+  </section>
+
   <div class="paywall" id="paywall" hidden role="dialog" aria-modal="true" aria-labelledby="pwtitle">
     <div class="pw-card">
       <h2 id="pwtitle">Get your resume</h2>
-      <div class="pw-price" id="pwprice">$50<small> one time</small></div>
-      <p class="note" style="padding:0" id="pwdays"></p>
+      <div class="plans" id="pwplans" role="radiogroup" aria-label="Plan"></div>
       <ul id="pwlist"></ul>
+      <p class="note" style="padding:0" id="pwterms"></p>
       <p class="status" id="pwmsg" style="padding:0" hidden></p>
       <div class="row">
-        <button class="primary" type="button" id="pwpay">Pay with card</button>
+        <button class="primary" type="button" id="pwpay">Subscribe</button>
         <button class="ghost" type="button" id="pwclose">Not now</button>
       </div>
-      <p class="note disclaim" style="padding:0"><b>Good to know:</b> your access and your resume are saved on this device only. Download your resume as soon as it's done. If you clear your browser or switch phones, tap <b>Restore purchase</b> and enter the email from your receipt to unlock again. Unsaved resume drafts can't be recovered.</p>
+      <p class="note disclaim" style="padding:0"><b>Good to know:</b> your plan and your resume are saved on this device only. Download your resume as soon as it's done. If you clear your browser or switch phones, tap <b>Restore purchase</b> and enter the email from your receipt to unlock again. Unsaved resume drafts can't be recovered.</p>
       <p class="note" style="padding:0">Secure checkout by Stripe. Your interview answers so far stay on this page. Already paid? <button type="button" class="linkbtn" id="pwRestore">Restore purchase</button></p>
     </div>
   </div>
@@ -295,7 +346,7 @@ input.field{font:inherit;color:var(--ink);background:var(--bg);border:1px solid 
   <div class="paywall" id="restore" hidden role="dialog" aria-modal="true" aria-labelledby="rstitle">
     <form class="pw-card" id="rsform">
       <h2 id="rstitle">Restore purchase</h2>
-      <p style="margin:0">Enter the email you used at checkout. We'll find any purchase that's still active and unlock it on this device.</p>
+      <p style="margin:0">Enter the email you used at checkout. We'll find any active subscription and unlock it on this device.</p>
       <label class="flabel" for="rsemail">Email from your receipt</label>
       <input class="field" id="rsemail" type="email" autocomplete="email" required placeholder="you@example.com">
       <p class="status" id="rsmsg" style="padding:0" hidden></p>
@@ -303,13 +354,14 @@ input.field{font:inherit;color:var(--ink);background:var(--bg);border:1px solid 
         <button class="primary" type="submit" id="rsgo">Restore</button>
         <button class="ghost" type="button" id="rsclose">Close</button>
       </div>
-      <p class="note" style="padding:0">Your resume itself isn't stored on our servers, so restoring brings back your access, not an old draft. Purchases restore until they expire (30 days for a resume, 5 days for practice).</p>
+      <p class="note" style="padding:0">Your resume itself isn't stored on our servers, so restoring brings back your access, not an old draft. Active subscriptions restore on any device. Canceled plans stay active until the end of the month you paid for.</p>
     </form>
   </div>
 
   <footer>
     <span>© <span id="yr"></span> PlantReady, a service of Aspis LLC</span>
     <a href="/privacy.html">Privacy</a>
+    <a href="#stories">Worker stories</a>
     <span>Questions? <a href="mailto:management@aspisllc.com">management@aspisllc.com</a></span>
     <span>Your answers are sent to our AI provider to write your resume. We don't store them, and your resume and access are saved only on your device.</span>
   </footer>
@@ -545,17 +597,22 @@ const firstQ=()=>track==="ta"
   :`Let's get you plant-ready in ${REGIONS[region].name}. What job are you going after? For example: process operator, outside operator, board operator, or I&E tech.`;
 let turns=[{role:"assistant",content:firstQ()}];
 let shown=null,resumeData=null,busy=false;
-let cfg={paywall:false,products:{resume:{label:"$50",days:30},practice:{label:"$20",days:5}}};
+let cfg={paywall:false,products:{resume:{label:"$9.99/mo"},practice:{label:"$4.99/mo"},both:{label:"$12.99/mo"}}};
 let passes={};
-try{const p=JSON.parse(localStorage.getItem("pr_passes")||"{}");for(const k in p)if(p[k]?.exp>Date.now())passes[k]=p[k]}catch{}
+try{const p=JSON.parse(localStorage.getItem("pr_passes")||"{}");for(const k in p)if(p[k]?.token)passes[k]=p[k]}catch{}
 const passTokens=()=>Object.fromEntries(Object.entries(passes).map(([k,v])=>[k,v.token]));
-async function ai(task,data){
+const live=k=>!!(passes[k]&&passes[k].exp>Date.now());
+const resumeOn=()=>live("resume")||live("both"), coachOn=()=>live("practice")||live("both");
+async function ai(task,data,retried){
   let res;
   try{res=await fetch("/api/ai",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({task,region,track,passes:passTokens(),...data})})}
   catch{throw {code:"network"}}
   const j=await res.json().catch(()=>({}));
   if(res.status===404&&!j.code) throw {code:"missing_api"};
-  if(res.status===402){showPaywall(j.kind||"resume");throw {code:"payment_required"}}
+  if(res.status===402){
+    if(!retried&&Object.keys(passes).length&&await refreshPasses())return ai(task,data,true);
+    showPaywall(j.kind||"resume");throw {code:"payment_required"}
+  }
   if(!res.ok) throw {code:j.code||"error",status:j.status||res.status,detail:j.detail||""};
   return j.result;
 }
@@ -853,37 +910,70 @@ $("wfresh").addEventListener("click",()=>{
 
 /* ================= PAYMENTS ================= */
 const OFFERS={
-  resume:{title:"Get your resume",bullets:["Your finished, plant-ready resume, ready to copy","Rebuild it as you add details","Tailor it to any job posting for 30 days"]},
-  practice:{title:"Interview practice",bullets:["35+ real plant and turnaround interview questions, plus ones for your region","Fresh questions written from your own resume, so you practice your real story","A score and a stronger version of every answer you give"]}
+  resume:{title:"Get your resume",name:"Resume",sub:"Build, download and tailor",bullets:["Your finished plant-ready resume as PDF, Word or text","Rebuild it any time you add a job or ticket","Tailor it to any job posting"]},
+  practice:{title:"Interview coaching",name:"Interview coaching",sub:"Scored practice answers",bullets:["35+ real plant and turnaround questions, plus ones for your region","Fresh questions written from your own resume","A score and a stronger version of every answer"]},
+  both:{title:"Resume + coaching",name:"Resume + coaching",sub:"Everything, one price",bullets:[]}
 };
 let payKind="resume";
 const fmtDate=t=>new Date(t).toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"});
-const prod=k=>cfg.products?.[k]||{label:"",days:0};
+const prod=k=>cfg.products?.[k]||{label:""};
+const cents=k=>({resume:999,practice:499,both:1299})[k];
 function savePasses(){try{localStorage.setItem("pr_passes",JSON.stringify(passes))}catch{}}
+async function refreshPasses(){
+  try{
+    const r=await fetch("/api/refresh",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({passes:passTokens()})});
+    if(!r.ok)return false;const j=await r.json();
+    for(const p of j.passes||[])passes[p.kind]=p;
+    for(const k of j.ended||[])delete passes[k];
+    savePasses();renderPass();
+    return (j.passes||[]).length>0;
+  }catch{return false}
+}
 function renderPass(){
   const bar=$("passbar");
   if(!cfg.paywall){bar.hidden=true;return}
   bar.hidden=false;
-  const r=passes.resume,p=passes.practice;
+  const R=resumeOn(),C=coachOn();
   const lines=[];
-  lines.push(r?`<b>Resume unlocked</b> until ${esc(fmtDate(r.exp))} on this device. Download your resume once it's built.`:`<b>Free preview</b> · Answer the interview free. Your finished resume is ${esc(prod("resume").label)}.`);
-  lines.push(p?`Interview practice unlocked until ${esc(fmtDate(p.exp))}`:`Scored interview practice: ${esc(prod("practice").label)} for ${prod("practice").days} days.`);
+  lines.push(R?`<b>Resume plan active</b> · renews monthly. Download your resume once it's built.`:`<b>Free preview</b> · Answer the interview free. Unlock your finished resume for ${esc(prod("resume").label)}.`);
+  lines.push(C?`Interview coaching active · renews monthly.`:`Interview coaching ${esc(prod("practice").label)}, or both for ${esc(prod("both").label)}. Cancel anytime.`);
   $("passtext").innerHTML=lines.join("<br>");
-  bar.classList.toggle("ok",!!(r&&p));
-  $("buyResume").hidden=!!r; $("buyPractice").hidden=!!p;
-  $("openRestore").hidden=!!(r&&p);
+  bar.classList.toggle("ok",R&&C);
+  $("buyResume").hidden=R;$("buyPractice").hidden=C;$("buyBoth").hidden=R||C;
+  $("manageSub").hidden=!(R||C);$("openRestore").hidden=R&&C;
   $("buyResume").textContent=`Resume · ${prod("resume").label}`;
-  $("buyPractice").textContent=`Practice · ${prod("practice").label}`;
+  $("buyPractice").textContent=`Coaching · ${prod("practice").label}`;
+  $("buyBoth").textContent=`Both · ${prod("both").label}`;
+}
+function planCard(k){
+  const save=k==="both"?Math.round((cents("resume")+cents("practice")-cents("both")))/100:0;
+  const [amt,per]=String(prod(k).label).split("/");
+  return `<button type="button" class="plan" role="radio" aria-checked="${k===payKind}" data-plan="${k}"><span class="pn"><b>${esc(OFFERS[k].name)}${save>0?`<span class="save">SAVE $${save.toFixed(2)}</span>`:""}</b><small>${esc(OFFERS[k].sub)}</small></span><span class="pp">${esc(amt)}<small>/${esc(per||"mo")}</small></span></button>`;
+}
+function paintPaywall(){
+  const o=OFFERS[payKind];
+  $("pwtitle").textContent=o.title;
+  const kinds=[...new Set([payKind==="both"?"resume":payKind,"both"])];
+  $("pwplans").innerHTML=kinds.map(planCard).join("");
+  const bl=payKind==="both"?[...OFFERS.resume.bullets,...OFFERS.practice.bullets.slice(0,2)]:o.bullets;
+  $("pwlist").innerHTML=bl.map(b=>`<li>${esc(b)}</li>`).join("");
+  $("pwterms").innerHTML=`<b>${esc(prod(payKind).label.replace("/mo"," a month"))}</b>, billed monthly until you cancel. Cancel anytime with <b>Manage or cancel</b> on this site or the link in your receipt email. Sales tax may be added at checkout.`;
 }
 function showPaywall(kind){
   payKind=OFFERS[kind]?kind:"resume";
-  const o=OFFERS[payKind],pr=prod(payKind);
-  $("pwtitle").textContent=o.title;
-  $("pwprice").innerHTML=`${esc(pr.label)}<small> one time</small>`;
-  $("pwdays").textContent=payKind==="practice"?`${pr.days} days of practice. No subscription.`:`Includes ${pr.days} days to rebuild and tailor. No subscription.`;
-  $("pwlist").innerHTML=o.bullets.map(b=>`<li>${esc(b)}</li>`).join("");
+  paintPaywall();
   $("pwmsg").hidden=true;$("pwpay").disabled=false;$("paywall").hidden=false;$("pwpay").focus();
 }
+$("pwplans").addEventListener("click",e=>{const b=e.target.closest("[data-plan]");if(!b)return;const keep=$("pwplans").innerHTML;payKind=b.dataset.plan;
+  const kinds=[...$("pwplans").querySelectorAll("[data-plan]")].map(x=>x.dataset.plan);paintPaywall();
+  $("pwplans").innerHTML=kinds.map(planCard).join("")});
+$("buyBoth").addEventListener("click",()=>showPaywall("both"));
+$("manageSub").addEventListener("click",async()=>{
+  const b=$("manageSub");b.disabled=true;setStatus("Opening your billing page…");
+  try{const r=await fetch("/api/portal",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({passes:passTokens()})});
+    const j=await r.json();if(!r.ok||!j.url)throw j;location.href=j.url}
+  catch{setStatus("Couldn't open the billing page here. To cancel, use the link in your Stripe receipt email, or email management@aspisllc.com and we'll cancel it for you.");b.disabled=false}
+});
 function hidePaywall(){$("paywall").hidden=true}
 function showRestore(){hidePaywall();$("rsmsg").hidden=true;$("rsgo").disabled=false;$("restore").hidden=false;$("rsemail").focus()}
 function hideRestore(){$("restore").hidden=true}
@@ -904,7 +994,7 @@ $("rsform").addEventListener("submit",async e=>{
     if(!r.ok)throw j;
     for(const p of j.passes)passes[p.kind]=p;
     savePasses();renderPass();
-    const names=j.passes.map(p=>p.kind==="practice"?"interview practice":"your resume").join(" and ");
+    const names=j.passes.map(p=>({practice:"interview coaching",both:"resume + coaching",resume:"your resume plan"})[p.kind]).join(" and ");
     m.textContent=`Restored ${names}. You're all set on this device.`;
     setTimeout(hideRestore,1800);
   }catch(err){m.textContent="Couldn't check right now. "+(err?.detail||"Try again in a minute.");b.disabled=false}
@@ -933,12 +1023,41 @@ async function bootPayments(){
     try{const r=await fetch("/api/verify",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({session_id:sid})});
       const j=await r.json();if(!r.ok)throw j;
       passes[j.kind]=j;savePasses();
-      if(j.kind==="practice"){setMode("mock");setM("You're all set. Practice is unlocked for "+prod("practice").days+" days. Answer the question and tap Score my answer.");setStatus("")}
-      else setStatus("You're all set. Your resume is unlocked. Tap Build my resume when you're ready.");
+      if(j.kind==="practice"){setMode("mock");setM("You're subscribed. Interview coaching is on. Answer the question and tap Score my answer.");setStatus("")}
+      else setStatus("You're subscribed. Your resume is unlocked"+(j.kind==="both"?" and interview coaching is on":"")+". Tap Build my resume when you're ready.");
     }catch(e){setStatus("We couldn't confirm the payment yet. If you were charged, email your receipt to management@aspisllc.com and we'll turn on access.")}
   } else if(q.has("canceled")) setStatus("Checkout canceled. You can keep answering questions for free.");
+  else if(Object.values(passes).some(p=>p.exp<Date.now()+864e5))await refreshPasses();
   renderPass();
 }
+
+/* ================= WORKER STORIES ================= */
+let stRating=5;
+function paintStars(){$("ststars").innerHTML=[1,2,3,4,5].map(n=>`<button type="button" role="radio" aria-checked="${n===stRating}" aria-label="${n} star${n>1?"s":""}" class="${n<=stRating?"on":""}" data-star="${n}">★</button>`).join("")}
+$("ststars").addEventListener("click",e=>{const b=e.target.closest("[data-star]");if(!b)return;stRating=+b.dataset.star;paintStars()});
+paintStars();
+$("stregion").placeholder="e.g. "+REGIONS[region].city;
+async function loadStories(){
+  try{
+    const r=await fetch("/testimonials.json",{cache:"no-store"});if(!r.ok)return;
+    const list=(await r.json()).filter(x=>x&&x.text);
+    if(!list.length)return;
+    $("stempty").hidden=true;
+    $("stlist").insertAdjacentHTML("beforeend",list.map(x=>`<blockquote class="quote"><span aria-label="${+x.rating||5} out of 5" style="color:var(--accent)">${"★".repeat(Math.max(1,Math.min(5,+x.rating||5)))}</span><p>${esc(x.text)}</p><footer>${esc([x.name,x.trade,x.area].filter(Boolean).join(" · "))}</footer></blockquote>`).join(""));
+  }catch{}
+}
+loadStories();
+$("stform").addEventListener("submit",e=>{
+  e.preventDefault();
+  const name=$("stname").value.trim(),trade=$("sttrade").value.trim(),area=$("stregion").value.trim(),text=$("sttext").value.trim();
+  const m=$("stmsg");m.hidden=false;
+  if(text.length<20){m.textContent="Tell us a little more, at least a sentence or two.";return}
+  const body=`Name: ${name}\nTrade: ${trade}\nArea: ${area}\nRating: ${stRating}/5\nOK to post: yes\n\n${text}`;
+  const href=`mailto:management@aspisllc.com?subject=${encodeURIComponent("PlantReady story from "+name)}&body=${encodeURIComponent(body)}`;
+  location.href=href;
+  m.innerHTML=`Your email app should open with your story ready. Just tap send. If it didn't open, copy your story and email it to <b>management@aspisllc.com</b>. <button type="button" class="linkbtn" id="stcopy">Copy my story</button>`;
+  $("stcopy").addEventListener("click",async()=>{try{await navigator.clipboard.writeText(body);$("stcopy").textContent="Copied"}catch{$("stcopy").textContent="Select and copy the text above"}});
+});
 
 /* ================= BOOT ================= */
 $("yr").textContent=new Date().getFullYear();
