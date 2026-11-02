@@ -488,6 +488,7 @@ function errMsg(e){
   if(e?.code==="rate_limited") return "You're going fast. Wait a minute, then try again.";
   if(e?.code==="network") return "Couldn't reach the server. Check your connection and try again.";
   if(e?.code==="too_long") return "That's a lot of text. Shorten it and try again.";
+  if(e?.code==="empty") return "The coach didn't reply that time. Send your answer again.";
   if(e?.code==="payment_required") return "This part is included with full access. Unlock it to continue.";
   if(e?.code==="missing_api") return "Setup problem: the AI file (api/ai.js) isn't on the server. Check the api folder on GitHub.";
   if(e?.code==="not_configured") return "Setup problem: the AI key isn't on the server. Add ANTHROPIC_API_KEY in Vercel, then redeploy.";
@@ -527,7 +528,7 @@ document.querySelectorAll("[data-track]").forEach(b=>b.addEventListener("click",
 /* ================= RESUME ================= */
 function renderLog(streaming){
   const log=$("log");log.innerHTML="";
-  const all=streaming!=null?[...turns,{role:"assistant",content:streaming||"Thinking…"}]:turns;
+  const all=(streaming!=null?[...turns,{role:"assistant",content:streaming||"Thinking…"}]:turns).filter(t=>String(t.content||"").trim());
   for(const t of all){const d=document.createElement("div");d.className="msg "+(t.role==="assistant"?"ai":"me");
     const w=document.createElement("span");w.className="who";w.textContent=t.role==="assistant"?"Interviewer":"You";
     d.append(w,document.createTextNode(t.content));log.append(d)}
@@ -552,7 +553,7 @@ function setBusy(b){busy=b;$("send").disabled=b;$("build").disabled=b;$("answer"
 
 async function ask(){
   setBusy(true);setStatus("");renderLog("");
-  try{const t=await ai("ask",{turns});turns.push({role:"assistant",content:String(t).trim()})}
+  try{const t=String(await ai("ask",{turns:turns.filter(x=>String(x.content||"").trim())})).trim();if(!t)throw {code:"empty"};turns.push({role:"assistant",content:t})}
   catch(e){setStatus(errMsg(e))}
   renderLog();setBusy(false);$("answer").focus();
 }

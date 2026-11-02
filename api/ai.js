@@ -51,7 +51,7 @@ function buildPrompt(b) {
     const cover = ta
       ? "craft and target position; name and home city; start date; travel range and willingness to work nights and 12s/7-on; each turnaround worked (site or plant type, rough dates, contractor, role, scope); regular employers and dates; safety tickets and badges (TWIC, local site safety card, OSHA 10/30, H2S, respirator fit test, confined space, crane or forklift cards, weld tests, union card if any); education"
       : "target role; name and city; each past job (company, title, dates); for plant jobs, which units/equipment, board (DCS) vs outside, permits issued, lockout/tagout, startups, shutdowns, turnarounds; for non-plant jobs, transferable skills (safety, mechanical, shift work, leadership); certifications (TWIC, OSHA 10/30, process technology degree, others); education";
-    return { model: QUICK_MODEL, max_tokens: 300, json: false, prompt:
+    return { model: QUICK_MODEL, max_tokens: 2000, json: false, prompt:
 `You are an interviewer for PlantReady, helping workers write resumes for process plant jobs. Talk like a friendly, experienced ${ta ? "turnaround general foreman" : "shift supervisor"} from this region.
 
 ${ctx}
@@ -71,7 +71,7 @@ Write the interviewer's next reply only.` };
   }
 
   if (b.task === "build") {
-    return { model: SMART_MODEL, max_tokens: 2500, json: true, prompt:
+    return { model: SMART_MODEL, max_tokens: 8000, json: true, prompt:
 `Write a resume for a ${ta ? "turnaround / shutdown contract" : "process plant"} job from this interview. Use ONLY facts the candidate stated. Never invent employers, sites, dates, certifications, numbers or skills. If something is missing, use an empty string or empty array. Rewrite the candidate's words into strong, plain bullets using correct plant terms (outside rounds, permit-to-work, LOTO, DCS, startup, turnaround, blinds, bolt-up, confined space, fire watch) only where the candidate described that work.
 
 ${ctx}
@@ -84,7 +84,7 @@ Return ONLY JSON with exactly these keys:
   }
 
   if (b.task === "grade") {
-    return { model: SMART_MODEL, max_tokens: 1200, json: true, prompt:
+    return { model: SMART_MODEL, max_tokens: 4000, json: true, prompt:
 `You are a ${ta ? "turnaround superintendent screening contract craft hands by phone" : "hiring panel member for process operator jobs"}. Score a candidate's interview answer.
 
 ${ctx}
@@ -101,7 +101,7 @@ Return ONLY JSON: {"score":3,"verdict":"one sentence","strengths":["1-2 items"],
   }
 
   if (b.task === "tailor") {
-    return { model: SMART_MODEL, max_tokens: 3500, json: true, prompt:
+    return { model: SMART_MODEL, max_tokens: 10000, json: true, prompt:
 `Tailor a plant worker's resume to a specific job posting.
 
 STRICT RULES: Use ONLY facts already in the resume. Never add employers, sites, dates, certifications, equipment or skills the resume does not contain. You may reorder, rewrite the headline and summary, and reword bullets to use the posting's exact terms where the candidate's real experience matches.
@@ -144,30 +144,44 @@ export default async function handler(req, res) {
   }
 
   try {
-    const r = await fetch(API_URL, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        "x-api-key": process.env.ANTHROPIC_API_KEY,
-        "anthropic-version": "2023-06-01"
-      },
-      body: JSON.stringify({
-        model: job.model,
-        max_tokens: job.max_tokens,
-        messages: [{ role: "user", content: job.prompt }]
-      })
-    });
-    if (r.status === 429 || r.status === 529) return res.status(429).json({ code: "rate_limited" });
-    if (!r.ok) {
-      const raw = await r.text();
-      console.error("Anthropic error", r.status, raw);
-      let msg = "";
-      try { msg = JSON.parse(raw)?.error?.message || ""; } catch {}
-      return res.status(502).json({ code: "upstream", status: r.status, detail: msg.slice(0, 200) });
+    const call = async () => {
+      const r = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          "x-api-key": process.env.ANTHROPIC_API_KEY,
+          "anthropic-version": "2023-06-01"
+        },
+        body: JSON.stringify({
+          model: job.model,
+          max_tokens: job.max_tokens,
+          messages: [{ role: "user", content: job.prompt }]
+        })
+      });
+      if (!r.ok) return { r };
+      const data = await r.json();
+      const text = (data.content || []).filter(c => c.type === "text").map(c => c.text).join("").trim();
+      return { r, data, text };
+    };
+    // One automatic retry if the reply comes back empty, cut off, or unreadable.
+    let out, result, lastErr = "";
+    for (let attempt = 0; attempt < 2; attempt++) {
+      out = await call();
+      const { r } = out;
+      if (r.status === 429 || r.status === 529) return res.status(429).json({ code: "rate_limited" });
+      if (!r.ok) {
+        const raw = await r.text();
+        console.error("Anthropic error", r.status, raw);
+        let msg = "";
+        try { msg = JSON.parse(raw)?.error?.message || ""; } catch {}
+        return res.status(502).json({ code: "upstream", status: r.status, detail: msg.slice(0, 200) });
+      }
+      const stop = out.data.stop_reason;
+      if (!out.text || (stop === "max_tokens" && !job.json)) { lastErr = `empty reply (stop: ${stop})`; console.error(lastErr); continue; }
+      try { result = job.json ? parseJson(out.text) : out.text; break; }
+      catch { lastErr = `unreadable reply (stop: ${stop})`; console.error(lastErr, out.text.slice(0, 300)); }
     }
-    const data = await r.json();
-    const text = (data.content || []).filter(c => c.type === "text").map(c => c.text).join("");
-    const result = job.json ? parseJson(text) : text;
+    if (result === undefined) return res.status(502).json({ code: "empty", detail: lastErr });
     return res.status(200).json({ result });
   } catch (e) {
     console.error(e);
