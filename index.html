@@ -310,6 +310,7 @@ input.field{font:inherit;color:var(--ink);background:var(--bg);border:1px solid 
   <footer>
     <span>© <span id="yr"></span> PlantReady</span>
     <a href="/privacy.html">Privacy</a>
+    <span>Questions? <a href="mailto:management@aspisllc.com">management@aspisllc.com</a></span>
     <span>Your answers are sent to our AI provider to write your resume. We don't store them, and your resume and access are saved only on your device.</span>
   </footer>
 </div>
@@ -898,7 +899,7 @@ $("rsform").addEventListener("submit",async e=>{
   try{
     const r=await fetch("/api/restore",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email})});
     const j=await r.json().catch(()=>({}));
-    if(r.status===404){m.textContent="No active purchase found for that email. Check the spelling, or use the email on your Stripe receipt.";b.disabled=false;return}
+    if(r.status===404){m.textContent="No active purchase found for that email. Check the spelling, or use the email on your Stripe receipt. Still stuck? Email management@aspisllc.com.";b.disabled=false;return}
     if(r.status===429){m.textContent="Too many tries. Wait an hour, then try again.";b.disabled=false;return}
     if(!r.ok)throw j;
     for(const p of j.passes)passes[p.kind]=p;
@@ -934,7 +935,7 @@ async function bootPayments(){
       passes[j.kind]=j;savePasses();
       if(j.kind==="practice"){setMode("mock");setM("You're all set. Practice is unlocked for "+prod("practice").days+" days. Answer the question and tap Score my answer.");setStatus("")}
       else setStatus("You're all set. Your resume is unlocked. Tap Build my resume when you're ready.");
-    }catch(e){setStatus("We couldn't confirm the payment yet. If you were charged, email us your receipt and we'll turn on access.")}
+    }catch(e){setStatus("We couldn't confirm the payment yet. If you were charged, email your receipt to management@aspisllc.com and we'll turn on access.")}
   } else if(q.has("canceled")) setStatus("Checkout canceled. You can keep answering questions for free.");
   renderPass();
 }
