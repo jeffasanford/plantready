@@ -12,6 +12,7 @@ AI resume builder, interview practice and hiring lists for plant and turnaround 
 | `package.json` | Tells the host which Node version to use |
 | `api/checkout.js`, `api/verify.js`, `api/config.js` | Stripe payments and the access pass |
 | `lib/pass.js` | Products, prices and the access pass |
+| `api/restore.js` | Restore purchase by checkout email |
 | `export.js` | Makes the PDF and Word resume downloads in the buyer's browser |
 
 ## Going live (about 30 minutes)
@@ -54,4 +55,4 @@ Optional: `PASS_SECRET` (a long random phrase that signs access passes; if you s
 
 Test with card 4242 4242 4242 4242, any future date and any CVC.
 
-Access is saved on the buyer's device. If someone switches phones or clears their browser, look up the payment in Stripe and send them a promo code to buy again free.
+Access is saved on the buyer's device. If they clear their browser or switch phones, they tap **Restore purchase** and enter their checkout email (`api/restore.js` looks it up in Stripe). Anyone who knows a buyer's email can restore that purchase, which the privacy page and the checkout notice both say.
