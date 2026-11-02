@@ -42,7 +42,7 @@ Interview questions are free. Two things are paid:
 | Product | Price | Unlocks |
 |---|---|---|
 | Resume | $50 one time | Building the finished resume, plus rebuilding and tailoring for 30 days |
-| Interview practice | $20 one time | Scored practice answers for 10 days |
+| Interview practice | $20 one time | Scored practice answers for 5 days |
 
 Prices, names and day counts live at the top of `lib/pass.js` (amount is in cents). No products need to be created in Stripe.
 

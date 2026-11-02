@@ -445,7 +445,7 @@ const firstQ=()=>track==="ta"
   :`Let's get you plant-ready in ${REGIONS[region].name}. What job are you going after? For example: process operator, outside operator, board operator, or I&E tech.`;
 let turns=[{role:"assistant",content:firstQ()}];
 let shown=null,resumeData=null,busy=false;
-let cfg={paywall:false,products:{resume:{label:"$50",days:30},practice:{label:"$20",days:10}}};
+let cfg={paywall:false,products:{resume:{label:"$50",days:30},practice:{label:"$20",days:5}}};
 let passes={};
 try{const p=JSON.parse(localStorage.getItem("pr_passes")||"{}");for(const k in p)if(p[k]?.exp>Date.now())passes[k]=p[k]}catch{}
 const passTokens=()=>Object.fromEntries(Object.entries(passes).map(([k,v])=>[k,v.token]));
