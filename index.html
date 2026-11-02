@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>PlantReady · AI resume & interview coach for plant and turnaround workers</title>
 <meta name="description" content="Free AI resume builder and interview practice for process operators and turnaround craft workers. Pick your region, answer a few questions, get a plant-ready resume.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23E8650F'/%3E%3Ctext x='16' y='23' font-family='Arial' font-weight='700' font-size='18' text-anchor='middle' fill='white'%3EPR%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='19' fill='%23E8650F'/%3E%3Ccircle cx='20' cy='20' r='7' fill='white'/%3E%3Ccircle cx='32' cy='20' r='2.4' fill='white'/%3E%3Ccircle cx='8' cy='20' r='2.4' fill='white'/%3E%3Ccircle cx='20' cy='32' r='2.4' fill='white'/%3E%3Ccircle cx='20' cy='8' r='2.4' fill='white'/%3E%3Ccircle cx='28.5' cy='28.5' r='2.4' fill='white'/%3E%3Ccircle cx='11.5' cy='11.5' r='2.4' fill='white'/%3E%3Ccircle cx='28.5' cy='11.5' r='2.4' fill='white'/%3E%3Ccircle cx='11.5' cy='28.5' r='2.4' fill='white'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
 <style>
@@ -28,11 +28,55 @@ footer{border-top:1px solid var(--line);padding-top:16px;display:flex;flex-wrap:
 html,body{background:var(--bg);color:var(--ink)}
 body{font-family:var(--body);font-size:15px;line-height:1.5}
 .wrap{max-width:1180px;margin:0 auto;padding-block:20px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:18px}
-header{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 16px;border-bottom:3px solid var(--accent);padding-bottom:12px}
-.brand{font-family:var(--display);font-weight:700;font-size:38px;letter-spacing:.02em;text-transform:uppercase;margin:0;line-height:1}
+html{scroll-behavior:smooth}
+[id]{scroll-margin-top:16px}
+header.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink)}
+.logo .mark{width:34px;height:34px;color:var(--accent);flex:none}
+.brand{font-family:var(--display);font-weight:700;font-size:30px;letter-spacing:.02em;text-transform:uppercase;margin:0;line-height:1}
+.topnav{display:flex;flex-wrap:wrap;align-items:center;gap:4px 18px;font-size:15px}
+.topnav a{color:var(--muted);text-decoration:none}
+.topnav a:hover{color:var(--ink)}
+.topnav .navcta{color:var(--accent-text);font-weight:600}
+@media (max-width:560px){.topnav a:not(.navcta){display:none}}
+.hero{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:28px;align-items:center;padding-top:20px}
+.hero-copy{display:flex;flex-direction:column;gap:14px;min-width:0}
+.hero h1{margin:0;font-family:var(--display);font-weight:700;font-size:clamp(44px,8vw,76px);line-height:.95;text-transform:uppercase;letter-spacing:.005em;text-wrap:balance}
+.hero-sub{margin:0;font-size:18px;line-height:1.5;max-width:52ch}
+.hero-cta{display:flex;flex-wrap:wrap;gap:10px}
+.btnlink{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:0 24px;border-radius:8px;font-weight:600;font-size:16px;text-decoration:none;border:1.5px solid transparent}
+.btnlink.primary{background:var(--accent);color:var(--accent-ink)}
+.btnlink.ghost{color:var(--ink);border-color:var(--line)}
+.hero-fine{margin:0;font-size:14px;color:var(--muted)}
+.ba{margin:0;background:var(--panel);border-radius:12px;border:1px solid var(--line);overflow:hidden}
+.ba-row{padding:16px 18px;display:flex;flex-direction:column;gap:4px}
+.ba-row p{margin:0;font-size:16px}
+.ba-k{font-size:13px;font-weight:600;color:var(--muted)}
+.before p{color:var(--muted);text-decoration:line-through;text-decoration-color:color-mix(in srgb,var(--muted) 60%,transparent)}
+.after{border-top:1px dashed var(--line);border-left:5px solid var(--accent)}
+.after .ba-k{color:var(--accent-text)}
+.ba figcaption{padding:10px 18px;font-size:13px;color:var(--muted);border-top:1px solid var(--line)}
+.skyline{display:block;width:100%;height:110px;color:var(--steel);opacity:.55;margin-top:-6px}
+.skyline .flame{fill:var(--accent)}
+.builtby{border-left:5px solid var(--hiviz);padding:2px 0 2px 16px}
+.builtby p{margin:0;font-size:17px;max-width:70ch}
+.how h2,.plansec h2{margin:0 0 12px;font-family:var(--display);font-size:30px;text-transform:uppercase}
+.steps{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:18px;counter-reset:s}
+.steps li{counter-increment:s;display:flex;flex-direction:column;gap:4px;padding-top:12px;border-top:3px solid var(--line);color:var(--muted)}
+.steps li::before{content:counter(s);font-family:var(--display);font-size:34px;font-weight:700;color:var(--accent-text);line-height:1}
+.steps li b{color:var(--ink)}
+.qlabel{margin:0;font-family:var(--body);font-size:17px;font-weight:600}
+.plangrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:14px;margin-top:12px}
+.pcard{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:10px}
+.pcard.best{border:2px solid var(--accent)}
+.pcard h3{margin:0;font-size:18px}
+.pcard .pp{font-family:var(--display);font-size:40px;font-weight:700;line-height:1}
+.pcard .pp small{font-size:16px;color:var(--muted)}
+.pcard ul{margin:0;padding-left:18px;color:var(--muted);font-size:14px;flex:1}
+.pcard .tagline{font-size:12px;font-weight:700;color:var(--accent-text);text-transform:uppercase;letter-spacing:.06em}
 .brand span{color:var(--accent-text)}
 .tag{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-.lede{margin:0;color:var(--muted);max-width:68ch}
+
 a.talent{font-weight:600;color:var(--accent-text)}
 /* dispatch strip */
 .dispatch{background:var(--steel);color:var(--steel-ink);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px}
@@ -176,11 +220,62 @@ input.field{font:inherit;color:var(--ink);background:var(--bg);border:1px solid 
 </head>
 <body>
 <div class="wrap">
-  <header>
-    <h1 class="brand">Plant<span>Ready</span></h1>
-    <span class="tag">AI resume &amp; interview coach · nationwide</span>
+  <header class="top">
+    <a class="logo" href="/" aria-label="PlantReady home"><svg class="mark" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="currentColor"/><circle cx="20" cy="20" r="6.5" fill="var(--bg)"/><circle cx="32.00" cy="20.00" r="2.2" fill="var(--bg)"/><circle cx="28.49" cy="28.49" r="2.2" fill="var(--bg)"/><circle cx="20.00" cy="32.00" r="2.2" fill="var(--bg)"/><circle cx="11.51" cy="28.49" r="2.2" fill="var(--bg)"/><circle cx="8.00" cy="20.00" r="2.2" fill="var(--bg)"/><circle cx="11.51" cy="11.51" r="2.2" fill="var(--bg)"/><circle cx="20.00" cy="8.00" r="2.2" fill="var(--bg)"/><circle cx="28.49" cy="11.51" r="2.2" fill="var(--bg)"/></svg><span class="brand">Plant<span>Ready</span></span></a>
+    <nav class="topnav" aria-label="Sections">
+      <a href="#how">How it works</a><a href="#plans" id="navPlans">Plans</a><a href="#stories">Stories</a>
+      <a class="navcta" href="#start">Start free</a>
+    </nav>
   </header>
-  <p class="lede">Pick your region and the kind of work you want. The AI asks about your units, permits and outages, writes a resume using only what you tell it, and coaches you for the interview.</p>
+
+  <section class="hero" aria-labelledby="herotitle">
+    <div class="hero-copy">
+      <h1 id="herotitle">Resumes that speak plant.</h1>
+      <p class="hero-sub">Tell us about your units, permits and outages the way you'd tell your shift supervisor. PlantReady turns it into a resume that refinery, LNG and turnaround hiring managers actually read. Then practice the interview.</p>
+      <div class="hero-cta">
+        <a class="btnlink primary" href="#start">Start free</a>
+        <a class="btnlink ghost" href="#plans" id="heroPlans">See plans</a>
+      </div>
+      <p class="hero-fine">The interview is free. No card needed until you're ready for your finished resume.</p>
+    </div>
+    <figure class="ba" aria-label="Example of a resume line before and after">
+      <div class="ba-row before"><span class="ba-k">What most people write</span><p>"Did rounds and helped maintenance."</p></div>
+      <div class="ba-row after"><span class="ba-k">What PlantReady writes</span><p>"Ran outside rounds on amine and dehydration units, logging readings every shift. Isolated and handed over equipment to maintenance under the site LOTO program."</p></div>
+      <figcaption>Only from what you tell it. Nothing made up.</figcaption>
+    </figure>
+  </section>
+  <svg class="skyline" viewBox="0 0 1000 120" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+  <g fill="currentColor">
+    <rect x="0" y="112" width="1000" height="8"/>
+    <rect x="40" y="38" width="16" height="74" rx="8"/><rect x="64" y="58" width="12" height="54" rx="6"/>
+    <rect x="100" y="70" width="70" height="4"/><rect x="100" y="84" width="70" height="4"/>
+    <rect x="104" y="70" width="3" height="42"/><rect x="164" y="70" width="3" height="42"/>
+    <rect x="200" y="20" width="5" height="92"/>
+    <circle cx="270" cy="84" r="22"/><rect x="254" y="98" width="3" height="14"/><rect x="283" y="98" width="3" height="14"/>
+    <circle cx="325" cy="88" r="17"/>
+    <rect x="380" y="64" width="90" height="48"/><ellipse cx="425" cy="64" rx="45" ry="10"/>
+    <rect x="490" y="70" width="80" height="42"/><ellipse cx="530" cy="70" rx="40" ry="9"/>
+    <rect x="600" y="30" width="18" height="82" rx="9"/><rect x="626" y="50" width="14" height="62" rx="7"/><rect x="648" y="66" width="12" height="46" rx="6"/>
+    <rect x="690" y="76" width="110" height="4"/><rect x="690" y="90" width="110" height="4"/>
+    <rect x="694" y="76" width="3" height="36"/><rect x="745" y="76" width="3" height="36"/><rect x="796" y="76" width="3" height="36"/>
+    <rect x="830" y="44" width="14" height="68" rx="7"/>
+    <rect x="870" y="80" width="100" height="32"/><ellipse cx="920" cy="80" rx="50" ry="8"/>
+  </g>
+  <path class="flame" d="M202.5 0c7 7 8 13 3.5 20h-7c-4.5-7-3.5-13 3.5-20z"/>
+</svg>
+
+  <section class="builtby" aria-label="Who built PlantReady">
+    <p><b>Built by a plant hand, not a résumé mill.</b> PlantReady was created by Jeff Sanford, a former Permit to Work coordinator. It asks the questions a supervisor would ask, uses the words plants use, and never puts anything on your resume you didn't say.</p>
+  </section>
+
+  <section class="how" id="how" aria-labelledby="howtitle">
+    <h2 id="howtitle">How it works</h2>
+    <ol class="steps">
+      <li><b>Pick your area and the work you want.</b> Full-time plant jobs or turnarounds, from Lake Charles to Anacortes.</li>
+      <li><b>Answer a few questions.</b> Your units, board or outside, permits, LOTO, outages, tickets. One at a time, plain talk.</li>
+      <li><b>Download, tailor and practice.</b> Get a PDF or Word resume, fit it to real postings, and rehearse the interview.</li>
+    </ol>
+  </section>
   <div class="passbar" id="passbar" hidden>
     <p id="passtext"></p>
     <div class="row" style="display:flex;flex-wrap:wrap;gap:8px">
@@ -201,8 +296,8 @@ input.field{font:inherit;color:var(--ink);background:var(--bg);border:1px solid 
     <p class="note" style="padding:0;flex-basis:100%">Your progress is saved on this device only. On a shared computer, tap Start fresh when you're done.</p>
   </div>
 
-  <section class="dispatch" aria-label="Your region and work type">
-    <span class="tag">1 · Where do you want to work?</span>
+  <section class="dispatch" id="start" aria-label="Your region and work type">
+    <h2 class="qlabel">Where do you want to work?</h2>
     <div class="selwrap">
       <label for="regionSel" class="sr">Region</label>
       <select id="regionSel" class="regsel"></select>
@@ -210,7 +305,7 @@ input.field{font:inherit;color:var(--ink);background:var(--bg);border:1px solid 
     <span class="rsub" id="rsub"></span>
     <div class="drow">
       <div style="display:flex;flex-direction:column;gap:6px">
-        <span class="tag">2 · What kind of work?</span>
+        <h2 class="qlabel">What kind of work?</h2>
         <div class="track" role="group" aria-label="Work type">
           <button type="button" data-track="plant" aria-pressed="true">Full-time plant job</button>
           <button type="button" data-track="ta" aria-pressed="false">Turnarounds &amp; contract</button>
@@ -310,8 +405,14 @@ input.field{font:inherit;color:var(--ink);background:var(--bg);border:1px solid 
     </section>
   </div>
 
+  <section class="plansec" id="plans" aria-labelledby="planstitle" hidden>
+    <h2 id="planstitle">Plans</h2>
+    <p class="hero-fine">The interview questions and job listings are always free. Billed monthly, cancel anytime.</p>
+    <div class="plangrid" id="plangrid"></div>
+  </section>
+
   <section class="panel stories" id="stories" aria-labelledby="sttitle">
-    <div class="panel-head"><h2 id="sttitle">Worker stories</h2><span class="badge">Real customers</span></div>
+    <div class="panel-head"><h2 id="sttitle">Worker stories</h2></div>
     <div class="st-grid">
       <div class="st-list" id="stlist">
         <p class="note" style="padding:0" id="stempty">No stories posted yet. Used PlantReady to land an interview or a job? Be the first to share how it went.</p>
@@ -940,7 +1041,14 @@ async function refreshPasses(){
     return (j.passes||[]).length>0;
   }catch{return false}
 }
+function renderPlans(){
+  const on=!!cfg.paywall;$("plans").hidden=!on;$("navPlans").hidden=!on;$("heroPlans").hidden=!on;
+  if(!on)return;
+  const cards=[["resume","Resume",OFFERS.resume.bullets],["both","Resume + coaching",[...OFFERS.resume.bullets.slice(0,2),...OFFERS.practice.bullets.slice(0,2)]],["practice","Interview coaching",OFFERS.practice.bullets]];
+  $("plangrid").innerHTML=cards.map(([k,n,b])=>{const [a,per]=String(prod(k).label).split("/");return `<div class="pcard${k==="both"?" best":""}">${k==="both"?`<span class="tagline">Best value</span>`:""}<h3>${esc(n)}</h3><div class="pp">${esc(a)}<small>/${esc(per||"mo")}</small></div><ul>${b.map(x=>`<li>${esc(x)}</li>`).join("")}</ul><button type="button" class="${k==="both"?"primary":"ghost"}" data-buy="${k}">${(k==="resume"&&resumeOn())||(k==="practice"&&coachOn())||(k==="both"&&resumeOn()&&coachOn())?"Active":"Choose "+esc(n.toLowerCase())}</button></div>`}).join("");
+}
 function renderPass(){
+  renderPlans();
   const bar=$("passbar");
   if(!cfg.paywall){bar.hidden=true;return}
   bar.hidden=false;
@@ -979,6 +1087,7 @@ $("pwplans").addEventListener("click",e=>{const b=e.target.closest("[data-plan]"
   const kinds=[...$("pwplans").querySelectorAll("[data-plan]")].map(x=>x.dataset.plan);paintPaywall();
   $("pwplans").innerHTML=kinds.map(planCard).join("")});
 $("buyBoth").addEventListener("click",()=>showPaywall("both"));
+$("plangrid").addEventListener("click",e=>{const b=e.target.closest("[data-buy]");if(!b||b.textContent==="Active")return;showPaywall(b.dataset.buy)});
 $("manageSub").addEventListener("click",async()=>{
   const b=$("manageSub");b.disabled=true;setStatus("Opening your billing page…");
   try{const r=await fetch("/api/portal",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({passes:passTokens()})});
