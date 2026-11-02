@@ -1,11 +1,12 @@
-// Tells the page whether payments are switched on and what to show as the price.
-import { paywallOn, passDays } from "../lib/pass.js";
+// Tells the page whether payments are on, and what each product costs.
+import { paywallOn, PRODUCTS } from "../lib/pass.js";
 
 export default function handler(req, res) {
+  const products = Object.fromEntries(Object.entries(PRODUCTS).map(([k, p]) =>
+    [k, { name: p.name, label: p.label, days: p.days, unlocks: p.unlocks }]));
   res.status(200).json({
     paywall: paywallOn(),
-    priceLabel: process.env.PRICE_LABEL || "$19",
-    days: passDays(),
+    products,
     aiReady: Boolean(process.env.ANTHROPIC_API_KEY)
   });
 }

@@ -148,7 +148,13 @@ input.field{font:inherit;color:var(--ink);background:var(--bg);border:1px solid 
     <span class="tag">AI resume &amp; interview coach · nationwide</span>
   </header>
   <p class="lede">Pick your region and the kind of work you want. The AI asks about your units, permits and outages, writes a resume using only what you tell it, and coaches you for the interview.</p>
-  <div class="passbar" id="passbar" hidden><p id="passtext"></p><button class="primary" type="button" id="passbtn">Unlock full access</button></div>
+  <div class="passbar" id="passbar" hidden>
+    <p id="passtext"></p>
+    <div class="row" style="display:flex;flex-wrap:wrap;gap:8px">
+      <button class="primary" type="button" id="buyResume">Resume · $50</button>
+      <button class="ghost" type="button" id="buyPractice">Practice · $20</button>
+    </div>
+  </div>
 
   <section class="dispatch" aria-label="Your region and work type">
     <span class="tag">1 · Where do you want to work?</span>
@@ -240,14 +246,10 @@ input.field{font:inherit;color:var(--ink);background:var(--bg);border:1px solid 
 
   <div class="paywall" id="paywall" hidden role="dialog" aria-modal="true" aria-labelledby="pwtitle">
     <div class="pw-card">
-      <h2 id="pwtitle">Unlock PlantReady</h2>
-      <div class="pw-price" id="pwprice">$19<small> one time</small></div>
-      <p class="note" style="padding:0" id="pwdays">Full access for 30 days. No subscription.</p>
-      <ul>
-        <li>Your finished, plant-ready resume</li>
-        <li>Unlimited scored interview practice</li>
-        <li>Tailor your resume to any job posting</li>
-      </ul>
+      <h2 id="pwtitle">Get your resume</h2>
+      <div class="pw-price" id="pwprice">$50<small> one time</small></div>
+      <p class="note" style="padding:0" id="pwdays"></p>
+      <ul id="pwlist"></ul>
       <p class="status" id="pwmsg" style="padding:0" hidden></p>
       <div class="row">
         <button class="primary" type="button" id="pwpay">Pay with card</button>
@@ -443,16 +445,17 @@ const firstQ=()=>track==="ta"
   :`Let's get you plant-ready in ${REGIONS[region].name}. What job are you going after? For example: process operator, outside operator, board operator, or I&E tech.`;
 let turns=[{role:"assistant",content:firstQ()}];
 let shown=null,resumeData=null,busy=false;
-let cfg={paywall:false,priceLabel:"$19",days:30};
-let pass=null;
-try{const p=JSON.parse(localStorage.getItem("pr_pass")||"null");if(p&&p.exp>Date.now())pass=p}catch{}
+let cfg={paywall:false,products:{resume:{label:"$50",days:30},practice:{label:"$20",days:10}}};
+let passes={};
+try{const p=JSON.parse(localStorage.getItem("pr_passes")||"{}");for(const k in p)if(p[k]?.exp>Date.now())passes[k]=p[k]}catch{}
+const passTokens=()=>Object.fromEntries(Object.entries(passes).map(([k,v])=>[k,v.token]));
 async function ai(task,data){
   let res;
-  try{res=await fetch("/api/ai",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({task,region,track,pass:pass?.token,...data})})}
+  try{res=await fetch("/api/ai",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({task,region,track,passes:passTokens(),...data})})}
   catch{throw {code:"network"}}
   const j=await res.json().catch(()=>({}));
   if(res.status===404&&!j.code) throw {code:"missing_api"};
-  if(res.status===402){showPaywall();throw {code:"payment_required"}}
+  if(res.status===402){showPaywall(j.kind||"resume");throw {code:"payment_required"}}
   if(!res.ok) throw {code:j.code||"error",status:j.status||res.status,detail:j.detail||""};
   return j.result;
 }
@@ -646,37 +649,60 @@ $("skip").addEventListener("click",()=>{if(mbusy)return;qi++;showQ()});
 $("mform").addEventListener("submit",e=>{e.preventDefault();grade()});
 
 /* ================= PAYMENTS ================= */
+const OFFERS={
+  resume:{title:"Get your resume",bullets:["Your finished, plant-ready resume, ready to copy","Rebuild it as you add details","Tailor it to any job posting for 30 days"]},
+  practice:{title:"Interview practice",bullets:["Unlimited scored practice answers","Plant and turnaround questions for your region","A stronger version of every answer you give"]}
+};
+let payKind="resume";
 const fmtDate=t=>new Date(t).toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"});
+const prod=k=>cfg.products?.[k]||{label:"",days:0};
+function savePasses(){try{localStorage.setItem("pr_passes",JSON.stringify(passes))}catch{}}
 function renderPass(){
   const bar=$("passbar");
   if(!cfg.paywall){bar.hidden=true;return}
   bar.hidden=false;
-  if(pass){bar.classList.add("ok");$("passtext").innerHTML=`<b>Full access</b><br>Active until ${esc(fmtDate(pass.exp))} on this device.`;$("passbtn").hidden=true}
-  else{bar.classList.remove("ok");$("passtext").innerHTML=`<b>Free preview</b><br>Answer the interview free. Unlock your finished resume, scored practice and tailoring for ${esc(cfg.priceLabel)}.`;$("passbtn").hidden=false}
+  const r=passes.resume,p=passes.practice;
+  const lines=[];
+  lines.push(r?`<b>Resume unlocked</b> until ${esc(fmtDate(r.exp))}`:`<b>Free preview</b> · Answer the interview free. Your finished resume is ${esc(prod("resume").label)}.`);
+  lines.push(p?`Interview practice unlocked until ${esc(fmtDate(p.exp))}`:`Scored interview practice: ${esc(prod("practice").label)} for ${prod("practice").days} days.`);
+  $("passtext").innerHTML=lines.join("<br>");
+  bar.classList.toggle("ok",!!(r&&p));
+  $("buyResume").hidden=!!r; $("buyPractice").hidden=!!p;
+  $("buyResume").textContent=`Resume · ${prod("resume").label}`;
+  $("buyPractice").textContent=`Practice · ${prod("practice").label}`;
 }
-function showPaywall(){
-  $("pwprice").innerHTML=`${esc(cfg.priceLabel)}<small> one time</small>`;
-  $("pwdays").textContent=`Full access for ${cfg.days} days. No subscription.`;
-  $("pwmsg").hidden=true;$("paywall").hidden=false;$("pwpay").focus();
+function showPaywall(kind){
+  payKind=OFFERS[kind]?kind:"resume";
+  const o=OFFERS[payKind],pr=prod(payKind);
+  $("pwtitle").textContent=o.title;
+  $("pwprice").innerHTML=`${esc(pr.label)}<small> one time</small>`;
+  $("pwdays").textContent=payKind==="practice"?`${pr.days} days of practice. No subscription.`:`Includes ${pr.days} days to rebuild and tailor. No subscription.`;
+  $("pwlist").innerHTML=o.bullets.map(b=>`<li>${esc(b)}</li>`).join("");
+  $("pwmsg").hidden=true;$("pwpay").disabled=false;$("paywall").hidden=false;$("pwpay").focus();
 }
 function hidePaywall(){$("paywall").hidden=true}
-$("passbtn").addEventListener("click",showPaywall);
+$("buyResume").addEventListener("click",()=>showPaywall("resume"));
+$("buyPractice").addEventListener("click",()=>showPaywall("practice"));
 $("pwclose").addEventListener("click",hidePaywall);
 $("paywall").addEventListener("click",e=>{if(e.target===$("paywall"))hidePaywall()});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("paywall").hidden)hidePaywall()});
 $("pwpay").addEventListener("click",async()=>{
   const b=$("pwpay"),m=$("pwmsg");b.disabled=true;m.hidden=false;m.textContent="Opening secure checkout…";
   try{
-    try{sessionStorage.setItem("pr_draft",JSON.stringify({turns,resumeData}))}catch{}
-    const r=await fetch("/api/checkout",{method:"POST"});const j=await r.json();
-    if(!r.ok||!j.url) throw j;
+    try{sessionStorage.setItem("pr_draft",JSON.stringify({turns,resumeData,region,track}))}catch{}
+    const r=await fetch("/api/checkout",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({kind:payKind})});
+    const j=await r.json();if(!r.ok||!j.url)throw j;
     location.href=j.url;
   }catch(e){m.textContent="Couldn't open checkout. "+(e?.detail||"Try again in a minute.");b.disabled=false}
 });
 async function bootPayments(){
   try{const r=await fetch("/api/config");if(r.ok)cfg={...cfg,...await r.json()}}catch{}
   try{const d=JSON.parse(sessionStorage.getItem("pr_draft")||"null");
-    if(d&&Array.isArray(d.turns)&&d.turns.length>1){turns=d.turns;resumeData=d.resumeData||null;renderLog();if(resumeData){renderResume(resumeData);$("badge").textContent="Your draft";$("badge").classList.add("live")}}
+    if(d){
+      if(REGIONS[d.region]&&(d.region!==region||d.track!==track)){region=d.region;track=d.track==="ta"?"ta":"plant";applyContext(false)}
+      if(Array.isArray(d.turns)&&d.turns.length>1){turns=d.turns;renderLog()}
+      if(d.resumeData){resumeData=d.resumeData;renderResume(resumeData);$("badge").textContent="Your draft";$("badge").classList.add("live")}
+    }
     sessionStorage.removeItem("pr_draft")}catch{}
   const q=new URLSearchParams(location.search);
   const sid=q.get("paid");
@@ -685,9 +711,10 @@ async function bootPayments(){
     setStatus("Confirming your payment…");
     try{const r=await fetch("/api/verify",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({session_id:sid})});
       const j=await r.json();if(!r.ok)throw j;
-      pass=j;try{localStorage.setItem("pr_pass",JSON.stringify(j))}catch{}
-      setStatus("You're all set. Full access is on. Tap Build my resume when you're ready.");
-    }catch(e){setStatus("We couldn't confirm the payment yet. If you were charged, email us with your receipt and we'll turn on access.")}
+      passes[j.kind]=j;savePasses();
+      if(j.kind==="practice"){setMode("mock");setM("You're all set. Practice is unlocked for "+prod("practice").days+" days. Answer the question and tap Score my answer.");setStatus("")}
+      else setStatus("You're all set. Your resume is unlocked. Tap Build my resume when you're ready.");
+    }catch(e){setStatus("We couldn't confirm the payment yet. If you were charged, email us your receipt and we'll turn on access.")}
   } else if(q.has("canceled")) setStatus("Checkout canceled. You can keep answering questions for free.");
   renderPass();
 }

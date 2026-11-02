@@ -1,17 +1,25 @@
-// Starts a Stripe Checkout payment and sends the visitor to Stripe's payment page.
-import { paywallOn, stripe } from "../lib/pass.js";
+// Starts a Stripe Checkout payment for one product and sends the visitor to Stripe.
+import { paywallOn, PRODUCTS, stripe } from "../lib/pass.js";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).json({ code: "method" });
   if (!paywallOn()) return res.status(400).json({ code: "paywall_off" });
+  const body = typeof req.body === "string" ? JSON.parse(req.body || "{}") : (req.body || {});
+  const kind = String(body.kind || "");
+  const p = PRODUCTS[kind];
+  if (!p) return res.status(400).json({ code: "bad_product" });
   const origin = process.env.SITE_URL || ("https://" + req.headers.host);
   try {
     const s = await stripe("checkout/sessions", {
       method: "POST",
       form: {
         mode: "payment",
-        "line_items[0][price]": process.env.STRIPE_PRICE_ID,
         "line_items[0][quantity]": "1",
+        "line_items[0][price_data][currency]": "usd",
+        "line_items[0][price_data][unit_amount]": String(p.amount),
+        "line_items[0][price_data][product_data][name]": p.name,
+        "line_items[0][price_data][product_data][description]": p.description,
+        "metadata[kind]": kind,
         allow_promotion_codes: "true",
         success_url: origin + "/?paid={CHECKOUT_SESSION_ID}",
         cancel_url: origin + "/?canceled=1"
