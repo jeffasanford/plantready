@@ -212,6 +212,10 @@ input.field{font:inherit;color:var(--ink);background:var(--bg);border:1px solid 
   <div class="grid" id="mockMode" hidden>
     <section class="panel" aria-label="Interview question">
       <div class="panel-head"><h2>Question <span id="qnum">1</span></h2><button class="ghost" id="skip" type="button">Different question</button></div>
+      <div class="fgroup" role="group" aria-label="Question source" style="padding:14px 16px 0">
+        <button type="button" class="fbtn" data-qsrc="bank" aria-pressed="true">Standard questions</button>
+        <button type="button" class="fbtn" data-qsrc="mine" aria-pressed="false">From my resume</button>
+      </div>
       <div class="qcard"><span class="tag" id="qcat"></span><p class="q" id="qtext"></p></div>
       <p class="note">Say it out loud first if you like, then type it. Strong answers cover the situation, what you did, and how it turned out.</p>
       <form id="mform"><label for="manswer" class="sr">Your answer</label><textarea id="manswer" class="tall" placeholder="Type your answer…"></textarea></form>
@@ -414,7 +418,32 @@ const BANKS={
   {c:"Shift work",q:"How do you make sure nothing gets missed at shift turnover?"},
   {c:"Teamwork",q:"Tell me about a time you had a conflict with a coworker on shift and how you handled it."},
   {c:"Ownership",q:"Tell me about a mistake you made at work and what you learned from it."},
-  {c:"Equipment basics",q:"In plain terms, how does a centrifugal pump work, and what would make you suspect it's cavitating?"}
+  {c:"Equipment basics",q:"In plain terms, how does a centrifugal pump work, and what would make you suspect it's cavitating?"},
+  {c:"Motivation",q:"Why do you want to work as an operator, and why at this kind of plant?"},
+  {c:"Equipment",q:"Walk me through starting up a pump you've never run before."},
+  {c:"Relief systems",q:"A relief valve on your unit lifts. What happens next, and who do you tell?"},
+  {c:"Integrity",q:"Your supervisor tells you to skip a procedure step to save time. What do you do?"},
+  {c:"Rounds",q:"Tell me about a time you caught something on rounds that others missed."},
+  {c:"Troubleshooting",q:"The board shows a vessel level climbing, but the sight glass in the field looks steady. What do you do?"},
+  {c:"Equipment",q:"In plain terms, what does a heat exchanger do, and how can you tell it's fouling?"},
+  {c:"Compressors",q:"What does compressor surge look or sound like, and why is it dangerous?"},
+  {c:"Maintenance handover",q:"How do you prepare a piece of equipment to hand over to maintenance?"},
+  {c:"Teaching",q:"Tell me about a time you trained or helped a newer coworker."},
+  {c:"Gas release",q:"Your personal gas monitor alarms on rounds. Walk me through the next minute."},
+  {c:"Contractors",q:"You see a contractor working without the right permit. What do you do?"},
+  {c:"Focus",q:"How do you stay sharp doing the same rounds night after night?"},
+  {c:"Emergencies",q:"Describe an emergency or drill you were part of. What was your role?"},
+  {c:"PPE",q:"You need to pull a sample from a hazardous stream. What PPE do you expect to wear, and why?"},
+  {c:"Work orders",q:"A work order you've been handed is unclear or incomplete. What do you do?"},
+  {c:"Communication",q:"Tell me about a time you had to give your supervisor bad news."},
+  {c:"Change management",q:"What does management of change (MOC) mean to you, and when should it be used?"},
+  {c:"Leaks",q:"A pump seal is leaking product onto the ground. What do you do?"},
+  {c:"Process knowledge",q:"Explain the main process on your last unit as if I started today."},
+  {c:"Fatigue",q:"Near the end of a long shift you feel too tired to work safely. What do you do?"},
+  {c:"Ownership",q:"Tell me about a time you owned a problem that wasn't strictly your job."},
+  {c:"Fit",q:"Why should we hire you over someone with more years in the field?"},
+  {c:"Logs",q:"What makes a good shift log entry, and why does it matter?"},
+  {c:"Startup",q:"What's the most important thing to check before bringing a unit back online after a turnaround?"}
  ],
  ta:[
   {c:"Stop work",q:"Tell me about a time you stopped a job on a turnaround. What did you see, and who did you call?"},
@@ -426,7 +455,32 @@ const BANKS={
   {c:"Quality",q:"Tell me about a time you found work that wasn't done right, maybe a bolt-up, a weld or a blind. What did you do?"},
   {c:"Reliability",q:"Turnarounds lose money when hands don't show. What does your attendance look like on your last outage?"},
   {c:"Craft",q:"Walk me through pulling a blind on a flanged line, from permit in hand to the line back in service."},
-  {c:"Teamwork",q:"You're the new hand on a crew that's been together for years. How do you earn your spot?"}
+  {c:"Teamwork",q:"You're the new hand on a crew that's been together for years. How do you earn your spot?"},
+  {c:"Hot work",q:"What has to be in place before the first spark on a hot work permit?"},
+  {c:"Fall protection",q:"How do you inspect your harness and lanyard before you tie off?"},
+  {c:"Rigging",q:"A load is being lifted over your work area. What do you do?"},
+  {c:"Blind list",q:"The blind list doesn't match what you see in the field. What's your next move?"},
+  {c:"Experience",q:"Tell me about the hardest outage you've worked and why it was hard."},
+  {c:"Integrity",q:"Your foreman pushes the crew to cut corners to make schedule. What do you do?"},
+  {c:"LOTO",q:"How does lockout/tagout work when several crafts are working on the same piece of equipment?"},
+  {c:"Bolt-up",q:"Explain how you torque a flange in the right pattern and why it matters."},
+  {c:"Confined space",q:"The gas monitor alarms during a vessel entry you're part of. Walk me through it."},
+  {c:"Commute safety",q:"How do you get home safely after a 12-hour night shift on a remote site?"},
+  {c:"Confined space",q:"What would make you refuse to enter a confined space?"},
+  {c:"Crafts",q:"Tell me about a time you worked with a different craft to get a job done."},
+  {c:"Materials",q:"You're out of the right gasket and the job is waiting on you. What do you do?"},
+  {c:"Tickets",q:"What tickets and badges do you hold, and when do they expire?"},
+  {c:"Heat",q:"How do you handle heat stress on a summer outage?"},
+  {c:"SIMOPS",q:"Tell me about working near a live unit during a turnaround. What did you watch out for?"},
+  {c:"Permits",q:"Your permit expires before the job is done. What happens?"},
+  {c:"Near misses",q:"Tell me about a near miss you reported."},
+  {c:"Housekeeping",q:"How do you make sure no tools or materials get left inside a vessel?"},
+  {c:"Availability",q:"The outage runs long and they ask you to stay two more weeks. What's your answer?"},
+  {c:"Operators",q:"How do you keep a good working relationship with the operators who own the unit?"},
+  {c:"Peer safety",q:"You see a coworker on a lift without being tied off. What do you do?"},
+  {c:"Reputation",q:"Why do contractors call you back for the next outage?"},
+  {c:"New site",q:"What do you do in your first hour on a new site?"},
+  {c:"Watches",q:"What's the difference between a hole watch and a fire watch, and what does each one do?"}
  ]
 };
 const REGION_Q={
@@ -602,8 +656,31 @@ const EXAMPLE_FB={score:3,verdict:"Example feedback: solid instinct, but light o
 let order=[],qi=0,hist=[],graded=false,mbusy=false;
 function bank(){const b=[...BANKS[track]];if(REGION_Q[region])b.unshift(REGION_Q[region]);return b}
 function shuffled(){const b=bank();const rq=REGION_Q[region]?[0]:[];const rest=[...b.keys()].filter(i=>!rq.includes(i)).sort(()=>Math.random()-.5);return [...rest.slice(0,2),...rq,...rest.slice(2)]}
-function curQ(){const b=bank();return b[order[qi%order.length]]}
-function showQ(){const b=curQ();$("qcat").textContent=b.c+" · "+REGIONS[region].short;$("qtext").textContent=b.q;$("qnum").textContent=hist.length+1;$("manswer").value="";graded=false;$("grade").textContent="Score my answer";setM("")}
+let qsrc="bank",aiQ=null,qbusy=false;const askedQs=[];
+function curQ(){if(qsrc==="mine")return aiQ||{c:"From your resume",q:"Writing a question from your resume…"};const b=bank();return b[order[qi%order.length]]}
+function paintQ(){const b=curQ();$("qcat").textContent=b.c+" · "+REGIONS[region].short;$("qtext").textContent=b.q;$("qnum").textContent=hist.length+1;$("manswer").value="";graded=false;$("grade").textContent="Score my answer"}
+function showQ(){
+  document.querySelectorAll("[data-qsrc]").forEach(x=>x.setAttribute("aria-pressed",String(x.dataset.qsrc===qsrc)));
+  setM("");
+  if(qsrc!=="mine"){paintQ();return}
+  aiQ=null;paintQ();nextAiQ();
+}
+async function nextAiQ(){
+  const base=resumeData||shown;
+  if(!base){qsrc="bank";showQ();setM("Build your resume first. Then you can practice questions about your own jobs and units.");return}
+  if(qbusy)return;qbusy=true;$("grade").disabled=true;$("skip").disabled=true;
+  try{
+    const q=await ai("question",{resume:base,asked:askedQs.slice(-15)});
+    aiQ={c:String(q.c||"Your experience").slice(0,40),q:String(q.q||"").trim()};
+    if(!aiQ.q)throw {code:"empty"};
+    askedQs.push(aiQ.q);paintQ();
+  }catch(e){
+    if(e?.code==="payment_required"){qsrc="bank";showQ();setM("Questions from your resume come with interview practice.")}
+    else{$("qtext").textContent="Couldn't write a question. Tap Different question to try again.";setM(errMsg(e))}
+  }
+  qbusy=false;$("grade").disabled=false;$("skip").disabled=false;
+}
+document.querySelectorAll("[data-qsrc]").forEach(b=>b.addEventListener("click",()=>{if(mbusy||qbusy||b.dataset.qsrc===qsrc)return;qsrc=b.dataset.qsrc;showQ()}))
 function setM(m){const s=$("mstatus");s.textContent=m||"";s.hidden=!m}
 function renderFb(f){
   const s=Math.max(1,Math.min(5,Math.round(+f.score||0)));
@@ -620,6 +697,7 @@ function renderHist(){const h=$("hist");h.hidden=!hist.length;if(!hist.length)re
 async function grade(){
   if(graded){qi++;showQ();$("manswer").focus();return}
   if(mbusy)return;
+  if(qsrc==="mine"&&!aiQ){setM("Wait for the question to load, or tap Different question.");return}
   const ans=$("manswer").value.trim();if(!ans){setM("Type your answer first.");return}
   const b=curQ();mbusy=true;$("grade").disabled=true;$("skip").disabled=true;setM("Scoring your answer…");
   try{const f=await ai("grade",{category:b.c,question:b.q,answer:ans});renderFb(f);hist.push({c:b.c,s:Math.max(1,Math.min(5,Math.round(+f.score||0)))});renderHist();graded=true;$("grade").textContent="Next question";setM("")}
@@ -681,13 +759,13 @@ $("m-resume").addEventListener("click",()=>setMode("resume"));
 $("m-mock").addEventListener("click",()=>setMode("mock"));
 $("m-jobs").addEventListener("click",()=>setMode("jobs"));
 $("grade").addEventListener("click",grade);
-$("skip").addEventListener("click",()=>{if(mbusy)return;qi++;showQ()});
+$("skip").addEventListener("click",()=>{if(mbusy||qbusy)return;if(qsrc==="mine"){aiQ=null;paintQ();nextAiQ();return}qi++;showQ()});
 $("mform").addEventListener("submit",e=>{e.preventDefault();grade()});
 
 /* ================= PAYMENTS ================= */
 const OFFERS={
   resume:{title:"Get your resume",bullets:["Your finished, plant-ready resume, ready to copy","Rebuild it as you add details","Tailor it to any job posting for 30 days"]},
-  practice:{title:"Interview practice",bullets:["Unlimited scored practice answers","Plant and turnaround questions for your region","A stronger version of every answer you give"]}
+  practice:{title:"Interview practice",bullets:["35+ real plant and turnaround interview questions, plus ones for your region","Fresh questions written from your own resume, so you practice your real story","A score and a stronger version of every answer you give"]}
 };
 let payKind="resume";
 const fmtDate=t=>new Date(t).toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"});

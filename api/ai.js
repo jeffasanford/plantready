@@ -100,6 +100,28 @@ Be direct and encouraging, in plain language. For "better", rewrite the candidat
 Return ONLY JSON: {"score":3,"verdict":"one sentence","strengths":["1-2 items"],"improve":["2-3 specific items"],"better":"..."}` };
   }
 
+  if (b.task === "question") {
+    const asked = (Array.isArray(b.asked) ? b.asked : []).slice(-15).map(q => "- " + clip(q, 300)).join("\n") || "(none yet)";
+    return { model: QUICK_MODEL, max_tokens: 2000, json: true, prompt:
+`You are a ${ta ? "turnaround superintendent screening a contract craft hand by phone" : "hiring panel member interviewing a process operator candidate"}. Write ONE interview question tailored to this candidate's own resume.
+
+${ctx}
+
+Candidate's resume (JSON):
+${clip(JSON.stringify(b.resume || {}), 8000)}
+
+Questions already asked (do not repeat or closely rephrase):
+${asked}
+
+Rules:
+- Ask about something specific on the resume: a named job, unit, piece of equipment, turnaround, ticket, or a gap or career change.
+- Mix the type: behavioral ("tell me about a time…"), technical ("walk me through…"), or safety scenario ("what would you do if…").
+- One or two sentences, spoken plainly, the way a real interviewer at a plant would ask it.
+- Never invent experience the resume doesn't show; if the resume is thin, ask about what's there or about their target role.
+
+Return ONLY JSON: {"c":"2-4 word topic label","q":"the question"}` };
+  }
+
   if (b.task === "tailor") {
     return { model: SMART_MODEL, max_tokens: 10000, json: true, prompt:
 `Tailor a plant worker's resume to a specific job posting.
