@@ -159,6 +159,15 @@ input.field{font:inherit;color:var(--ink);background:var(--bg);border:1px solid 
     </div>
   </div>
 
+  <div class="passbar welcome" id="welcome" hidden>
+    <p><b>Welcome back</b><br><span id="wtext"></span></p>
+    <div class="row" style="display:flex;flex-wrap:wrap;gap:8px">
+      <button class="primary" type="button" id="wcont">Continue my resume</button>
+      <button class="ghost" type="button" id="wfresh">Start fresh</button>
+    </div>
+    <p class="note" style="padding:0;flex-basis:100%">Your progress is saved on this device only. On a shared computer, tap Start fresh when you're done.</p>
+  </div>
+
   <section class="dispatch" aria-label="Your region and work type">
     <span class="tag">1 · Where do you want to work?</span>
     <div class="regions" role="group" aria-label="Region" id="regions"></div>
@@ -587,6 +596,7 @@ function renderLog(streaming){
     const w=document.createElement("span");w.className="who";w.textContent=t.role==="assistant"?"Interviewer":"You";
     d.append(w,document.createTextNode(t.content));log.append(d)}
   log.scrollTop=log.scrollHeight;
+  if(streaming==null)saveProgress();
 }
 function renderResume(r){
   const list=a=>Array.isArray(a)&&a.length?a:null;
@@ -614,7 +624,7 @@ async function ask(){
 async function build(){
   if(!turns.some(t=>t.role==="user")){setStatus("Answer at least one question first.");return}
   setBusy(true);setStatus("Writing your resume…");
-  try{const r=await ai("build",{turns});resumeData=r;shown=null;renderResume(r);
+  try{const r=await ai("build",{turns});resumeData=r;shown=null;renderResume(r);saveProgress();
     $("badge").textContent="Your draft";$("badge").classList.add("live");
     $("note").textContent="[Add this] spots are details you haven't given yet. Answer more questions and rebuild to fill them.";setStatus("")}
   catch(e){setStatus(errMsg(e)||"Couldn't build the resume. Try again.")}
@@ -633,7 +643,7 @@ function plain(r){
 $("form").addEventListener("submit",e=>{e.preventDefault();if(busy)return;const v=$("answer").value.trim();if(!v)return;turns.push({role:"user",content:v});$("answer").value="";renderLog();ask()});
 $("answer").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();$("form").requestSubmit()}});
 $("build").addEventListener("click",build);
-$("restart").addEventListener("click",()=>{if(busy)return;turns=[{role:"assistant",content:firstQ()}];resumeData=null;shown=null;renderLog();renderResume(exampleFor(region,track));$("badge").textContent="Example";$("badge").classList.remove("live");$("note").textContent="This example shows the format. Yours replaces it once you build.";setStatus("")});
+$("restart").addEventListener("click",()=>{if(busy)return;turns=[{role:"assistant",content:firstQ()}];resumeData=null;shown=null;tailored=null;renderLog();renderResume(exampleFor(region,track));$("badge").textContent="Example";$("badge").classList.remove("live");$("note").textContent="This example shows the format. Yours replaces it once you build.";setStatus("")});
 function download(kind){
   const r=shown||resumeData;
   if(!r){setStatus("Build your resume first. Then you can download it as a PDF or Word file.");return}
@@ -748,7 +758,7 @@ async function tailor(){
   tbusy=false;$("tailor").disabled=false;
 }
 $("tailor").addEventListener("click",tailor);
-$("viewres").addEventListener("click",()=>{if(!tailored)return;renderResume(tailored);shown=tailored;$("badge").textContent="Tailored: "+tailored._emp;$("badge").classList.add("live");$("note").textContent="Tailored from your resume for this posting. Rebuild in the interview to change the facts.";setMode("resume")});
+$("viewres").addEventListener("click",()=>{if(!tailored)return;renderResume(tailored);shown=tailored;saveProgress();$("badge").textContent="Tailored: "+tailored._emp;$("badge").classList.add("live");$("note").textContent="Tailored from your resume for this posting. Rebuild in the interview to change the facts.";setMode("resume")});
 
 function setMode(m){
   $("resumeMode").hidden=m!=="resume";$("mockMode").hidden=m!=="mock";$("jobsMode").hidden=m!=="jobs";
@@ -761,6 +771,40 @@ $("m-jobs").addEventListener("click",()=>setMode("jobs"));
 $("grade").addEventListener("click",grade);
 $("skip").addEventListener("click",()=>{if(mbusy||qbusy)return;if(qsrc==="mine"){aiQ=null;paintQ();nextAiQ();return}qi++;showQ()});
 $("mform").addEventListener("submit",e=>{e.preventDefault();grade()});
+
+/* ================= SAVED PROGRESS ================= */
+let progressReady=false;
+function saveProgress(){
+  if(!progressReady)return;
+  try{localStorage.setItem("pr_progress",JSON.stringify({turns,resumeData,shown,region,track,savedAt:Date.now()}))}catch{}
+}
+function loadProgress(){try{const d=JSON.parse(localStorage.getItem("pr_progress")||"null");return d&&Array.isArray(d.turns)?d:null}catch{return null}}
+function hasWork(d){return !!(d&&(d.resumeData||d.turns.some(t=>t.role==="user")))}
+function applyProgress(d){
+  if(REGIONS[d.region]&&(d.region!==region||(d.track||"plant")!==track)){region=d.region;track=d.track==="ta"?"ta":"plant";applyContext(false)}
+  turns=d.turns.filter(t=>String(t.content||"").trim());if(!turns.length)turns=[{role:"assistant",content:firstQ()}];
+  resumeData=d.resumeData||null;shown=d.shown||null;
+  progressReady=true;renderLog();
+  const r=shown||resumeData;
+  if(r){renderResume(r);$("badge").textContent=shown?"Tailored":"Your draft";$("badge").classList.add("live");$("note").textContent="Restored from last time. Keep answering and rebuild to add more, or download it now."}
+  saveProgress();
+}
+function setInterviewLocked(on){$("answer").disabled=on;$("send").disabled=on;$("build").disabled=on;if(on)setStatus("Choose Continue my resume or Start fresh above.");else setStatus("")}
+function bootProgress(returningFromCheckout){
+  const d=loadProgress();
+  if(!hasWork(d)){progressReady=true;saveProgress();return}
+  if(returningFromCheckout){applyProgress(d);return}
+  const answers=d.turns.filter(t=>t.role==="user").length;
+  const when=new Date(d.savedAt||Date.now()).toLocaleDateString(undefined,{month:"short",day:"numeric"});
+  $("wtext").textContent=`You have ${answers} interview answer${answers===1?"":"s"}${d.resumeData?" and a resume draft":""} saved from ${when} (${REGIONS[d.region]?.name||""}).`;
+  $("welcome").hidden=false;setInterviewLocked(true);
+}
+$("wcont").addEventListener("click",()=>{const d=loadProgress();$("welcome").hidden=true;setInterviewLocked(false);if(d)applyProgress(d);else{progressReady=true;saveProgress()}setMode("resume")});
+$("wfresh").addEventListener("click",()=>{
+  const b=$("wfresh");if(b.dataset.armed!=="1"){b.dataset.armed="1";b.textContent="Tap again to erase it";return}
+  try{localStorage.removeItem("pr_progress")}catch{}
+  $("welcome").hidden=true;setInterviewLocked(false);progressReady=true;saveProgress();setStatus("Started fresh. Your saved answers were erased from this device.");
+});
 
 /* ================= PAYMENTS ================= */
 const OFFERS={
@@ -828,7 +872,7 @@ document.addEventListener("keydown",e=>{if(e.key!=="Escape")return;if(!$("paywal
 $("pwpay").addEventListener("click",async()=>{
   const b=$("pwpay"),m=$("pwmsg");b.disabled=true;m.hidden=false;m.textContent="Opening secure checkout…";
   try{
-    try{sessionStorage.setItem("pr_draft",JSON.stringify({turns,resumeData,region,track}))}catch{}
+    saveProgress();
     const r=await fetch("/api/checkout",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({kind:payKind})});
     const j=await r.json();if(!r.ok||!j.url)throw j;
     location.href=j.url;
@@ -836,13 +880,6 @@ $("pwpay").addEventListener("click",async()=>{
 });
 async function bootPayments(){
   try{const r=await fetch("/api/config");if(r.ok)cfg={...cfg,...await r.json()}}catch{}
-  try{const d=JSON.parse(sessionStorage.getItem("pr_draft")||"null");
-    if(d){
-      if(REGIONS[d.region]&&(d.region!==region||d.track!==track)){region=d.region;track=d.track==="ta"?"ta":"plant";applyContext(false)}
-      if(Array.isArray(d.turns)&&d.turns.length>1){turns=d.turns;renderLog()}
-      if(d.resumeData){resumeData=d.resumeData;renderResume(resumeData);$("badge").textContent="Your draft";$("badge").classList.add("live")}
-    }
-    sessionStorage.removeItem("pr_draft")}catch{}
   const q=new URLSearchParams(location.search);
   const sid=q.get("paid");
   if(sid||q.has("canceled")) history.replaceState(null,"",location.pathname);
@@ -863,6 +900,7 @@ $("yr").textContent=new Date().getFullYear();
 renderFb(EXAMPLE_FB);
 renderLog();
 applyContext(false);
+{const q0=new URLSearchParams(location.search);bootProgress(q0.has("paid")||q0.has("canceled"))}
 bootPayments();
 </script>
 </body>
