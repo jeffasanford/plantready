@@ -11,7 +11,8 @@ AI resume builder, interview practice and hiring lists for plant and turnaround 
 | `privacy.html` | Privacy page (fill in the [brackets]) |
 | `package.json` | Tells the host which Node version to use |
 | `api/checkout.js`, `api/verify.js`, `api/config.js` | Stripe payments and the access pass |
-| `lib/pass.js` | Shared payment helper |
+| `lib/pass.js` | Products, prices and the access pass |
+| `export.js` | Makes the PDF and Word resume downloads in the buyer's browser |
 
 ## Going live (about 30 minutes)
 

@@ -238,6 +238,8 @@ input.field{font:inherit;color:var(--ink);background:var(--bg);border:1px solid 
       <div class="resume" id="resume"></div>
       <div class="actions">
         <button class="primary" type="button" id="build">Build my resume</button>
+        <button class="ghost" type="button" id="dlpdf">Download PDF</button>
+        <button class="ghost" type="button" id="dldocx">Download Word</button>
         <button class="ghost" type="button" id="copy">Copy text</button>
       </div>
       <p class="note" id="note">This example shows the format. Yours replaces it once you build.</p>
@@ -266,6 +268,7 @@ input.field{font:inherit;color:var(--ink);background:var(--bg);border:1px solid 
   </footer>
 </div>
 
+<script src="/export.js"></script>
 <script>
 /* ================= REGION DATA ================= */
 const g=q=>"https://www.google.com/search?q="+encodeURIComponent(q);
@@ -557,6 +560,19 @@ $("form").addEventListener("submit",e=>{e.preventDefault();if(busy)return;const 
 $("answer").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();$("form").requestSubmit()}});
 $("build").addEventListener("click",build);
 $("restart").addEventListener("click",()=>{if(busy)return;turns=[{role:"assistant",content:firstQ()}];resumeData=null;shown=null;renderLog();renderResume(exampleFor(region,track));$("badge").textContent="Example";$("badge").classList.remove("live");$("note").textContent="This example shows the format. Yours replaces it once you build.";setStatus("")});
+function download(kind){
+  const r=shown||resumeData;
+  if(!r){setStatus("Build your resume first. Then you can download it as a PDF or Word file.");return}
+  try{
+    const blob=kind==="pdf"?PR_EXPORT.pdf(r):PR_EXPORT.docx(r);
+    const url=URL.createObjectURL(blob);const a=document.createElement("a");
+    a.href=url;a.download=PR_EXPORT.fileBase(r)+(kind==="pdf"?".pdf":".docx");
+    document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
+    setStatus(kind==="pdf"?"PDF downloaded. On a phone, find it in your Files app under Downloads.":"Word file downloaded. It opens in Word, Google Docs or Pages.");
+  }catch(e){setStatus("Couldn't make the file. Try Copy text instead.")}
+}
+$("dlpdf").addEventListener("click",()=>download("pdf"));
+$("dldocx").addEventListener("click",()=>download("docx"));
 $("copy").addEventListener("click",async()=>{const t=plain(shown||resumeData||exampleFor(region,track));
   try{await navigator.clipboard.writeText(t);setStatus("Copied. Paste it into Word, Google Docs or an email.")}
   catch{const r=document.createRange();r.selectNodeContents($("resume"));const s=getSelection();s.removeAllRanges();s.addRange(r);setStatus("Text selected. Press copy on your device.")}});
