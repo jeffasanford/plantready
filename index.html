@@ -37,6 +37,11 @@ a.talent{font-weight:600;color:var(--accent-text)}
 /* dispatch strip */
 .dispatch{background:var(--steel);color:var(--steel-ink);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px}
 .dispatch .tag{color:inherit;opacity:.8}
+.selwrap{position:relative;max-width:460px}
+.selwrap::after{content:"";position:absolute;right:18px;top:50%;width:10px;height:10px;border-right:2.5px solid #1C2326;border-bottom:2.5px solid #1C2326;transform:translateY(-70%) rotate(45deg);pointer-events:none}
+.regsel{appearance:none;-webkit-appearance:none;width:100%;min-height:52px;padding:0 48px 0 16px;border-radius:10px;border:0;background:var(--hiviz);color:#1C2326;font:700 18px var(--body);cursor:pointer}
+.rsub{font-size:13px;opacity:.85;margin-top:-4px}
+.regsel:focus-visible{outline:3px solid var(--panel);outline-offset:2px}
 .regions{display:flex;flex-wrap:wrap;gap:6px}
 .rbtn{background:transparent;color:inherit;border:1.5px solid currentColor;opacity:.85;min-height:40px;padding:0 12px;font-size:14px}
 .rbtn[aria-pressed="true"]{background:var(--hiviz);color:#1C2326;border-color:var(--hiviz);opacity:1}
@@ -198,7 +203,11 @@ input.field{font:inherit;color:var(--ink);background:var(--bg);border:1px solid 
 
   <section class="dispatch" aria-label="Your region and work type">
     <span class="tag">1 · Where do you want to work?</span>
-    <div class="regions" role="group" aria-label="Region" id="regions"></div>
+    <div class="selwrap">
+      <label for="regionSel" class="sr">Region</label>
+      <select id="regionSel" class="regsel"></select>
+    </div>
+    <span class="rsub" id="rsub"></span>
     <div class="drow">
       <div style="display:flex;flex-direction:column;gap:6px">
         <span class="tag">2 · What kind of work?</span>
@@ -639,9 +648,11 @@ function errMsg(e){
 const ctx=()=>`Region: ${REGIONS[region].ctx}\nWork type: ${track==="ta"?"turnaround / shutdown contract work":"full-time plant job"}`;
 
 /* ================= REGION UI ================= */
-$("regions").innerHTML=RK.map(k=>`<button type="button" class="rbtn" data-region="${k}" aria-pressed="false">${esc(REGIONS[k].name)}</button>`).join("");
+const RSTATES={LA:"Lake Charles, Baton Rouge, New Orleans",TXG:"Houston to Corpus Christi",PER:"West TX, SE New Mexico",MC:"Ponca City, Coffeyville, McPherson",OV:"PA, OH, WV",GL:"IL, IN, OH, MI",CA:"Bay Area, Los Angeles",PNW:"Washington"};
+const RGROUPS=[["Gulf Coast",["LA","TXG"]],["Texas & New Mexico",["PER"]],["Midwest",["MC","GL"]],["Northeast",["OV"]],["West Coast",["CA","PNW"]]];
+$("regionSel").innerHTML=RGROUPS.map(([g,ks])=>`<optgroup label="${esc(g)}">${ks.map(k=>`<option value="${k}">${esc(REGIONS[k].name)}</option>`).join("")}</optgroup>`).join("");
 function applyContext(resetChat){
-  document.querySelectorAll("[data-region]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.region===region)));
+  $("regionSel").value=region;$("rsub").textContent="Covers "+RSTATES[region];
   document.querySelectorAll("[data-track]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.track===track)));
   const R=REGIONS[region];
   $("rnote").textContent=R.note+(track==="ta"&&UNION[region]?" Many turnaround crafts here are dispatched through union halls, so the hall list below is worth a call.":"");
@@ -658,7 +669,7 @@ function applyContext(resetChat){
   }
   if(!resumeData&&!shown) renderResume(exampleFor(region,track));
 }
-$("regions").addEventListener("click",e=>{const b=e.target.closest("[data-region]");if(!b||b.dataset.region===region)return;region=b.dataset.region;applyContext(true)});
+$("regionSel").addEventListener("change",e=>{const v=e.target.value;if(!REGIONS[v]||v===region)return;region=v;applyContext(true)});
 document.querySelectorAll("[data-track]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.track===track)return;track=b.dataset.track;applyContext(true)}));
 
 /* ================= RESUME ================= */
