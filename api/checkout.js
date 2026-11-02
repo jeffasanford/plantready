@@ -1,5 +1,5 @@
 // Starts a Stripe Checkout payment for one product and sends the visitor to Stripe.
-import { paywallOn, PRODUCTS, TAX_CODE, stripe } from "../lib/pass.js";
+import { paywallOn, PRODUCTS, ensurePrice, stripe } from "../lib/pass.js";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).json({ code: "method" });
@@ -14,12 +14,8 @@ export default async function handler(req, res) {
       method: "POST",
       form: {
         mode: "payment",
+        "line_items[0][price]": await ensurePrice(kind),
         "line_items[0][quantity]": "1",
-        "line_items[0][price_data][currency]": "usd",
-        "line_items[0][price_data][unit_amount]": String(p.amount),
-        "line_items[0][price_data][product_data][name]": p.name,
-        "line_items[0][price_data][product_data][description]": p.description,
-        "line_items[0][price_data][product_data][tax_code]": TAX_CODE,
         "metadata[kind]": kind,
         allow_promotion_codes: "true",
         success_url: origin + "/?paid={CHECKOUT_SESSION_ID}",
