@@ -13,6 +13,7 @@ AI resume builder, interview practice and hiring lists for plant and turnaround 
 | `api/checkout.js`, `api/verify.js`, `api/config.js` | Stripe payments and the access pass |
 | `lib/pass.js` | Products, prices and the access pass |
 | `api/restore.js` | Restore purchase by checkout email |
+| `api/jobs.js` | Live job postings from Adzuna (needs `ADZUNA_APP_ID` and `ADZUNA_APP_KEY`) |
 | `export.js` | Makes the PDF and Word resume downloads in the buyer's browser |
 
 ## Going live (about 30 minutes)
@@ -56,3 +57,10 @@ Optional: `PASS_SECRET` (a long random phrase that signs access passes; if you s
 Test with card 4242 4242 4242 4242, any future date and any CVC.
 
 Access is saved on the buyer's device. If they clear their browser or switch phones, they tap **Restore purchase** and enter their checkout email (`api/restore.js` looks it up in Stripe). Anyone who knows a buyer's email can restore that purchase, which the privacy page and the checkout notice both say.
+
+## Live job postings (Adzuna)
+
+"Who's hiring" shows real postings from the last 30 days when these are set in Vercel:
+- `ADZUNA_APP_ID` and `ADZUNA_APP_KEY` from developer.adzuna.com
+
+Without them, the Latest openings box stays hidden and the employer list still works. Results are cached for 6 hours per region. Search words and locations per region are at the top of `api/jobs.js`. Adzuna requires the "Jobs by Adzuna" credit on the page, and its terms allow commercial use for a trial period before a license is needed.

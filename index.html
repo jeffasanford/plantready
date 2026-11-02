@@ -127,6 +127,9 @@ input.field{font:inherit;color:var(--ink);background:var(--bg);border:1px solid 
 .tform textarea{height:200px;width:100%;box-sizing:border-box}
 .fit{font-family:var(--display);font-size:30px;font-weight:700;text-transform:uppercase;margin:0}
 .fit.strong{color:var(--accent-text)}
+.livejobs{grid-column:1/-1}
+.ljob .meta{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.ljob .pay{color:var(--accent-text);font-weight:600}
 .passbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px;background:var(--panel);border:1px solid var(--line);border-left:6px solid var(--accent);border-radius:10px;padding:12px 16px}
 .passbar p{margin:0;min-width:0;flex:1 1 260px}
 .passbar b{font-family:var(--display);font-size:20px;text-transform:uppercase;letter-spacing:.03em}
@@ -190,6 +193,17 @@ input.field{font:inherit;color:var(--ink);background:var(--bg);border:1px solid 
   </div>
 
   <div class="grid" id="jobsMode" hidden>
+    <section class="panel livejobs" aria-label="Latest openings" id="livePanel" hidden>
+      <div class="panel-head"><h2>Latest openings</h2><span class="badge live" id="lregion"></span></div>
+      <form class="filters" id="lform" style="flex-direction:row;flex-wrap:wrap;align-items:center">
+        <label for="lq" class="sr">Search openings</label>
+        <input type="text" id="lq" class="field" style="flex:1 1 220px;width:auto" placeholder="Search, e.g. board operator, pipefitter, LNG">
+        <button class="ghost" type="submit">Search</button>
+      </form>
+      <p class="status" id="lstatus" style="padding:0 16px 8px"></p>
+      <div class="emps" id="ljobs"></div>
+      <p class="note" style="padding-top:12px">New postings from the last 30 days, refreshed every few hours. Open a posting, copy the full text, and tailor your resume to it. <a href="https://www.adzuna.com" target="_blank" rel="noopener" style="color:inherit">Jobs by Adzuna</a></p>
+    </section>
     <section class="panel" aria-label="Employers">
       <div class="panel-head"><h2 id="jtitle">Who's hiring</h2><span class="badge" id="jregion"></span></div>
       <div class="filters">
@@ -577,6 +591,7 @@ function applyContext(resetChat){
   $("jregion").textContent=R.short;
   ls.set("pr_region",region); ls.set("pr_track",track);
   fType="All"; renderFilters(); renderEmps();
+  if(!$("jobsMode").hidden){$("lq").value="";loadJobs()}
   order=shuffled(); qi=0; showQ();
   if(resetChat&&!busy){
     const untouched=!turns.some(t=>t.role==="user");
@@ -740,6 +755,35 @@ function renderEmps(){
   $("emps").innerHTML=shownEmps.length?shownEmps.map((e,i)=>`<div class="emp"><div class="emp-info"><h3>${esc(e.n)}</h3><p>${esc(e.s)}</p><div class="chips" style="margin-top:6px">${e.t.map(t=>`<span class="chip">${esc(LAB[t]||t)}</span>`).join("")}</div></div><div class="emp-act"><a class="btn" href="${e.u}" target="_blank" rel="noopener">${e.t.includes("Union")?"Find hall ↗":"Careers ↗"}</a><button class="ghost" type="button" data-emp="${i}">Tailor for this</button></div></div>`).join(""):`<p class="note" style="padding:16px">No matches. Try another filter or search.</p>`;
 }
 $("esearch").addEventListener("input",renderEmps);
+
+/* ---- live postings ---- */
+let liveKey="",liveJobs=[],liveOff=false;
+const ago=t=>{const d=Math.max(0,Math.floor((Date.now()-new Date(t))/864e5));return d===0?"today":d===1?"yesterday":d+" days ago"};
+const money=n=>"$"+Math.round(n).toLocaleString();
+function payText(s){if(!s)return"";const lo=s.min,hi=s.max;const f=v=>v<1000?money(v)+"/hr":money(v)+"/yr";return lo&&hi&&lo!==hi?f(lo)+" – "+f(hi):f(lo||hi)}
+async function loadJobs(force){
+  if(liveOff)return;
+  const q=$("lq").value.trim();const key=region+"|"+track+"|"+q;
+  if(!force&&key===liveKey)return;liveKey=key;
+  $("lregion").textContent=REGIONS[region].short;$("lstatus").textContent="Loading new postings…";$("ljobs").innerHTML="";
+  try{
+    const r=await fetch(`/api/jobs?region=${region}&track=${track}&q=${encodeURIComponent(q)}`);
+    const j=await r.json();
+    if(j.code==="not_configured"){liveOff=true;$("livePanel").hidden=true;return}
+    $("livePanel").hidden=false;
+    if(key!==liveKey)return;
+    liveJobs=j.jobs||[];
+    $("lstatus").textContent=liveJobs.length?`${liveJobs.length} postings in ${REGIONS[region].name}`:"No new postings found. Try a different search or region.";
+    $("ljobs").innerHTML=liveJobs.map((x,i)=>`<div class="emp ljob"><div class="emp-info"><h3>${esc(x.title)}</h3><p>${esc([x.company,x.location].filter(Boolean).join(" · "))}</p><p class="meta">Posted ${esc(ago(x.created))}${x.salary?` · <span class="pay">${esc(payText(x.salary))}</span>`:""}</p></div><div class="emp-act"><a class="btn" href="${esc(x.url)}" target="_blank" rel="noopener nofollow">View posting ↗</a><button class="ghost" type="button" data-ljob="${i}">Tailor for this</button></div></div>`).join("");
+  }catch{$("lstatus").textContent="Couldn't load postings right now. The employer list below still works."}
+}
+$("lform").addEventListener("submit",e=>{e.preventDefault();loadJobs(true)});
+$("ljobs").addEventListener("click",e=>{
+  const b=e.target.closest("[data-ljob]");if(!b)return;const x=liveJobs[+b.dataset.ljob];
+  $("temp").value=x.company||"";
+  $("tpost").value=`${x.title}${x.company?" at "+x.company:""}${x.location?" ("+x.location+")":""}\n\n${x.snippet}\n\n[For the best match, open the posting and paste the full text here.]`;
+  $("tpost").focus();$("tpost").scrollIntoView({block:"center"});
+});
 $("emps").addEventListener("click",ev=>{const b=ev.target.closest("button[data-emp]");if(!b)return;$("temp").value=shownEmps[+b.dataset.emp].n;$("tpost").focus();$("tpost").scrollIntoView({block:"center"})});
 function setT(m){const s=$("tstatus");s.textContent=m||"";s.hidden=!m}
 async function tailor(){
@@ -763,7 +807,7 @@ $("viewres").addEventListener("click",()=>{if(!tailored)return;renderResume(tail
 function setMode(m){
   $("resumeMode").hidden=m!=="resume";$("mockMode").hidden=m!=="mock";$("jobsMode").hidden=m!=="jobs";
   $("m-resume").setAttribute("aria-pressed",String(m==="resume"));$("m-mock").setAttribute("aria-pressed",String(m==="mock"));$("m-jobs").setAttribute("aria-pressed",String(m==="jobs"));
-  if(m==="jobs"){$("tbadge").textContent=resumeData?"Using your draft":"Using example";$("tbadge").classList.toggle("live",!!resumeData)}
+  if(m==="jobs"){loadJobs();$("tbadge").textContent=resumeData?"Using your draft":"Using example";$("tbadge").classList.toggle("live",!!resumeData)}
 }
 $("m-resume").addEventListener("click",()=>setMode("resume"));
 $("m-mock").addEventListener("click",()=>setMode("mock"));
