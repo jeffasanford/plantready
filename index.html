@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>PlantReady · Resumes that speak plant</title>
-<meta name="description" content="Free AI resume builder and interview practice for process operators and turnaround craft workers. Pick your region, answer a few questions, get a plant-ready resume.">
+<meta name="description" content="Resume builder and interview practice for process operators, turnaround craft workers and data center technicians. Pick your region, answer a few questions, get a plant-ready resume.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='19' fill='%23E8650F'/%3E%3Ccircle cx='20' cy='20' r='7' fill='white'/%3E%3Ccircle cx='32' cy='20' r='2.4' fill='white'/%3E%3Ccircle cx='8' cy='20' r='2.4' fill='white'/%3E%3Ccircle cx='20' cy='32' r='2.4' fill='white'/%3E%3Ccircle cx='20' cy='8' r='2.4' fill='white'/%3E%3Ccircle cx='28.5' cy='28.5' r='2.4' fill='white'/%3E%3Ccircle cx='11.5' cy='11.5' r='2.4' fill='white'/%3E%3Ccircle cx='28.5' cy='11.5' r='2.4' fill='white'/%3E%3Ccircle cx='11.5' cy='28.5' r='2.4' fill='white'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@600;700;800&family=Work+Sans:wght@400;500;600;700&display=swap">
@@ -94,7 +94,7 @@ a.talent{font-weight:600;color:var(--accent-text)}
 .rbtn[aria-pressed="true"]{background:var(--hiviz);color:#1C2326;border-color:var(--hiviz);opacity:1}
 .drow{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;justify-content:space-between}
 .track{display:flex;gap:0;border:1.5px solid currentColor;border-radius:8px;overflow:hidden}
-.track button{border-radius:0;background:transparent;color:inherit;min-height:40px;font-size:14px;border:0}
+.track button{border-radius:0;background:transparent;color:inherit;min-height:40px;font-size:14px;border:0;flex:1 1 auto;padding:6px 12px;line-height:1.2}
 .track button[aria-pressed="true"]{background:var(--panel);color:var(--ink)}
 .rnote{margin:0;font-size:14px;max-width:72ch;opacity:.92}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:20px;align-items:start}
@@ -326,7 +326,7 @@ body{font-size:16px}
       <section class="hero" aria-labelledby="herotitle">
     <div class="hero-copy">
       <h1 id="herotitle">Resumes that speak plant.</h1>
-      <p class="hero-sub">Tell us about your units, permits and outages the way you'd tell your shift supervisor. PlantReady turns it into a resume that refinery, LNG and turnaround hiring managers actually read. Then practice the interview.</p>
+      <p class="hero-sub">Tell us about your units, permits and outages the way you'd tell your shift supervisor. PlantReady turns it into a resume that refinery, LNG, turnaround and data center hiring managers actually read. Then practice the interview.</p>
       <div class="hero-cta">
         <a class="btnlink primary" href="#app" id="heroStart">Start free</a>
         <a class="btnlink ghost" href="#plans" id="heroPlans">See plans</a>
@@ -370,7 +370,7 @@ body{font-size:16px}
   <section class="how" id="how" aria-labelledby="howtitle">
     <h2 id="howtitle">How it works</h2>
     <ol class="steps">
-      <li><span class="sicon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></span><b>1. Pick your area and the work you want.</b> Full-time plant jobs or turnarounds, from the Gulf Coast to the East and West Coasts.</li>
+      <li><span class="sicon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></span><b>1. Pick your area and the work you want.</b> Full-time plant jobs, turnarounds or data centers, from the Gulf Coast to the East and West Coasts.</li>
       <li><span class="sicon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H10l-6 4z"/><path d="M8 9.5h8M8 12.5h5"/></svg></span><b>2. Answer a few questions.</b> Your units, board or outside, permits, LOTO, outages, tickets. One at a time, plain talk.</li>
       <li><span class="sicon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/><path d="M12.5 11v6M10 14.5l2.5 2.5 2.5-2.5"/></svg></span><b>3. Download, tailor and practice.</b> Get a PDF or Word resume, fit it to real postings, and rehearse the interview.</li>
     </ol>
@@ -445,6 +445,7 @@ body{font-size:16px}
         <div class="track" role="group" aria-label="Work type">
           <button type="button" data-track="plant" aria-pressed="true">Full-time plant job</button>
           <button type="button" data-track="ta" aria-pressed="false">Turnarounds &amp; contract</button>
+          <button type="button" data-track="dc" aria-pressed="false">Data centers</button>
         </div>
       </div>
     </div>
@@ -672,6 +673,7 @@ const RK=Object.keys(REGIONS);
 /* Employers: n, track (plant|ta), types, regions, sites */
 const P=(n,t,r,s)=>({n,tr:"plant",t,r,s,u:g(n+" careers operator")});
 const C=(n,t,r,s)=>({n,tr:"ta",t,r,s,u:g(n+" careers turnaround")});
+const D=(n,t,r,s)=>({n,tr:"dc",t,r,s,u:g(n+" careers critical facilities technician")});
 const ALL=RK;
 const EMPLOYERS=[
  // Louisiana
@@ -745,7 +747,23 @@ const EMPLOYERS=[
  C("Repcon",["Specialty"],["TXG","LA","MC"],"Turnaround specialty services"),
  C("Mammoet",["Specialty"],ALL,"Heavy lift and rigging"),
  C("Sarens",["Specialty"],ALL,"Crane and heavy lift"),
- C("Total Safety",["Safety"],ALL,"Safety attendants, fire watch, hole watch, gas detection")
+ C("Total Safety",["Safety"],ALL,"Safety attendants, fire watch, hole watch, gas detection"),
+ // Data centers
+ D("Meta",["Hyperscaler"],["LA"],"Richland Parish data center campus (Holly Ridge, LA)"),
+ D("Amazon Web Services",["Hyperscaler"],ALL,"Data center operations roles nationwide"),
+ D("Microsoft",["Hyperscaler"],ALL,"Data center operations roles nationwide"),
+ D("Google",["Hyperscaler"],ALL,"Data center operations roles nationwide"),
+ D("Oracle",["Hyperscaler"],ALL,"Cloud data center operations"),
+ D("Equinix",["Colocation"],ALL,"Colocation data centers in major metros"),
+ D("Digital Realty",["Colocation"],ALL,"Colocation data centers in major metros"),
+ D("QTS Data Centers",["Colocation"],ALL,"Large data center campuses"),
+ D("Vantage Data Centers",["Colocation"],ALL,"Large data center campuses"),
+ D("Aligned Data Centers",["Colocation"],ALL,"Data center campuses"),
+ D("CyrusOne",["Colocation"],ALL,"Data center campuses"),
+ D("Stack Infrastructure",["Colocation"],ALL,"Data center campuses"),
+ D("Compass Datacenters",["Colocation"],ALL,"Data center campuses"),
+ D("CBRE",["Facility services"],ALL,"Runs critical facilities for data center owners"),
+ D("JLL",["Facility services"],ALL,"Runs critical facilities for data center owners")
 ];
 const UNION={OV:1,GL:1,CA:1,PNW:1,EC:1};
 
@@ -787,6 +805,40 @@ const BANKS={
   {c:"Fit",q:"Why should we hire you over someone with more years in the field?"},
   {c:"Logs",q:"What makes a good shift log entry, and why does it matter?"},
   {c:"Startup",q:"What's the most important thing to check before bringing a unit back online after a turnaround?"}
+ ],
+ dc:[
+  {c:"Procedures",q:"Walk me through how you'd do a job using a written method of procedure (MOP). What do you do if a step doesn't match what you see in the field?"},
+  {c:"Utility outage",q:"Utility power drops and the generators are supposed to pick up the load. Walk me through your first five minutes."},
+  {c:"Generators",q:"A generator fails to start during a monthly test. What do you check, and who do you tell?"},
+  {c:"UPS",q:"In plain terms, what does a UPS do in a data center, and what would make you worried about one?"},
+  {c:"Cooling",q:"A chiller trips at 2 a.m. and temperatures start climbing in a data hall. What are your first moves?"},
+  {c:"Electrical safety",q:"What does arc flash mean to you, and how do you protect yourself before working near energized equipment?"},
+  {c:"LOTO",q:"How is lockout/tagout different when the equipment feeds a critical load that can't go down?"},
+  {c:"Uptime",q:"Why is uptime such a big deal in a data center, and how did you protect production or uptime at your last job?"},
+  {c:"Change management",q:"Someone asks you to make a quick change to a system that isn't in an approved procedure. What do you do?"},
+  {c:"Escalation",q:"Tell me about a time you escalated a problem early instead of trying to fix it alone."},
+  {c:"Alarms",q:"Your monitoring system shows ten alarms at once. How do you decide what to look at first?"},
+  {c:"Rounds",q:"What do you look, listen and smell for on rounds through electrical and mechanical rooms?"},
+  {c:"Transfer switches",q:"What does an automatic transfer switch do, and what could go wrong during a transfer?"},
+  {c:"Batteries",q:"What safety concerns come with large battery rooms, and what would you check on them?"},
+  {c:"Cooling towers",q:"Walk me through what you check on a cooling tower or chilled water pump during rounds."},
+  {c:"Fuel",q:"How would you make sure the generators have enough fuel for a long outage?"},
+  {c:"Contractors",q:"A vendor shows up to work on a UPS. How do you make sure the work is safe and doesn't drop the load?"},
+  {c:"Shift handover",q:"What has to be in your shift handover so the next tech isn't surprised?"},
+  {c:"Documentation",q:"Why does documenting every action matter in a critical facility? Give an example from your own work."},
+  {c:"Ownership",q:"Tell me about a mistake you made on the job and what you changed afterward."},
+  {c:"Transition",q:"Why do you want to move from plants into data centers, and what from your plant experience carries over?"},
+  {c:"Controls",q:"If you've used a DCS or SCADA, how does that help you work with a building management system?"},
+  {c:"Maintenance",q:"How do you handle preventive maintenance work orders when the schedule is tight?"},
+  {c:"Stop work",q:"Tell me about a time you stopped a job because something didn't look right."},
+  {c:"Emergencies",q:"Describe an emergency you responded to. What was your role, and how did it end?"},
+  {c:"Teamwork",q:"How do you work with IT staff who don't understand facilities, or facilities staff who don't understand IT?"},
+  {c:"Security",q:"Data centers have strict access rules. Why do they matter, and what would you do if someone without a badge tried to follow you in?"},
+  {c:"Fire protection",q:"What do you know about fire suppression in data halls, and what would you do if it activated?"},
+  {c:"Hot spots",q:"What would you check if one row of racks is running hotter than the rest?"},
+  {c:"Capacity",q:"A customer wants to add a lot of new equipment in one hall. What facility questions would you raise?"},
+  {c:"Shift work",q:"Data centers run 24/7. How do you stay sharp on rotating 12-hour shifts?"},
+  {c:"Learning",q:"What have you done recently to learn something new about electrical or mechanical systems?"}
  ],
  ta:[
   {c:"Stop work",q:"Tell me about a time you stopped a job on a turnaround. What did you see, and who did you call?"},
@@ -840,6 +892,12 @@ const REGION_Q={
 };
 function exampleFor(rk,tr){
   const R=REGIONS[rk];
+  if(tr==="dc") return {name:"Example: Travis Broussard",headline:"Critical Facilities Technician · Data Centers",contact:R.city+" · [phone] · [email]",available:"",travel:"",schedule:"",
+    summary:"Process operator with 6 years in plant operations, moving into data center critical facilities. Experienced with switching under written procedures, cooling systems, LOTO and 24/7 shift work.",
+    certifications:["OSHA 10","TWIC"],turnarounds:[],
+    skills:["Working to MOPs/SOPs","Lockout/tagout","Breaker & MCC switching","Generator checks","Chilled water & cooling towers","DCS/SCADA monitoring","CMMS work orders","Shift handover"],
+    experience:[{title:"Process Operator",company:"Example Chemical Plant",dates:"2019 – Present",bullets:["Performed electrical switching on 480V motor control centers under written procedures with maintenance.","Ran rounds on cooling towers, chillers and pumps, logging readings and reporting abnormal conditions.","Responded to DCS alarms and followed emergency procedures during power dips."]}],
+    education:["A.A.S. Process Technology — [College]"]};
   if(tr==="ta") return {name:"Example: Dustin Guidry",headline:"Pipefitter Journeyman · Turnarounds",contact:R.city+" · [phone] · [email]",available:"Now",travel:"Will travel",schedule:"12s / 7 on, nights OK",
     summary:"Pipefitter with 6 years of refinery and chemical plant turnaround work. Strong on blinding, line breaks and flange bolt-up under permit, with a clean safety record.",
     certifications:["TWIC",R.ticket,"OSHA 10","Respirator fit test"].filter((x,i,a)=>a.indexOf(x)===i),
@@ -860,8 +918,10 @@ function exampleFor(rk,tr){
 const $=id=>document.getElementById(id);
 const ls={get(k){try{return localStorage.getItem(k)}catch{return null}},set(k,v){try{localStorage.setItem(k,v)}catch{}}};
 let region=REGIONS[ls.get("pr_region")]?ls.get("pr_region"):"LA";
-let track=ls.get("pr_track")==="ta"?"ta":"plant";
-const firstQ=()=>track==="ta"
+let track=["ta","dc"].includes(ls.get("pr_track"))?ls.get("pr_track"):"plant";
+const firstQ=()=>track==="dc"
+  ?`Let's get you ready for data center work in ${REGIONS[region].name}. What job are you going after? For example: critical facilities technician, data center technician, electrical or mechanical tech, or facility operations engineer. Coming from a plant is a big plus.`
+  :track==="ta"
   ?`Let's get you on the next outage in ${REGIONS[region].name}. What's your craft, and what position are you going after? For example: pipefitter journeyman, boilermaker helper, scaffold builder, hole watch, or turnaround operator.`
   :`Let's get you plant-ready in ${REGIONS[region].name}. What job are you going after? For example: process operator, outside operator, board operator, or I&E tech.`;
 let turns=[{role:"assistant",content:firstQ()}];
@@ -905,7 +965,8 @@ function errMsg(e){
   if(e?.detail) return "Something went wrong reaching the AI: "+e.detail;
   return "Something went wrong reaching the AI. Try again.";
 }
-const ctx=()=>`Region: ${REGIONS[region].ctx}\nWork type: ${track==="ta"?"turnaround / shutdown contract work":"full-time plant job"}`;
+const TRACKNAME={plant:"plant jobs",ta:"turnaround work",dc:"data center jobs"};
+const ctx=()=>`Region: ${REGIONS[region].ctx}\nWork type: ${TRACKNAME[track]}`;
 
 /* ================= REGION UI ================= */
 const RSTATES={LA:"Lake Charles, Baton Rouge, New Orleans",TXG:"Houston to Corpus Christi",PER:"West TX, SE New Mexico",MC:"Ponca City, Coffeyville, McPherson",OV:"PA, OH, WV",GL:"IL, IN, OH, MI",CA:"Bay Area, Los Angeles",PNW:"Washington",MSAL:"Pascagoula, Gulfport, Mobile",EC:"NJ, Philadelphia area, DE, MD, GA"};
@@ -916,7 +977,8 @@ function applyContext(resetChat){
   document.querySelectorAll("[data-track]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.track===track)));
   const R=REGIONS[region];
   $("rnote").textContent=R.note+(track==="ta"&&UNION[region]?" Many turnaround crafts here are dispatched through union halls, so the hall list below is worth a call.":"");
-  $("jtitle").textContent=track==="ta"?"Who staffs turnarounds":"Who's hiring";
+  $("jtitle").textContent=track==="ta"?"Who staffs turnarounds":track==="dc"?"Who runs data centers":"Who's hiring";
+  if(track==="dc")$("rnote").textContent+=" Data center operations hire for the same skills as plants: procedures, LOTO, electrical and cooling equipment, and 24/7 shifts. Building data centers instead? Pick Turnarounds & contract for craft jobs.";
   $("jregion").textContent=R.short;
   ls.set("pr_region",region); ls.set("pr_track",track);
   fType="All"; renderFilters(); renderEmps();
@@ -925,7 +987,7 @@ function applyContext(resetChat){
   if(resetChat&&!busy){
     const untouched=!turns.some(t=>t.role==="user");
     if(untouched){turns=[{role:"assistant",content:firstQ()}];renderLog()}
-    else{turns.push({role:"assistant",content:`Got it, now looking at ${track==="ta"?"turnaround work":"plant jobs"} in ${R.name}. Keep going, or tap Start over to begin fresh.`});renderLog()}
+    else{turns.push({role:"assistant",content:`Got it, now looking at ${TRACKNAME[track]} in ${R.name}. Keep going, or tap Start over to begin fresh.`});renderLog()}
   }
   if(!resumeData&&!shown) renderResume(exampleFor(region,track));
 }
@@ -1061,7 +1123,7 @@ async function grade(){
 
 /* ================= WHO'S HIRING + TAILOR ================= */
 let fType="All",tailored=null,tbusy=false;
-const LAB={LNG:"LNG",Refining:"Refining",Chemical:"Chemical","Gas processing":"Gas processing",Crafts:"Mechanical crafts",Scaffold:"Scaffold & insulation",Inspection:"Inspection & NDT",Specialty:"Specialty & lift",Safety:"Safety & watch",Union:"Union halls"};
+const LAB={LNG:"LNG",Refining:"Refining",Chemical:"Chemical","Gas processing":"Gas processing",Crafts:"Mechanical crafts",Scaffold:"Scaffold & insulation",Inspection:"Inspection & NDT",Specialty:"Specialty & lift",Safety:"Safety & watch",Union:"Union halls",Hyperscaler:"Cloud company",Colocation:"Data center operator","Facility services":"Facility services"};
 function pool(){
   const list=EMPLOYERS.filter(e=>e.tr===track&&e.r.includes(region));
   if(track==="ta"&&UNION[region]){
@@ -1080,7 +1142,7 @@ function renderEmps(){
   const q=($("esearch").value||"").trim().toLowerCase();
   const P=pool();
   shownEmps=P.filter(e=>(fType==="All"||e.t.includes(fType))&&(!q||(e.n+" "+e.s).toLowerCase().includes(q)));
-  $("ecount").textContent=shownEmps.length+" of "+P.length+(track==="ta"?" contractors":" employers")+" in "+REGIONS[region].name;
+  $("ecount").textContent=shownEmps.length+" of "+P.length+(track==="ta"?" contractors":track==="dc"?" companies":" employers")+" in "+REGIONS[region].name;
   $("emps").innerHTML=shownEmps.length?shownEmps.map((e,i)=>`<div class="emp"><div class="emp-info"><h3>${esc(e.n)}</h3><p>${esc(e.s)}</p><div class="chips" style="margin-top:6px">${e.t.map(t=>`<span class="chip">${esc(LAB[t]||t)}</span>`).join("")}</div></div><div class="emp-act"><a class="btn" href="${e.u}" target="_blank" rel="noopener">${e.t.includes("Union")?"Find hall ↗":"Careers ↗"}</a><button class="ghost" type="button" data-emp="${i}">Tailor for this</button></div></div>`).join(""):`<p class="note" style="padding:16px">No matches. Try another filter or search.</p>`;
 }
 $("esearch").addEventListener("input",renderEmps);
@@ -1154,7 +1216,7 @@ function saveProgress(){
 function loadProgress(){try{const d=JSON.parse(localStorage.getItem("pr_progress")||"null");return d&&Array.isArray(d.turns)?d:null}catch{return null}}
 function hasWork(d){return !!(d&&(d.resumeData||d.turns.some(t=>t.role==="user")))}
 function applyProgress(d){
-  if(REGIONS[d.region]&&(d.region!==region||(d.track||"plant")!==track)){region=d.region;track=d.track==="ta"?"ta":"plant";applyContext(false)}
+  if(REGIONS[d.region]&&(d.region!==region||(d.track||"plant")!==track)){region=d.region;track=["ta","dc"].includes(d.track)?d.track:"plant";applyContext(false)}
   turns=d.turns.filter(t=>String(t.content||"").trim());if(!turns.length)turns=[{role:"assistant",content:firstQ()}];
   resumeData=d.resumeData||null;shown=d.shown||null;
   progressReady=true;renderLog();

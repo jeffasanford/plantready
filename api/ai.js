@@ -40,28 +40,64 @@ const transcriptOf = turns =>
     .map(t => (t.role === "assistant" ? "Interviewer: " : "Candidate: ") + clip(t.content, 2000))
     .join("\n\n");
 
+// What changes per work type: who's interviewing, what to ask, what hiring managers value.
+const TRACKS = {
+  plant: {
+    label: "full-time plant job",
+    interviewer: "shift supervisor",
+    resumeFor: "process plant",
+    terms: "correct plant terms (outside rounds, permit-to-work, LOTO, DCS, startup, turnaround, blinds, bolt-up, confined space, fire watch)",
+    translate: "",
+    screener: "hiring panel member for process operator jobs",
+    asker: "hiring panel member interviewing a process operator candidate",
+    values: "stopping unsafe work, communicating with the control room and supervisor, following procedures and permits, owning mistakes, showing up, and teamwork",
+    cover: "target role; name and city; each past job (company, title, dates); for plant jobs, which units/equipment, board (DCS) vs outside, permits issued, lockout/tagout, startups, shutdowns, turnarounds; for non-plant jobs, transferable skills (safety, mechanical, shift work, leadership); certifications (TWIC, OSHA 10/30, process technology degree, others); education"
+  },
+  ta: {
+    label: "turnaround / shutdown contract work (also construction crafts)",
+    interviewer: "turnaround general foreman",
+    resumeFor: "turnaround / shutdown contract",
+    terms: "correct plant terms (outside rounds, permit-to-work, LOTO, DCS, startup, turnaround, blinds, bolt-up, confined space, fire watch)",
+    translate: "",
+    screener: "turnaround superintendent screening contract craft hands by phone",
+    asker: "turnaround superintendent screening a contract craft hand by phone",
+    values: "stopping unsafe work, respecting permits and scaffold tags, verifying isolation, quality work the first time, showing up every shift, staying sharp on long rotations, and teamwork",
+    cover: "craft and target position; name and home city; start date; travel range and willingness to work nights and 12s/7-on; each turnaround or construction job worked (site or plant type, rough dates, contractor, role, scope); regular employers and dates; safety tickets and badges (TWIC, local site safety card, OSHA 10/30, H2S, respirator fit test, confined space, crane or forklift cards, weld tests, union card if any); education"
+  },
+  dc: {
+    label: "data center operations (critical facilities)",
+    interviewer: "data center critical facilities manager who came up through plant operations",
+    resumeFor: "data center operations (critical facilities technician)",
+    terms: "correct data center terms (MOPs/SOPs/EOPs, switchgear, ATS, UPS, generators, chilled water, cooling towers, CRAH/CRAC, BMS/EPMS, LOTO, arc flash/NFPA 70E, CMMS, preventive maintenance, uptime)",
+    translate: "Where the candidate's plant or industrial experience genuinely maps to data center work, phrase it the way data center hiring managers read it (for example: written switching or startup procedures → working to MOPs/SOPs; DCS or SCADA monitoring → monitoring through a BMS/EPMS-style system; PM work orders → CMMS preventive maintenance). Never claim data center equipment, voltages or systems they didn't describe.",
+    screener: "critical facilities manager hiring data center technicians",
+    asker: "critical facilities manager interviewing a data center technician candidate who comes from plants",
+    values: "following written procedures (MOPs) exactly, protecting uptime, escalating early, electrical safety and arc flash awareness, change management, clear shift handover and documentation, and teamwork",
+    cover: "target role (critical facilities technician, data center technician, electrical or mechanical tech, facility operations engineer); name and city; each past job (company, title, dates); electrical work (switchgear, breakers, transfer switches, voltages, switching under written procedures); backup power (generators, UPS, batteries); cooling (chillers, cooling towers, pumps, air handlers); controls and monitoring (DCS, SCADA, BMS); LOTO and permits; preventive maintenance and work orders; alarm and emergency response; shift work; certifications (OSHA 10/30, NFPA 70E, EPA 608, electrical license, TWIC, process technology degree, others); education"
+  }
+};
+const trackOf = t => TRACKS[t] || TRACKS.plant;
+
 function context(region, track) {
-  return `Region: ${REGIONS[region] || REGIONS.LA}\nWork type: ${track === "ta" ? "turnaround / shutdown contract work" : "full-time plant job"}`;
+  return `Region: ${REGIONS[region] || REGIONS.LA}\nWork type: ${trackOf(track).label}`;
 }
 
 function buildPrompt(b) {
-  const ta = b.track === "ta";
+  const T = trackOf(b.track);
   const ctx = context(b.region, b.track);
   const transcript = transcriptOf(b.turns);
 
   if (b.task === "ask") {
-    const cover = ta
-      ? "craft and target position; name and home city; start date; travel range and willingness to work nights and 12s/7-on; each turnaround worked (site or plant type, rough dates, contractor, role, scope); regular employers and dates; safety tickets and badges (TWIC, local site safety card, OSHA 10/30, H2S, respirator fit test, confined space, crane or forklift cards, weld tests, union card if any); education"
-      : "target role; name and city; each past job (company, title, dates); for plant jobs, which units/equipment, board (DCS) vs outside, permits issued, lockout/tagout, startups, shutdowns, turnarounds; for non-plant jobs, transferable skills (safety, mechanical, shift work, leadership); certifications (TWIC, OSHA 10/30, process technology degree, others); education";
+    const cover = T.cover;
     return { model: QUICK_MODEL, max_tokens: 2000, json: false, prompt:
-`You are an interviewer for PlantReady, helping workers write resumes for process plant jobs. Talk like a friendly, experienced ${ta ? "turnaround general foreman" : "shift supervisor"} from this region.
+`You are an interviewer for PlantReady, helping workers write resumes for ${T.resumeFor} jobs. Talk like a friendly, experienced ${T.interviewer} from this region.
 
 ${ctx}
 
 Rules:
 - Ask exactly ONE short question per reply (1–3 sentences). No lists.
 - Cover, roughly in order: ${cover}.
-- Use the region's real context when it helps (its plant types, weather, local safety cards), but never claim specific facts about a named plant.
+- Use the region's real context when it helps (its plant types, weather, local safety cards), but never claim specific facts about a named plant or site.
 - Ask a follow-up when an answer is vague.
 - Never suggest experience the candidate didn't mention.
 - Once you have enough for a resume, reply only: "I've got enough to build your resume. Tap Build my resume, or tell me anything else you want added."
@@ -74,7 +110,7 @@ Write the interviewer's next reply only.` };
 
   if (b.task === "build") {
     return { model: SMART_MODEL, max_tokens: 8000, json: true, prompt:
-`Write a resume for a ${ta ? "turnaround / shutdown contract" : "process plant"} job from this interview. Use ONLY facts the candidate stated. Never invent employers, sites, dates, certifications, numbers or skills. If something is missing, use an empty string or empty array. Rewrite the candidate's words into strong, plain bullets using correct plant terms (outside rounds, permit-to-work, LOTO, DCS, startup, turnaround, blinds, bolt-up, confined space, fire watch) only where the candidate described that work.
+`Write a resume for a ${T.resumeFor} job from this interview. Use ONLY facts the candidate stated. Never invent employers, sites, dates, certifications, numbers or skills. If something is missing, use an empty string or empty array. Rewrite the candidate's words into strong, plain bullets using ${T.terms} only where the candidate described that work. ${T.translate}
 
 ${ctx}
 
@@ -87,7 +123,7 @@ Return ONLY JSON with exactly these keys:
 
   if (b.task === "grade") {
     return { model: SMART_MODEL, max_tokens: 4000, json: true, prompt:
-`You are a ${ta ? "turnaround superintendent screening contract craft hands by phone" : "hiring panel member for process operator jobs"}. Score a candidate's interview answer.
+`You are a ${T.screener}. Score a candidate's interview answer.
 
 ${ctx}
 
@@ -95,7 +131,7 @@ Question (${clip(b.category, 60)}): ${clip(b.question, 500)}
 Candidate's answer: ${clip(b.answer, 4000)}
 
 Scoring, 1–5: 1 = unsafe or off-topic; 2 = vague; 3 = acceptable but missing specifics or outcome; 4 = clear, specific, safety-minded; 5 = specific situation, clear actions, safety and communication shown, result stated.
-Hiring managers value: stopping unsafe work, communicating with the control room and supervisor, following procedures and permits, owning mistakes, showing up, and teamwork.
+Hiring managers value: ${T.values}.
 
 Be direct and encouraging, in plain language. For "better", rewrite the candidate's OWN answer into a stronger spoken answer of 3–5 sentences. Use only facts they gave; put [brackets] where they should add their own real details. Never invent experience.
 
@@ -105,7 +141,7 @@ Return ONLY JSON: {"score":3,"verdict":"one sentence","strengths":["1-2 items"],
   if (b.task === "question") {
     const asked = (Array.isArray(b.asked) ? b.asked : []).slice(-15).map(q => "- " + clip(q, 300)).join("\n") || "(none yet)";
     return { model: QUICK_MODEL, max_tokens: 2000, json: true, prompt:
-`You are a ${ta ? "turnaround superintendent screening a contract craft hand by phone" : "hiring panel member interviewing a process operator candidate"}. Write ONE interview question tailored to this candidate's own resume.
+`You are a ${T.asker}. Write ONE interview question tailored to this candidate's own resume.
 
 ${ctx}
 
@@ -118,7 +154,7 @@ ${asked}
 Rules:
 - Ask about something specific on the resume: a named job, unit, piece of equipment, turnaround, ticket, or a gap or career change.
 - Mix the type: behavioral ("tell me about a time…"), technical ("walk me through…"), or safety scenario ("what would you do if…").
-- One or two sentences, spoken plainly, the way a real interviewer at a plant would ask it.
+- One or two sentences, spoken plainly, the way a real interviewer would ask it.
 - Never invent experience the resume doesn't show; if the resume is thin, ask about what's there or about their target role.
 
 Return ONLY JSON: {"c":"2-4 word topic label","q":"the question"}` };

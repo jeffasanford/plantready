@@ -17,7 +17,8 @@ const WHERE = {
 
 const SEARCH = {
   plant: { what: "operator", what_or: "process refinery chemical plant lng petrochemical field board gas", what_exclude: "forklift cnc machine truck excavator call center" },
-  ta:    { what_or: "turnaround shutdown outage pipefitter boilermaker millwright scaffold insulator rigger", what_exclude: "retail restaurant nurse sales store" }
+  ta:    { what_or: "turnaround shutdown outage pipefitter boilermaker millwright scaffold insulator rigger", what_exclude: "retail restaurant nurse sales store" },
+  dc:    { what: "data center", what_or: "technician facilities critical operations engineer electrician mechanical", what_exclude: "sales software developer analyst recruiter" }
 };
 
 const clean = s => String(s || "").replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
@@ -27,7 +28,7 @@ export default async function handler(req, res) {
   if (!id || !key) return res.status(200).json({ code: "not_configured", jobs: [] });
 
   const region = WHERE[req.query.region] ? req.query.region : "LA";
-  const track = req.query.track === "ta" ? "ta" : "plant";
+  const track = SEARCH[req.query.track] ? req.query.track : "plant";
   const q = String(req.query.q || "").slice(0, 60).trim();
 
   const params = q ? { what: q } : SEARCH[track];
