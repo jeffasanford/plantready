@@ -272,6 +272,36 @@ body{font-size:16px}
 .selwrap::after{border-color:var(--ink)}
 .dispatch{border-radius:14px;padding:22px}
 .mode,.fbtn,.ghost{border-radius:8px}
+
+/* ---- graphics ---- */
+.hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:40px;align-items:center}
+@media (max-width:900px){.hero{grid-template-columns:minmax(0,1fr)}}
+.hero-art{margin:0;display:flex;align-items:center;justify-content:flex-end;max-width:600px;width:100%;justify-self:end}
+.sheet{order:2;flex:0 1 330px;min-width:0;margin-left:-14px;background:#FFFFFF;color:#1F2A26;border-radius:6px;padding:24px 22px 24px 30px;box-shadow:0 24px 50px rgba(0,0,0,.28);transform:rotate(2.5deg);font-family:var(--body);font-size:11px;line-height:1.45;display:flex;flex-direction:column;gap:5px}
+.sh-name{font-family:var(--display);font-weight:800;font-size:22px;line-height:1.1}
+.sh-role{color:#A3440A;font-weight:600;font-size:12px}
+.sh-contact{color:#6B7772}
+.sh-label{margin-top:8px;font-weight:700;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:#6B7772;border-bottom:1px solid #DDE3DF;padding-bottom:3px}
+.sh-job{display:flex;justify-content:space-between;gap:8px;font-weight:600}
+.sh-job span:last-child{color:#6B7772;font-weight:500;white-space:nowrap}
+.sheet ul{margin:0;padding-left:14px;display:flex;flex-direction:column;gap:3px}
+.sh-chips{display:flex;flex-wrap:wrap;gap:4px}
+.sh-chips span{background:#E8EEEA;border-radius:3px;padding:2px 6px}
+.phone{order:1;position:relative;z-index:1;flex:0 0 220px;height:400px;margin-top:60px;background:#0D1411;border-radius:34px;padding:9px;box-shadow:0 24px 50px rgba(0,0,0,.35)}
+.screen{background:#F3F5F2;border-radius:26px;height:100%;padding:30px 10px 10px;display:flex;flex-direction:column;gap:7px;font-family:var(--body);font-size:11.5px;line-height:1.35;color:#1F2A26;overflow:hidden}
+.pb{max-width:86%;padding:7px 10px;border-radius:12px}
+.pb.ai{background:#E2E9E5;align-self:flex-start;border-top-left-radius:3px}
+.pb.me{background:#2F5D50;color:#FFFFFF;align-self:flex-end;border-top-right-radius:3px}
+.pinput{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:6px;background:#FFFFFF;border:1px solid #DDE3DF;border-radius:999px;padding:6px 6px 6px 12px;color:#8A958F}
+.pinput b{background:#C75309;color:#FFFFFF;border-radius:999px;padding:5px 10px;font-weight:600}
+@media (max-width:900px){.hero-art{justify-self:center;justify-content:center}}
+@media (max-width:560px){.sheet{display:none}.phone{margin-top:0;flex-basis:250px;height:380px}}
+.steps li::before{display:none}
+.sicon{display:inline-flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:14px;background:var(--steel);color:var(--steel-ink);margin-bottom:6px}
+.sicon svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.builtby{display:flex;align-items:center;gap:28px}
+.builtby .tag{width:84px;height:auto;flex:none}
+@media (max-width:480px){.builtby .tag{width:64px}}
 </style>
 </head>
 <body>
@@ -295,6 +325,31 @@ body{font-size:16px}
       </div>
       <p class="hero-fine">The interview is free. No card needed until you're ready for your finished resume.</p>
     </div>
+    <figure class="hero-art" role="img" aria-label="Preview: the PlantReady interview on a phone and the finished resume">
+      <div class="sheet" aria-hidden="true">
+        <div class="sh-name">Marcus T.</div>
+        <div class="sh-role">Process Operator · LNG</div>
+        <div class="sh-contact">Lake Charles, LA</div>
+        <div class="sh-label">Experience</div>
+        <div class="sh-job"><span>Outside Operator</span><span>2022 – Present</span></div>
+        <ul>
+          <li>Ran outside rounds on amine and dehydration units, logging readings every shift.</li>
+          <li>Isolated and handed over equipment to maintenance under the site LOTO program.</li>
+          <li>Supported two planned turnarounds, including line-up checks at restart.</li>
+        </ul>
+        <div class="sh-label">Tickets</div>
+        <div class="sh-chips"><span>TWIC</span><span>OSHA 10</span><span>Basic Plus</span></div>
+      </div>
+      <div class="phone" aria-hidden="true">
+        <div class="screen">
+          <div class="pb ai">Which unit were you on, and were you on the board or outside?</div>
+          <div class="pb me">Outside on amine and dehy. Four years.</div>
+          <div class="pb ai">Did you hang locks or prep equipment for maintenance?</div>
+          <div class="pb me">Yes, under our LOTO program.</div>
+          <div class="pinput"><span>Type your answer…</span><b>Send</b></div>
+        </div>
+      </div>
+    </figure>
       </section>
     </div>
   </div>
@@ -307,9 +362,9 @@ body{font-size:16px}
   <section class="how" id="how" aria-labelledby="howtitle">
     <h2 id="howtitle">How it works</h2>
     <ol class="steps">
-      <li><b>Pick your area and the work you want.</b> Full-time plant jobs or turnarounds, from Lake Charles to Anacortes.</li>
-      <li><b>Answer a few questions.</b> Your units, board or outside, permits, LOTO, outages, tickets. One at a time, plain talk.</li>
-      <li><b>Download, tailor and practice.</b> Get a PDF or Word resume, fit it to real postings, and rehearse the interview.</li>
+      <li><span class="sicon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></span><b>1. Pick your area and the work you want.</b> Full-time plant jobs or turnarounds, from Lake Charles to Anacortes.</li>
+      <li><span class="sicon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H10l-6 4z"/><path d="M8 9.5h8M8 12.5h5"/></svg></span><b>2. Answer a few questions.</b> Your units, board or outside, permits, LOTO, outages, tickets. One at a time, plain talk.</li>
+      <li><span class="sicon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/><path d="M12.5 11v6M10 14.5l2.5 2.5 2.5-2.5"/></svg></span><b>3. Download, tailor and practice.</b> Get a PDF or Word resume, fit it to real postings, and rehearse the interview.</li>
     </ol>
   </section>
   <section class="plansec" id="plans" aria-labelledby="planstitle" hidden>
@@ -318,6 +373,19 @@ body{font-size:16px}
     <div class="plangrid" id="plangrid"></div>
   </section>
   <section class="builtby" aria-label="Who built PlantReady">
+    <svg class="tag" viewBox="0 0 120 210" role="img" aria-label="Illustration of a permit tag with a lock">
+      <path d="M60 6c-16 0-24 9-24 22v20" fill="none" stroke="var(--muted)" stroke-width="7" stroke-linecap="round"/>
+      <path d="M60 6c16 0 24 9 24 22v8" fill="none" stroke="var(--muted)" stroke-width="7" stroke-linecap="round"/>
+      <rect x="24" y="40" width="72" height="56" rx="10" fill="var(--steel)"/>
+      <circle cx="60" cy="62" r="7" fill="var(--bg)"/><rect x="57" y="64" width="6" height="14" rx="2" fill="var(--bg)"/>
+      <path d="M60 96v14" stroke="var(--muted)" stroke-width="3"/>
+      <rect x="18" y="108" width="84" height="98" rx="8" fill="#FFFFFF" stroke="var(--line)" stroke-width="2"/>
+      <rect x="18" y="108" width="84" height="30" rx="8" fill="var(--accent)"/><rect x="18" y="126" width="84" height="12" fill="var(--accent)"/>
+      <circle cx="60" cy="118" r="4" fill="#FFFFFF"/>
+      <text x="60" y="134" text-anchor="middle" font-family="Work Sans, sans-serif" font-size="9" font-weight="700" fill="#FFFFFF" letter-spacing=".5">PERMIT</text>
+      <rect x="30" y="150" width="60" height="5" rx="2.5" fill="#C9D3CE"/><rect x="30" y="162" width="48" height="5" rx="2.5" fill="#C9D3CE"/>
+      <rect x="30" y="174" width="56" height="5" rx="2.5" fill="#C9D3CE"/><rect x="30" y="186" width="36" height="5" rx="2.5" fill="#C9D3CE"/>
+    </svg>
     <p><b>Built from inside the industry.</b> PlantReady was created by a Permit to Work coordinator who still works in the field. It asks the questions a supervisor would ask, uses the words plants use, and never puts anything on your resume you didn't say.</p>
   </section>
   <section class="panel stories" id="stories" aria-labelledby="sttitle">
