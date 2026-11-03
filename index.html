@@ -3,28 +3,31 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>PlantReady · AI resume & interview coach for plant and turnaround workers</title>
+<title>PlantReady · Resumes that speak plant</title>
 <meta name="description" content="Free AI resume builder and interview practice for process operators and turnaround craft workers. Pick your region, answer a few questions, get a plant-ready resume.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='19' fill='%23E8650F'/%3E%3Ccircle cx='20' cy='20' r='7' fill='white'/%3E%3Ccircle cx='32' cy='20' r='2.4' fill='white'/%3E%3Ccircle cx='8' cy='20' r='2.4' fill='white'/%3E%3Ccircle cx='20' cy='32' r='2.4' fill='white'/%3E%3Ccircle cx='20' cy='8' r='2.4' fill='white'/%3E%3Ccircle cx='28.5' cy='28.5' r='2.4' fill='white'/%3E%3Ccircle cx='11.5' cy='11.5' r='2.4' fill='white'/%3E%3Ccircle cx='28.5' cy='11.5' r='2.4' fill='white'/%3E%3Ccircle cx='11.5' cy='28.5' r='2.4' fill='white'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@600;700;800&family=Work+Sans:wght@400;500;600;700&display=swap">
 <style>
 html{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}*,*::before,*::after{box-sizing:inherit}body{margin:0}[hidden]{display:none!important}img{max-width:100%}
 footer{border-top:1px solid var(--line);padding-top:16px;display:flex;flex-wrap:wrap;gap:8px 20px;font-size:13px;color:var(--muted)}footer a{color:var(--muted)}
-/* Layout: control-room console with a region "dispatch" strip on top; interview left, live resume right; stacks on phones */
+/* Layout: green band homepage (hero, before/after card overlapping the band, steps, plans), separate workspace behind "Start free" */
 :root{
-  --bg:#EEF0EE; --panel:#FFFFFF; --ink:#1C2326; --muted:#55605F; --line:#D4D9D6;
-  --accent:#E8650F; --accent-ink:#FFFFFF; --accent-text:#B44A05; --steel:#2F4A55; --steel-ink:#FFFFFF; --bubble:#E3E9E8; --hiviz:#F2C200;
-  --display:"Barlow Condensed","Arial Narrow",sans-serif;
-  --body:"IBM Plex Sans",system-ui,sans-serif;
-  --mono:"IBM Plex Mono",ui-monospace,monospace;
+  --bg:#F3F5F2; --panel:#FFFFFF; --ink:#1F2A26; --muted:#56635E; --line:#DDE3DF;
+  --accent:#C75309; --accent-ink:#FFFFFF; --accent-text:#A3440A; --steel:#2F5D50; --steel-ink:#FFFFFF; --bubble:#E8EEEA; --hiviz:#FFFFFF;
+  --band:#2F5D50; --band-ink:#F3F5F2; --band-muted:#CFDDD7;
+  --display:"Roboto Slab",Georgia,serif;
+  --body:"Work Sans",system-ui,sans-serif;
+  --mono:"Work Sans",system-ui,sans-serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#141A1C; --panel:#1C2427; --ink:#E6EBE9; --muted:#9EAAA8; --line:#2E393C;
-  --accent:#F07A2A; --accent-ink:#141A1C; --accent-text:#F59A5A; --steel:#9CC1CE; --steel-ink:#141A1C; --bubble:#25313A; --hiviz:#F5CB1F; color-scheme:dark}}
+  --bg:#121A17; --panel:#1A2420; --ink:#E6ECE8; --muted:#9DABA5; --line:#2A3631;
+  --accent:#F07A2A; --accent-ink:#121A17; --accent-text:#F59A5A; --steel:#7FB3A2; --steel-ink:#121A17; --bubble:#22302A; --hiviz:#1A2420;
+  --band:#1E3A31; --band-ink:#E6ECE8; --band-muted:#B5C7BF; color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#141A1C; --panel:#1C2427; --ink:#E6EBE9; --muted:#9EAAA8; --line:#2E393C;
-  --accent:#F07A2A; --accent-ink:#141A1C; --accent-text:#F59A5A; --steel:#9CC1CE; --steel-ink:#141A1C; --bubble:#25313A; --hiviz:#F5CB1F; color-scheme:dark}
+  --bg:#121A17; --panel:#1A2420; --ink:#E6ECE8; --muted:#9DABA5; --line:#2A3631;
+  --accent:#F07A2A; --accent-ink:#121A17; --accent-text:#F59A5A; --steel:#7FB3A2; --steel-ink:#121A17; --bubble:#22302A; --hiviz:#1A2420;
+  --band:#1E3A31; --band-ink:#E6ECE8; --band-muted:#B5C7BF; color-scheme:dark}
 html,body{background:var(--bg);color:var(--ink)}
 body{font-family:var(--body);font-size:15px;line-height:1.5}
 .wrap{max-width:1180px;margin:0 auto;padding-block:20px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:18px}
@@ -82,8 +85,8 @@ a.talent{font-weight:600;color:var(--accent-text)}
 .dispatch{background:var(--steel);color:var(--steel-ink);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px}
 .dispatch .tag{color:inherit;opacity:.8}
 .selwrap{position:relative;max-width:460px}
-.selwrap::after{content:"";position:absolute;right:18px;top:50%;width:10px;height:10px;border-right:2.5px solid #1C2326;border-bottom:2.5px solid #1C2326;transform:translateY(-70%) rotate(45deg);pointer-events:none}
-.regsel{appearance:none;-webkit-appearance:none;width:100%;min-height:52px;padding:0 48px 0 16px;border-radius:10px;border:0;background:var(--hiviz);color:#1C2326;font:700 18px var(--body);cursor:pointer}
+.selwrap::after{content:"";position:absolute;right:18px;top:50%;width:10px;height:10px;border-right:2.5px solid var(--ink);border-bottom:2.5px solid var(--ink);transform:translateY(-70%) rotate(45deg);pointer-events:none}
+.regsel{appearance:none;-webkit-appearance:none;width:100%;min-height:52px;padding:0 48px 0 16px;border-radius:10px;border:0;background:var(--panel);color:var(--ink);font:700 18px var(--body);cursor:pointer}
 .rsub{font-size:13px;opacity:.85;margin-top:-4px}
 .regsel:focus-visible{outline:3px solid var(--panel);outline-offset:2px}
 .regions{display:flex;flex-wrap:wrap;gap:6px}
@@ -216,58 +219,91 @@ input.field{font:inherit;color:var(--ink);background:var(--bg);border:1px solid 
 .pw-card .disclaim{background:var(--bubble);border-radius:8px;padding:10px 12px!important;color:var(--ink)}
 .linkbtn{background:none;border:0;padding:0;min-height:0;font:inherit;color:var(--accent-text);text-decoration:underline;cursor:pointer}
 @media (prefers-reduced-motion: reduce){*{scroll-behavior:auto!important}}
+
+/* ---- Process green layout ---- */
+body{font-size:16px}
+.band{background:var(--band);color:var(--band-ink)}
+.band-in{padding-block:22px 110px;gap:40px}
+.band .logo,.appbar .logo{color:var(--band-ink)}
+.band .logo .mark,.appbar .logo .mark{color:var(--band-ink)}
+.band .logo .mark circle:not(:first-child),.appbar .logo .mark circle:not(:first-child){fill:var(--band)}
+.band .brand span,.appbar .brand span{color:inherit}
+.band .topnav a,.appbar .topnav a{color:var(--band-muted)}
+.band .topnav a:hover,.appbar .topnav a:hover{color:var(--band-ink)}
+.band .topnav .navcta{color:var(--band-ink);font-weight:600}
+.brand{font-size:24px;text-transform:none;letter-spacing:0;font-weight:800}
+.hero{display:block;padding-top:24px}
+.hero-copy{max-width:760px;gap:22px}
+.hero h1{font-size:clamp(44px,7vw,84px);line-height:1.02;text-transform:none;letter-spacing:0;font-weight:800}
+.hero-sub{color:var(--band-muted);font-size:20px}
+.hero-fine{color:var(--muted)}
+.band .hero-fine{color:var(--band-muted)}
+.btnlink{border-radius:999px;min-height:54px;padding:0 28px}
+.band .btnlink.ghost{color:var(--band-ink);border-color:color-mix(in srgb,var(--band-ink) 40%,transparent)}
+.home-in{gap:56px;padding-block:0 40px}
+.ba{margin-top:-64px;border:0;border-radius:14px;box-shadow:0 10px 30px rgba(20,30,26,.10);display:flex;flex-wrap:wrap}
+.ba-row{flex:1 1 280px;padding:28px 30px}
+.ba-row.after{flex:2 1 420px;border:0;border-left:1px solid var(--line)}
+@media (max-width:760px){.ba-row.after{border-left:0;border-top:1px solid var(--line)}}
+.before p{text-decoration:none;color:var(--muted)}
+.ba-row p{font-size:19px}
+.ba figcaption{flex-basis:100%}
+.how h2,.plansec h2{font-size:38px;text-transform:none;font-weight:800}
+.steps li{border-top:0;padding-top:0;color:var(--muted)}
+.steps li::before{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:999px;background:var(--steel);color:var(--steel-ink);font-family:var(--body);font-size:16px;font-weight:600}
+.plansec{border-top:1px solid var(--line);padding-top:48px}
+.pcard{border:0}
+.pcard.best{background:var(--steel);color:var(--steel-ink);border:0}
+.pcard.best ul,.pcard.best .pp small{color:color-mix(in srgb,var(--steel-ink) 75%,transparent)}
+.pcard.best .tagline{color:var(--steel-ink)}
+.pcard.best button.primary{background:var(--accent);color:var(--accent-ink)}
+.builtby{border-left:0;border-top:1px solid var(--line);padding:40px 0 0}
+.builtby p{font-size:19px}
+.stories{border:0}
+.appbar{background:var(--band);color:var(--band-ink)}
+.appbar-in{flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:space-between;padding-block:16px}
+.foot{padding-block:0 32px}
+.passbar b{text-transform:none;letter-spacing:0;font-size:19px}
+@media (max-width:560px){.appbar .topnav a:not(.navcta){display:inline}.appbar .topnav{gap:4px 14px}}
+.panel-head h2,.pw-card h2,.empty h3,.st-form h3,.fit,.r-name,.q{text-transform:none;letter-spacing:0}
+.tag,.flabel,.badge,.who,.r-sec h3{letter-spacing:.02em}
+.qlabel{color:var(--steel-ink)}
+.regsel{background:var(--panel);color:var(--ink);font-family:var(--body)}
+.selwrap::after{border-color:var(--ink)}
+.dispatch{border-radius:14px;padding:22px}
+.mode,.fbtn,.ghost{border-radius:8px}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header class="top">
-    <a class="logo" href="/" aria-label="PlantReady home"><svg class="mark" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="currentColor"/><circle cx="20" cy="20" r="6.5" fill="var(--bg)"/><circle cx="32.00" cy="20.00" r="2.2" fill="var(--bg)"/><circle cx="28.49" cy="28.49" r="2.2" fill="var(--bg)"/><circle cx="20.00" cy="32.00" r="2.2" fill="var(--bg)"/><circle cx="11.51" cy="28.49" r="2.2" fill="var(--bg)"/><circle cx="8.00" cy="20.00" r="2.2" fill="var(--bg)"/><circle cx="11.51" cy="11.51" r="2.2" fill="var(--bg)"/><circle cx="20.00" cy="8.00" r="2.2" fill="var(--bg)"/><circle cx="28.49" cy="11.51" r="2.2" fill="var(--bg)"/></svg><span class="brand">Plant<span>Ready</span></span></a>
-    <nav class="topnav" aria-label="Sections">
-      <a href="#how">How it works</a><a href="#plans" id="navPlans">Plans</a><a href="#stories">Stories</a>
-      <a class="navcta" href="#start">Start free</a>
-    </nav>
-  </header>
-
-  <section class="hero" aria-labelledby="herotitle">
+<div id="home">
+  <div class="band">
+    <div class="wrap band-in">
+      <header class="top">
+        <a class="logo" href="/" aria-label="PlantReady home"><svg class="mark" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="currentColor"/><circle cx="20" cy="20" r="6.5" fill="var(--bg)"/><circle cx="32.00" cy="20.00" r="2.2" fill="var(--bg)"/><circle cx="28.49" cy="28.49" r="2.2" fill="var(--bg)"/><circle cx="20.00" cy="32.00" r="2.2" fill="var(--bg)"/><circle cx="11.51" cy="28.49" r="2.2" fill="var(--bg)"/><circle cx="8.00" cy="20.00" r="2.2" fill="var(--bg)"/><circle cx="11.51" cy="11.51" r="2.2" fill="var(--bg)"/><circle cx="20.00" cy="8.00" r="2.2" fill="var(--bg)"/><circle cx="28.49" cy="11.51" r="2.2" fill="var(--bg)"/></svg><span class="brand">Plant<span>Ready</span></span></a>
+        <nav class="topnav" aria-label="Sections">
+          <a href="#how">How it works</a><a href="#plans" id="navPlans">Plans</a><a href="#stories">Stories</a>
+          <a class="navcta" href="#app">Start free</a>
+        </nav>
+      </header>
+      <section class="hero" aria-labelledby="herotitle">
     <div class="hero-copy">
       <h1 id="herotitle">Resumes that speak plant.</h1>
       <p class="hero-sub">Tell us about your units, permits and outages the way you'd tell your shift supervisor. PlantReady turns it into a resume that refinery, LNG and turnaround hiring managers actually read. Then practice the interview.</p>
       <div class="hero-cta">
-        <a class="btnlink primary" href="#start">Start free</a>
+        <a class="btnlink primary" href="#app" id="heroStart">Start free</a>
         <a class="btnlink ghost" href="#plans" id="heroPlans">See plans</a>
       </div>
       <p class="hero-fine">The interview is free. No card needed until you're ready for your finished resume.</p>
     </div>
+      </section>
+    </div>
+  </div>
+  <div class="wrap home-in">
     <figure class="ba" aria-label="Example of a resume line before and after">
       <div class="ba-row before"><span class="ba-k">What most people write</span><p>"Did rounds and helped maintenance."</p></div>
       <div class="ba-row after"><span class="ba-k">What PlantReady writes</span><p>"Ran outside rounds on amine and dehydration units, logging readings every shift. Isolated and handed over equipment to maintenance under the site LOTO program."</p></div>
       <figcaption>Only from what you tell it. Nothing made up.</figcaption>
     </figure>
-  </section>
-  <svg class="skyline" viewBox="0 0 1000 120" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
-  <g fill="currentColor">
-    <rect x="0" y="112" width="1000" height="8"/>
-    <rect x="40" y="38" width="16" height="74" rx="8"/><rect x="64" y="58" width="12" height="54" rx="6"/>
-    <rect x="100" y="70" width="70" height="4"/><rect x="100" y="84" width="70" height="4"/>
-    <rect x="104" y="70" width="3" height="42"/><rect x="164" y="70" width="3" height="42"/>
-    <rect x="200" y="20" width="5" height="92"/>
-    <circle cx="270" cy="84" r="22"/><rect x="254" y="98" width="3" height="14"/><rect x="283" y="98" width="3" height="14"/>
-    <circle cx="325" cy="88" r="17"/>
-    <rect x="380" y="64" width="90" height="48"/><ellipse cx="425" cy="64" rx="45" ry="10"/>
-    <rect x="490" y="70" width="80" height="42"/><ellipse cx="530" cy="70" rx="40" ry="9"/>
-    <rect x="600" y="30" width="18" height="82" rx="9"/><rect x="626" y="50" width="14" height="62" rx="7"/><rect x="648" y="66" width="12" height="46" rx="6"/>
-    <rect x="690" y="76" width="110" height="4"/><rect x="690" y="90" width="110" height="4"/>
-    <rect x="694" y="76" width="3" height="36"/><rect x="745" y="76" width="3" height="36"/><rect x="796" y="76" width="3" height="36"/>
-    <rect x="830" y="44" width="14" height="68" rx="7"/>
-    <rect x="870" y="80" width="100" height="32"/><ellipse cx="920" cy="80" rx="50" ry="8"/>
-  </g>
-  <path class="flame" d="M202.5 0c7 7 8 13 3.5 20h-7c-4.5-7-3.5-13 3.5-20z"/>
-</svg>
-
-  <section class="builtby" aria-label="Who built PlantReady">
-    <p><b>Built from inside the industry.</b> PlantReady was created by a Permit to Work coordinator who still works in the field. It asks the questions a supervisor would ask, uses the words plants use, and never puts anything on your resume you didn't say.</p>
-  </section>
-
   <section class="how" id="how" aria-labelledby="howtitle">
     <h2 id="howtitle">How it works</h2>
     <ol class="steps">
@@ -276,6 +312,52 @@ input.field{font:inherit;color:var(--ink);background:var(--bg);border:1px solid 
       <li><b>Download, tailor and practice.</b> Get a PDF or Word resume, fit it to real postings, and rehearse the interview.</li>
     </ol>
   </section>
+  <section class="plansec" id="plans" aria-labelledby="planstitle" hidden>
+    <h2 id="planstitle">Plans</h2>
+    <p class="hero-fine">The interview questions and job listings are always free. Billed monthly, cancel anytime.</p>
+    <div class="plangrid" id="plangrid"></div>
+  </section>
+  <section class="builtby" aria-label="Who built PlantReady">
+    <p><b>Built from inside the industry.</b> PlantReady was created by a Permit to Work coordinator who still works in the field. It asks the questions a supervisor would ask, uses the words plants use, and never puts anything on your resume you didn't say.</p>
+  </section>
+  <section class="panel stories" id="stories" aria-labelledby="sttitle">
+    <div class="panel-head"><h2 id="sttitle">Worker stories</h2></div>
+    <div class="st-grid">
+      <div class="st-list" id="stlist">
+        <p class="note" style="padding:0" id="stempty">No stories posted yet. Used PlantReady to land an interview or a job? Be the first to share how it went.</p>
+      </div>
+      <form class="tform st-form" id="stform">
+        <h3 style="margin:0;font-family:var(--display);font-size:22px;text-transform:uppercase">Share your story</h3>
+        <div class="st-row">
+          <div><label class="flabel" for="stname">First name</label><input id="stname" class="field" autocomplete="given-name" required maxlength="40"></div>
+          <div><label class="flabel" for="sttrade">Trade or job</label><input id="sttrade" class="field" placeholder="e.g. Process operator" maxlength="60"></div>
+        </div>
+        <label class="flabel" for="stregion">Area</label>
+        <input id="stregion" class="field" placeholder="e.g. Lake Charles, LA" maxlength="60">
+        <span class="flabel">Rating</span>
+        <div class="stars" role="radiogroup" aria-label="Rating" id="ststars"></div>
+        <label class="flabel" for="sttext">Your story</label>
+        <textarea id="sttext" class="field" required maxlength="1200" placeholder="How did PlantReady help? Did you get the interview or the job?"></textarea>
+        <label class="check"><input type="checkbox" id="stok" required><span>PlantReady may post my first name, trade, area and story on this site.</span></label>
+        <div class="actions" style="padding:0;border:0"><button class="primary" type="submit">Send my story</button></div>
+        <p class="status" id="stmsg" style="padding:0" hidden></p>
+        <p class="note" style="padding:0">Stories are read before they're posted. We only post real stories from real customers, and never your last name, email or phone.</p>
+      </form>
+    </div>
+  </section>
+  </div>
+</div>
+
+<div id="app" hidden>
+  <div class="appbar">
+    <div class="wrap appbar-in">
+      <a class="logo" href="#" aria-label="PlantReady home"><svg class="mark" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="currentColor"/><circle cx="20" cy="20" r="6.5" fill="var(--bg)"/><circle cx="32.00" cy="20.00" r="2.2" fill="var(--bg)"/><circle cx="28.49" cy="28.49" r="2.2" fill="var(--bg)"/><circle cx="20.00" cy="32.00" r="2.2" fill="var(--bg)"/><circle cx="11.51" cy="28.49" r="2.2" fill="var(--bg)"/><circle cx="8.00" cy="20.00" r="2.2" fill="var(--bg)"/><circle cx="11.51" cy="11.51" r="2.2" fill="var(--bg)"/><circle cx="20.00" cy="8.00" r="2.2" fill="var(--bg)"/><circle cx="28.49" cy="11.51" r="2.2" fill="var(--bg)"/></svg><span class="brand">Plant<span>Ready</span></span></a>
+      <nav class="topnav" aria-label="Workspace">
+        <a href="#">Home</a><a href="#plans">Plans</a><a href="#stories">Stories</a>
+      </nav>
+    </div>
+  </div>
+  <div class="wrap">
   <div class="passbar" id="passbar" hidden>
     <p id="passtext"></p>
     <div class="row" style="display:flex;flex-wrap:wrap;gap:8px">
@@ -286,7 +368,6 @@ input.field{font:inherit;color:var(--ink);background:var(--bg);border:1px solid 
       <button class="ghost" type="button" id="openRestore">Restore purchase</button>
     </div>
   </div>
-
   <div class="passbar welcome" id="welcome" hidden>
     <p><b>Welcome back</b><br><span id="wtext"></span></p>
     <div class="row" style="display:flex;flex-wrap:wrap;gap:8px">
@@ -295,7 +376,6 @@ input.field{font:inherit;color:var(--ink);background:var(--bg);border:1px solid 
     </div>
     <p class="note" style="padding:0;flex-basis:100%">Your progress is saved on this device only. On a shared computer, tap Start fresh when you're done.</p>
   </div>
-
   <section class="dispatch" id="start" aria-label="Your region and work type">
     <h2 class="qlabel">Where do you want to work?</h2>
     <div class="selwrap">
@@ -314,13 +394,11 @@ input.field{font:inherit;color:var(--ink);background:var(--bg);border:1px solid 
     </div>
     <p class="rnote" id="rnote"></p>
   </section>
-
   <div class="modes" role="group" aria-label="Mode">
     <button type="button" class="mode" id="m-resume" aria-pressed="true">Build a resume</button>
     <button type="button" class="mode" id="m-mock" aria-pressed="false">Interview practice</button>
     <button type="button" class="mode" id="m-jobs" aria-pressed="false">Who's hiring</button>
   </div>
-
   <div class="grid" id="jobsMode" hidden>
     <section class="panel livejobs" aria-label="Latest openings" id="livePanel" hidden>
       <div class="panel-head"><h2>Latest openings</h2><span class="badge live" id="lregion"></span></div>
@@ -404,39 +482,18 @@ input.field{font:inherit;color:var(--ink);background:var(--bg);border:1px solid 
       <p class="note" id="note">This example shows the format. Yours replaces it once you build.</p>
     </section>
   </div>
+  </div>
+</div>
 
-  <section class="plansec" id="plans" aria-labelledby="planstitle" hidden>
-    <h2 id="planstitle">Plans</h2>
-    <p class="hero-fine">The interview questions and job listings are always free. Billed monthly, cancel anytime.</p>
-    <div class="plangrid" id="plangrid"></div>
-  </section>
-
-  <section class="panel stories" id="stories" aria-labelledby="sttitle">
-    <div class="panel-head"><h2 id="sttitle">Worker stories</h2></div>
-    <div class="st-grid">
-      <div class="st-list" id="stlist">
-        <p class="note" style="padding:0" id="stempty">No stories posted yet. Used PlantReady to land an interview or a job? Be the first to share how it went.</p>
-      </div>
-      <form class="tform st-form" id="stform">
-        <h3 style="margin:0;font-family:var(--display);font-size:22px;text-transform:uppercase">Share your story</h3>
-        <div class="st-row">
-          <div><label class="flabel" for="stname">First name</label><input id="stname" class="field" autocomplete="given-name" required maxlength="40"></div>
-          <div><label class="flabel" for="sttrade">Trade or job</label><input id="sttrade" class="field" placeholder="e.g. Process operator" maxlength="60"></div>
-        </div>
-        <label class="flabel" for="stregion">Area</label>
-        <input id="stregion" class="field" placeholder="e.g. Lake Charles, LA" maxlength="60">
-        <span class="flabel">Rating</span>
-        <div class="stars" role="radiogroup" aria-label="Rating" id="ststars"></div>
-        <label class="flabel" for="sttext">Your story</label>
-        <textarea id="sttext" class="field" required maxlength="1200" placeholder="How did PlantReady help? Did you get the interview or the job?"></textarea>
-        <label class="check"><input type="checkbox" id="stok" required><span>PlantReady may post my first name, trade, area and story on this site.</span></label>
-        <div class="actions" style="padding:0;border:0"><button class="primary" type="submit">Send my story</button></div>
-        <p class="status" id="stmsg" style="padding:0" hidden></p>
-        <p class="note" style="padding:0">Stories are read before they're posted. We only post real stories from real customers, and never your last name, email or phone.</p>
-      </form>
-    </div>
-  </section>
-
+<div class="wrap foot">
+  <footer>
+    <span>© <span id="yr"></span> PlantReady, a service of Aspis LLC</span>
+    <a href="/privacy.html">Privacy</a>
+    <a href="#stories">Worker stories</a>
+    <span>Questions? <a href="mailto:management@aspisllc.com">management@aspisllc.com</a></span>
+    <span>Your answers are sent to our AI provider to write your resume. We don't store them, and your resume and access are saved only on your device.</span>
+  </footer>
+</div>
   <div class="paywall" id="paywall" hidden role="dialog" aria-modal="true" aria-labelledby="pwtitle">
     <div class="pw-card">
       <h2 id="pwtitle">Get your resume</h2>
@@ -467,15 +524,6 @@ input.field{font:inherit;color:var(--ink);background:var(--bg);border:1px solid 
       <p class="note" style="padding:0">Your resume itself isn't stored on our servers, so restoring brings back your access, not an old draft. Active subscriptions restore on any device. Canceled plans stay active until the end of the month you paid for.</p>
     </form>
   </div>
-
-  <footer>
-    <span>© <span id="yr"></span> PlantReady, a service of Aspis LLC</span>
-    <a href="/privacy.html">Privacy</a>
-    <a href="#stories">Worker stories</a>
-    <span>Questions? <a href="mailto:management@aspisllc.com">management@aspisllc.com</a></span>
-    <span>Your answers are sent to our AI provider to write your resume. We don't store them, and your resume and access are saved only on your device.</span>
-  </footer>
-</div>
 
 <script src="/export.js"></script>
 <script>
@@ -1007,6 +1055,7 @@ function setInterviewLocked(on){$("answer").disabled=on;$("send").disabled=on;$(
 function bootProgress(returningFromCheckout){
   const d=loadProgress();
   if(!hasWork(d)){progressReady=true;saveProgress();return}
+  $("heroStart").textContent="Continue my resume";
   if(returningFromCheckout){applyProgress(d);return}
   const answers=d.turns.filter(t=>t.role==="user").length;
   const when=new Date(d.savedAt||Date.now()).toLocaleDateString(undefined,{month:"short",day:"numeric"});
@@ -1137,7 +1186,7 @@ async function bootPayments(){
   try{const r=await fetch("/api/config");if(r.ok)cfg={...cfg,...await r.json()}}catch{}
   const q=new URLSearchParams(location.search);
   const sid=q.get("paid");
-  if(sid||q.has("canceled")) history.replaceState(null,"",location.pathname);
+  if(sid||q.has("canceled")){history.replaceState(null,"",location.pathname+"#app");route()}
   if(sid){
     setStatus("Confirming your payment…");
     try{const r=await fetch("/api/verify",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({session_id:sid})});
@@ -1179,12 +1228,22 @@ $("stform").addEventListener("submit",e=>{
   $("stcopy").addEventListener("click",async()=>{try{await navigator.clipboard.writeText(body);$("stcopy").textContent="Copied"}catch{$("stcopy").textContent="Select and copy the text above"}});
 });
 
+/* ================= HOME / WORKSPACE ================= */
+function route(){
+  const h=location.hash,inApp=h==="#app";
+  $("home").hidden=inApp;$("app").hidden=!inApp;
+  if(inApp||!h||h==="#"){window.scrollTo(0,0);return}
+  const el=document.querySelector(h);if(el)requestAnimationFrame(()=>el.scrollIntoView())
+}
+addEventListener("hashchange",route);
+
 /* ================= BOOT ================= */
 $("yr").textContent=new Date().getFullYear();
 renderFb(EXAMPLE_FB);
 renderLog();
 applyContext(false);
 {const q0=new URLSearchParams(location.search);bootProgress(q0.has("paid")||q0.has("canceled"))}
+route();
 bootPayments();
 </script>
 </body>
