@@ -16,7 +16,9 @@ const REGIONS = {
   OV: "Ohio River Valley (PA, OH, WV): Marcellus/Utica gas processing and fractionation, an ethane cracker, chemical plants along the river. Cold winters; many crafts are union.",
   GL: "Great Lakes (IL, IN, OH, MI): large refineries around Chicago, NW Indiana, Toledo and Detroit, chemical plants. Heavily union crafts; winterization and cold-weather work.",
   CA: "California: Bay Area and Los Angeles refineries under Cal/OSHA's refinery process safety management rules, strict air-quality rules; heavily union crafts.",
-  PNW: "Pacific Northwest (Washington): refineries at Anacortes, Ferndale/Blaine and Tacoma; small, tight-knit market; union crafts common."
+  PNW: "Pacific Northwest (Washington): refineries at Anacortes, Ferndale/Blaine and Tacoma; small, tight-knit market; union crafts common.",
+  MSAL: "Mississippi and Alabama Gulf Coast: Chevron's Pascagoula refinery, smaller refineries in Mobile (Saraland), Vicksburg and Tuscaloosa, the chemical corridor around Mobile, and shipyards and fabrication yards along the coast. Hurricane season matters. Common site safety card: Basic Plus.",
+  EC: "East Coast: refineries at Linden and Paulsboro, NJ, Trainer, PA, and Delaware City, DE; LNG terminals at Cove Point, MD, and Elba Island near Savannah, GA; chemical plants in Delaware and New Jersey. Crafts are heavily union; cold winters and winter outages."
 };
 
 // ---- simple per-visitor rate limit (best effort; resets when the server restarts) ----

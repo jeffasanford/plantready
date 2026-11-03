@@ -370,7 +370,7 @@ body{font-size:16px}
   <section class="how" id="how" aria-labelledby="howtitle">
     <h2 id="howtitle">How it works</h2>
     <ol class="steps">
-      <li><span class="sicon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></span><b>1. Pick your area and the work you want.</b> Full-time plant jobs or turnarounds, from Lake Charles to Anacortes.</li>
+      <li><span class="sicon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></span><b>1. Pick your area and the work you want.</b> Full-time plant jobs or turnarounds, from the Gulf Coast to the East and West Coasts.</li>
       <li><span class="sicon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H10l-6 4z"/><path d="M8 9.5h8M8 12.5h5"/></svg></span><b>2. Answer a few questions.</b> Your units, board or outside, permits, LOTO, outages, tickets. One at a time, plain talk.</li>
       <li><span class="sicon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/><path d="M12.5 11v6M10 14.5l2.5 2.5 2.5-2.5"/></svg></span><b>3. Download, tailor and practice.</b> Get a PDF or Word resume, fit it to real postings, and rehearse the interview.</li>
     </ol>
@@ -657,6 +657,14 @@ const REGIONS={
  PNW:{name:"Pacific Northwest",short:"PNW",city:"Anacortes, WA",
    note:"Five Washington refineries around Anacortes, Ferndale and Tacoma. Small market, so local reputation and a clean record go a long way.",
    ctx:"Pacific Northwest (Washington): refineries at Anacortes, Ferndale/Blaine and Tacoma; small, tight-knit market; union crafts common.",
+   ticket:"OSHA 10"},
+ MSAL:{name:"Mississippi & Alabama",short:"MS–AL",city:"Pascagoula, MS",
+   note:"Chevron's Pascagoula refinery, refineries and chemical plants around Mobile, and shipyards and fab yards along the coast. Close to the Louisiana contractors, and hurricane prep is part of the job.",
+   ctx:"Mississippi and Alabama Gulf Coast: Chevron's Pascagoula refinery, smaller refineries in Mobile (Saraland), Vicksburg and Tuscaloosa, the chemical corridor around Mobile, and shipyards and fabrication yards along the coast. Hurricane season matters. Common site safety card: Basic Plus.",
+   ticket:"Basic Plus"},
+ EC:{name:"East Coast",short:"East Coast",city:"Linden, NJ",
+   note:"Refineries in New Jersey, the Philadelphia area and Delaware, plus LNG at Cove Point, Maryland and Elba Island, Georgia. Fewer sites than the Gulf, and most turnaround crafts come through union halls.",
+   ctx:"East Coast: refineries at Linden and Paulsboro, NJ, Trainer, PA, and Delaware City, DE; LNG terminals at Cove Point, MD, and Elba Island near Savannah, GA; chemical plants in Delaware and New Jersey. Crafts are heavily union; cold winters and winter outages.",
    ticket:"OSHA 10"}
 };
 const RK=Object.keys(REGIONS);
@@ -676,7 +684,7 @@ const EMPLOYERS=[
  P("Shell",["Refining","Chemical"],["LA","OV"],"Norco & Geismar, LA · Shell Polymers Monaca, PA"),
  P("Chalmette Refining (PBF)",["Refining"],["LA"],"Chalmette, LA"),
  P("Citgo",["Refining"],["LA","TXG","GL"],"Lake Charles, LA · Corpus Christi, TX · Lemont, IL"),
- P("Phillips 66",["Refining","Gas processing"],["LA","TXG","MC","GL","PNW","PER"],"Westlake, LA · Sweeny, TX · Ponca City, OK · Wood River, IL · Ferndale, WA · Permian gas plants"),
+ P("Phillips 66",["Refining","Gas processing"],["LA","TXG","MC","GL","PNW","PER","EC"],"Westlake, LA · Sweeny, TX · Ponca City, OK · Wood River, IL · Ferndale, WA · Bayway (Linden), NJ · Permian gas plants"),
  P("Placid Refining",["Refining"],["LA"],"Port Allen, LA"),
  P("Sasol",["Chemical"],["LA"],"Westlake (Lake Charles), LA"),
  P("Westlake Corporation",["Chemical"],["LA"],"Lake Charles, LA"),
@@ -688,7 +696,7 @@ const EMPLOYERS=[
  P("Golden Pass LNG",["LNG"],["TXG"],"Sabine Pass, TX"),
  P("Motiva",["Refining"],["TXG"],"Port Arthur, TX"),
  P("TotalEnergies",["Refining"],["TXG"],"Port Arthur, TX"),
- P("Chevron",["Refining"],["TXG","CA"],"Pasadena, TX · Richmond & El Segundo, CA"),
+ P("Chevron",["Refining"],["TXG","CA","MSAL"],"Pasadena, TX · Pascagoula, MS · Richmond & El Segundo, CA"),
  P("Deer Park Refining",["Refining"],["TXG"],"Deer Park, TX"),
  P("Flint Hills Resources",["Refining"],["TXG"],"Corpus Christi, TX"),
  P("Chevron Phillips Chemical",["Chemical"],["TXG"],"Baytown, Sweeny & Port Arthur, TX"),
@@ -697,7 +705,7 @@ const EMPLOYERS=[
  P("Targa Resources",["Gas processing"],["PER","MC"],"Permian and Mid-Continent gas plants"),
  P("Enterprise Products",["Gas processing"],["PER","TXG"],"Permian gas plants · Mont Belvieu, TX"),
  P("Energy Transfer",["Gas processing"],["PER","TXG","OV"],"Permian gas plants · Gulf Coast · Appalachia"),
- P("Kinder Morgan",["Gas processing"],["PER","TXG"],"Compressor stations and pipelines"),
+ P("Kinder Morgan",["Gas processing","LNG"],["PER","TXG","EC"],"Compressor stations and pipelines · Elba Island LNG (Savannah), GA"),
  P("HF Sinclair",["Refining"],["PER","MC","PNW"],"Artesia, NM · Tulsa, OK · El Dorado, KS · Anacortes, WA"),
  P("Delek US",["Refining"],["PER"],"Big Spring, TX"),
  // Mid-Continent
@@ -712,7 +720,12 @@ const EMPLOYERS=[
  // Great Lakes
  P("BP",["Refining"],["GL","PNW"],"Whiting, IN · Cherry Point (Blaine), WA"),
  P("Cenovus",["Refining"],["GL"],"Toledo, OH"),
- P("PBF Energy",["Refining"],["GL","CA"],"Toledo, OH · Martinez & Torrance, CA"),
+ P("PBF Energy",["Refining"],["GL","CA","EC"],"Toledo, OH · Delaware City, DE · Paulsboro, NJ · Martinez & Torrance, CA"),
+ P("Monroe Energy",["Refining"],["EC"],"Trainer, PA"),
+ P("Cove Point LNG",["LNG"],["EC"],"Lusby, MD"),
+ P("Vertex Energy",["Refining"],["MSAL"],"Mobile (Saraland), AL"),
+ P("Ergon",["Refining"],["MSAL"],"Vicksburg, MS"),
+ P("Hunt Refining",["Refining"],["MSAL"],"Tuscaloosa, AL · Sandersville, MS"),
  // PNW
  P("Par Pacific",["Refining"],["PNW"],"Tacoma, WA"),
  // Turnaround contractors
@@ -734,7 +747,7 @@ const EMPLOYERS=[
  C("Sarens",["Specialty"],ALL,"Crane and heavy lift"),
  C("Total Safety",["Safety"],ALL,"Safety attendants, fire watch, hole watch, gas detection")
 ];
-const UNION={OV:1,GL:1,CA:1,PNW:1};
+const UNION={OV:1,GL:1,CA:1,PNW:1,EC:1};
 
 /* ================= TRACK DATA ================= */
 const BANKS={
@@ -821,6 +834,8 @@ const REGION_Q={
  PNW:{c:"Reputation",q:"This is a small market where everyone knows everyone. Who would vouch for your work, and what would they say?"},
  LA:{c:"Weather",q:"A hurricane is forecast to hit in 48 hours. What's your role in getting the unit ready, and can you ride it out on site?"},
  TXG:{c:"Weather",q:"A hurricane is forecast to hit in 48 hours. What's your role in getting the unit ready, and can you ride it out on site?"},
+ MSAL:{c:"Weather",q:"A hurricane is forecast to hit in 48 hours. What's your role in getting the unit ready, and can you ride it out on site?"},
+ EC:{c:"Winter work",q:"It's 10°F with wind off the water during an outage. How do you keep yourself, your crew and the equipment safe?"},
  MC:{c:"Shift work",q:"How do you stay sharp on rotating 12-hour shifts, especially nights?"}
 };
 function exampleFor(rk,tr){
@@ -893,8 +908,8 @@ function errMsg(e){
 const ctx=()=>`Region: ${REGIONS[region].ctx}\nWork type: ${track==="ta"?"turnaround / shutdown contract work":"full-time plant job"}`;
 
 /* ================= REGION UI ================= */
-const RSTATES={LA:"Lake Charles, Baton Rouge, New Orleans",TXG:"Houston to Corpus Christi",PER:"West TX, SE New Mexico",MC:"Ponca City, Coffeyville, McPherson",OV:"PA, OH, WV",GL:"IL, IN, OH, MI",CA:"Bay Area, Los Angeles",PNW:"Washington"};
-const RGROUPS=[["Gulf Coast",["LA","TXG"]],["Texas & New Mexico",["PER"]],["Midwest",["MC","GL"]],["Northeast",["OV"]],["West Coast",["CA","PNW"]]];
+const RSTATES={LA:"Lake Charles, Baton Rouge, New Orleans",TXG:"Houston to Corpus Christi",PER:"West TX, SE New Mexico",MC:"Ponca City, Coffeyville, McPherson",OV:"PA, OH, WV",GL:"IL, IN, OH, MI",CA:"Bay Area, Los Angeles",PNW:"Washington",MSAL:"Pascagoula, Gulfport, Mobile",EC:"NJ, Philadelphia area, DE, MD, GA"};
+const RGROUPS=[["Gulf Coast",["LA","TXG","MSAL"]],["Texas & New Mexico",["PER"]],["Midwest",["MC","GL"]],["East",["EC","OV"]],["West Coast",["CA","PNW"]]];
 $("regionSel").innerHTML=RGROUPS.map(([g,ks])=>`<optgroup label="${esc(g)}">${ks.map(k=>`<option value="${k}">${esc(REGIONS[k].name)}</option>`).join("")}</optgroup>`).join("");
 function applyContext(resetChat){
   $("regionSel").value=region;$("rsub").textContent="Covers "+RSTATES[region];

@@ -10,7 +10,9 @@ const WHERE = {
   OV:  ["Pittsburgh, Pennsylvania", "Ohio", "West Virginia"],
   GL:  ["Chicago, Illinois", "Whiting, Indiana", "Toledo, Ohio", "Detroit, Michigan"],
   CA:  ["Los Angeles, California", "Martinez, California", "Bakersfield, California"],
-  PNW: ["Anacortes, Washington", "Bellingham, Washington", "Tacoma, Washington"]
+  PNW: ["Anacortes, Washington", "Bellingham, Washington", "Tacoma, Washington"],
+  MSAL: ["Pascagoula, Mississippi", "Gulfport, Mississippi", "Mobile, Alabama"],
+  EC: ["Linden, New Jersey", "Philadelphia, Pennsylvania", "Wilmington, Delaware", "Baltimore, Maryland", "Savannah, Georgia"]
 };
 
 const SEARCH = {
