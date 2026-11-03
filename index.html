@@ -302,6 +302,14 @@ body{font-size:16px}
 .builtby{display:flex;align-items:center;gap:28px}
 .builtby .tag{width:84px;height:auto;flex:none}
 @media (max-width:480px){.builtby .tag{width:64px}}
+
+/* ---- end CTA + stories page ---- */
+.endcta{background:var(--steel);color:var(--steel-ink);border-radius:18px;padding:48px 32px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px}
+.endcta h2{margin:0;font-family:var(--display);font-weight:800;font-size:clamp(30px,5vw,44px)}
+.endcta p{margin:0;max-width:46ch;color:color-mix(in srgb,var(--steel-ink) 80%,transparent);font-size:18px}
+.endcta .btnlink{margin-top:8px}
+.pagetitle{margin:8px 0 0;font-family:var(--display);font-weight:800;font-size:clamp(34px,6vw,52px)}
+#storyBox .panel-head{display:none}
 </style>
 </head>
 <body>
@@ -388,30 +396,10 @@ body{font-size:16px}
     </svg>
     <p><b>Built from inside the industry.</b> PlantReady was created by a Permit to Work coordinator who still works in the field. It asks the questions a supervisor would ask, uses the words plants use, and never puts anything on your resume you didn't say.</p>
   </section>
-  <section class="panel stories" id="stories" aria-labelledby="sttitle">
-    <div class="panel-head"><h2 id="sttitle">Worker stories</h2></div>
-    <div class="st-grid">
-      <div class="st-list" id="stlist">
-        <p class="note" style="padding:0" id="stempty">No stories posted yet. Used PlantReady to land an interview or a job? Be the first to share how it went.</p>
-      </div>
-      <form class="tform st-form" id="stform">
-        <h3 style="margin:0;font-family:var(--display);font-size:22px;text-transform:uppercase">Share your story</h3>
-        <div class="st-row">
-          <div><label class="flabel" for="stname">First name</label><input id="stname" class="field" autocomplete="given-name" required maxlength="40"></div>
-          <div><label class="flabel" for="sttrade">Trade or job</label><input id="sttrade" class="field" placeholder="e.g. Process operator" maxlength="60"></div>
-        </div>
-        <label class="flabel" for="stregion">Area</label>
-        <input id="stregion" class="field" placeholder="e.g. Lake Charles, LA" maxlength="60">
-        <span class="flabel">Rating</span>
-        <div class="stars" role="radiogroup" aria-label="Rating" id="ststars"></div>
-        <label class="flabel" for="sttext">Your story</label>
-        <textarea id="sttext" class="field" required maxlength="1200" placeholder="How did PlantReady help? Did you get the interview or the job?"></textarea>
-        <label class="check"><input type="checkbox" id="stok" required><span>PlantReady may post my first name, trade, area and story on this site.</span></label>
-        <div class="actions" style="padding:0;border:0"><button class="primary" type="submit">Send my story</button></div>
-        <p class="status" id="stmsg" style="padding:0" hidden></p>
-        <p class="note" style="padding:0">Stories are read before they're posted. We only post real stories from real customers, and never your last name, email or phone.</p>
-      </form>
-    </div>
+  <section class="endcta" aria-labelledby="endtitle">
+    <h2 id="endtitle">Ready when you are.</h2>
+    <p>Answer the first questions free. No card needed until you want your finished resume.</p>
+    <a class="btnlink primary" href="#app">Start free</a>
   </section>
   </div>
 </div>
@@ -550,6 +538,46 @@ body{font-size:16px}
       <p class="note" id="note">This example shows the format. Yours replaces it once you build.</p>
     </section>
   </div>
+  </div>
+</div>
+
+<div id="stories" hidden>
+  <div class="appbar">
+    <div class="wrap appbar-in">
+      <a class="logo" href="#" aria-label="PlantReady home"><svg class="mark" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="currentColor"/><circle cx="20" cy="20" r="6.5" fill="var(--bg)"/><circle cx="32.00" cy="20.00" r="2.2" fill="var(--bg)"/><circle cx="28.49" cy="28.49" r="2.2" fill="var(--bg)"/><circle cx="20.00" cy="32.00" r="2.2" fill="var(--bg)"/><circle cx="11.51" cy="28.49" r="2.2" fill="var(--bg)"/><circle cx="8.00" cy="20.00" r="2.2" fill="var(--bg)"/><circle cx="11.51" cy="11.51" r="2.2" fill="var(--bg)"/><circle cx="20.00" cy="8.00" r="2.2" fill="var(--bg)"/><circle cx="28.49" cy="11.51" r="2.2" fill="var(--bg)"/></svg><span class="brand">Plant<span>Ready</span></span></a>
+      <nav class="topnav" aria-label="Stories page">
+        <a href="#">Home</a><a href="#plans">Plans</a><a class="navcta" href="#app">Start free</a>
+      </nav>
+    </div>
+  </div>
+  <div class="wrap">
+    <h1 class="pagetitle">Worker stories</h1>
+    <p class="hero-fine" style="margin-top:-8px">Real stories from people who used PlantReady. Used it to land an interview or a job? Share yours below.</p>
+  <section class="panel stories" id="storyBox" aria-labelledby="sttitle">
+    <div class="panel-head"><h2 id="sttitle">Worker stories</h2></div>
+    <div class="st-grid">
+      <div class="st-list" id="stlist">
+        <p class="note" style="padding:0" id="stempty">No stories posted yet. Used PlantReady to land an interview or a job? Be the first to share how it went.</p>
+      </div>
+      <form class="tform st-form" id="stform">
+        <h3 style="margin:0;font-family:var(--display);font-size:22px;text-transform:uppercase">Share your story</h3>
+        <div class="st-row">
+          <div><label class="flabel" for="stname">First name</label><input id="stname" class="field" autocomplete="given-name" required maxlength="40"></div>
+          <div><label class="flabel" for="sttrade">Trade or job</label><input id="sttrade" class="field" placeholder="e.g. Process operator" maxlength="60"></div>
+        </div>
+        <label class="flabel" for="stregion">Area</label>
+        <input id="stregion" class="field" placeholder="e.g. Lake Charles, LA" maxlength="60">
+        <span class="flabel">Rating</span>
+        <div class="stars" role="radiogroup" aria-label="Rating" id="ststars"></div>
+        <label class="flabel" for="sttext">Your story</label>
+        <textarea id="sttext" class="field" required maxlength="1200" placeholder="How did PlantReady help? Did you get the interview or the job?"></textarea>
+        <label class="check"><input type="checkbox" id="stok" required><span>PlantReady may post my first name, trade, area and story on this site.</span></label>
+        <div class="actions" style="padding:0;border:0"><button class="primary" type="submit">Send my story</button></div>
+        <p class="status" id="stmsg" style="padding:0" hidden></p>
+        <p class="note" style="padding:0">Stories are read before they're posted. We only post real stories from real customers, and never your last name, email or phone.</p>
+      </form>
+    </div>
+  </section>
   </div>
 </div>
 
@@ -1298,9 +1326,9 @@ $("stform").addEventListener("submit",e=>{
 
 /* ================= HOME / WORKSPACE ================= */
 function route(){
-  const h=location.hash,inApp=h==="#app";
-  $("home").hidden=inApp;$("app").hidden=!inApp;
-  if(inApp||!h||h==="#"){window.scrollTo(0,0);return}
+  const h=location.hash,inApp=h==="#app",inStories=h==="#stories";
+  $("home").hidden=inApp||inStories;$("app").hidden=!inApp;$("stories").hidden=!inStories;
+  if(inApp||inStories||!h||h==="#"){window.scrollTo(0,0);return}
   const el=document.querySelector(h);if(el)requestAnimationFrame(()=>el.scrollIntoView())
 }
 addEventListener("hashchange",route);
