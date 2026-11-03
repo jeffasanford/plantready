@@ -2,47 +2,119 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Privacy · PlantReady</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&family=IBM+Plex+Sans:wght@400;600&display=swap">
+<meta name="description" content="How PlantReady handles your answers, your resume and your subscription.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='19' fill='%23E8650F'/%3E%3Ccircle cx='20' cy='20' r='7' fill='white'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@700;800&family=Work+Sans:wght@400;500;600&display=swap">
 <style>
-:root{--bg:#EEF0EE;--ink:#1C2326;--muted:#55605F;--accent:#B44A05;--line:#D4D9D6}
-@media (prefers-color-scheme: dark){:root{--bg:#141A1C;--ink:#E6EBE9;--muted:#9EAAA8;--accent:#F59A5A;--line:#2E393C;color-scheme:dark}}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "IBM Plex Sans",system-ui,sans-serif}
-main{max-width:68ch;margin:0 auto;padding:32px max(16px,env(safe-area-inset-left,0px)) 48px}
-h1{font-family:"Barlow Condensed","Arial Narrow",sans-serif;text-transform:uppercase;font-size:40px;margin:0 0 4px;border-bottom:3px solid var(--accent)}
-h2{font-size:18px;margin:28px 0 6px}
-p,li{color:var(--ink)}
-.muted{color:var(--muted);font-size:14px}
-a{color:var(--accent)}
+:root{--bg:#F3F5F2;--panel:#FFFFFF;--ink:#1F2A26;--muted:#56635E;--line:#DDE3DF;--accent-text:#A3440A;--band:#2F5D50;--band-ink:#F3F5F2;--band-muted:#CFDDD7;--logo-orange:#FF8A3D;color-scheme:light}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#121816;--panel:#1A2320;--ink:#E4EBE7;--muted:#9DAAA4;--line:#2B3733;--accent-text:#F59A5A;--band:#1F3D35;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#121816;--panel:#1A2320;--ink:#E4EBE7;--muted:#9DAAA4;--line:#2B3733;--accent-text:#F59A5A;--band:#1F3D35;color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.65 "Work Sans",system-ui,sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:0 max(16px,env(safe-area-inset-left,0px))}
+.band{background:var(--band);color:var(--band-ink);padding-top:env(safe-area-inset-top,0px)}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:20px 0}
+.logo{display:flex;align-items:center;gap:10px;color:var(--band-ink);text-decoration:none}
+.logo svg{width:30px;height:30px;flex:none}
+.brand{font-family:"Roboto Slab",Georgia,serif;font-weight:800;font-size:24px;line-height:1}
+.brand span{color:var(--logo-orange)}
+.bar a.back{color:var(--band-muted);font-size:15px;text-decoration:none}
+.bar a.back:hover{color:#fff}
+.head{padding:28px 0 40px}
+h1{font-family:"Roboto Slab",Georgia,serif;font-weight:800;font-size:clamp(36px,7vw,52px);line-height:1.05;margin:0 0 10px}
+.head p{margin:0;color:var(--band-muted)}
+.short{background:var(--panel);border-radius:14px;padding:24px 26px;margin-top:-22px;box-shadow:0 8px 30px rgba(31,42,38,.08)}
+.short h2{margin-top:0}
+.short ul{margin:0;padding-left:20px}
+.short li{margin:4px 0}
+h2{font-family:"Roboto Slab",Georgia,serif;font-weight:700;font-size:21px;margin:36px 0 6px}
+p{margin:0 0 12px}
+a{color:var(--accent-text)}
+.muted{color:var(--muted)}
+footer{border-top:1px solid var(--line);margin-top:44px;padding:20px 0 40px;display:flex;flex-wrap:wrap;gap:8px 20px;font-size:14px;color:var(--muted)}
+footer a{color:var(--muted)}
 </style>
 </head>
 <body>
-<main>
-<h1>Privacy</h1>
-<p class="muted">Last updated: [date]. Replace the bracketed parts and have a lawyer review this before launch.</p>
+<div class="band">
+  <div class="wrap">
+    <div class="bar">
+      <a class="logo" href="/" aria-label="PlantReady home"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="currentColor"/><circle cx="20" cy="20" r="6.5" fill="var(--band)"/><circle cx="32" cy="20" r="2.2" fill="var(--band)"/><circle cx="28.49" cy="28.49" r="2.2" fill="var(--band)"/><circle cx="20" cy="32" r="2.2" fill="var(--band)"/><circle cx="11.51" cy="28.49" r="2.2" fill="var(--band)"/><circle cx="8" cy="20" r="2.2" fill="var(--band)"/><circle cx="11.51" cy="11.51" r="2.2" fill="var(--band)"/><circle cx="20" cy="8" r="2.2" fill="var(--band)"/><circle cx="28.49" cy="11.51" r="2.2" fill="var(--band)"/></svg><span class="brand">Plant<span>Ready</span></span></a>
+      <a class="back" href="/">← Back to PlantReady</a>
+    </div>
+    <div class="head">
+      <h1>Privacy</h1>
+      <p>Last updated November 3, 2026</p>
+    </div>
+  </div>
+</div>
 
-<h2>What you type</h2>
-<p>When you answer interview questions, paste a job posting, or practice an answer, that text is sent to our AI provider (Anthropic) so it can write your resume or feedback. The result comes back to your browser.</p>
+<main class="wrap">
+  <section class="short">
+    <h2>The short version</h2>
+    <ul>
+      <li>Your answers and resume are saved on your own device, not on our servers.</li>
+      <li>What you type is sent to our AI provider only to write your resume or feedback.</li>
+      <li>Stripe handles payments. We never see your card number.</li>
+      <li>We don't sell your information, show ads or use tracking cookies.</li>
+    </ul>
+  </section>
 
-<h2>What we keep</h2>
-<p>We don't save your answers or your resume on our servers. Your region choice is remembered in your own browser so you don't have to pick it again. Our hosting provider keeps standard server logs (like IP addresses) for security for a short time.</p>
+  <h2>Who we are</h2>
+  <p>PlantReady is a service of Aspis LLC, a Louisiana company. In this policy, "we" means Aspis LLC.</p>
 
-<h2>Your purchase and access</h2>
-<p>Payments are handled by Stripe. We don't see or store your card number. Stripe keeps a record of your purchase, including the email you enter at checkout.</p>
-<p>Your interview answers, resume draft and access are saved only in the browser on your device, so you can leave and come back. Tap <b>Start fresh</b> to erase them, especially on a shared computer.</p>
-<p>Your access and your resume are saved only in the browser on your device. If you clear your browser data, use private browsing, or switch devices, use <b>Restore purchase</b> with your checkout email to unlock an active purchase again. Anyone who enters that email can restore access to the purchase, so use an email address you control. We can't recover resume drafts, so download your resume once it's built.</p>
+  <h2>What you type</h2>
+  <p>When you answer interview questions, paste a job posting or practice an answer, that text is sent to our AI provider, Anthropic, so it can write your resume, tailor it or score your answer. The result comes back to your browser. Anthropic handles these requests under its commercial terms and does not use them to train its models by default. See <a href="https://www.anthropic.com/legal/privacy" rel="noopener">Anthropic's privacy policy</a>.</p>
+  <p>Please don't type things a resume doesn't need, like your Social Security number, birth date or medical information.</p>
 
-<h2>What our AI provider keeps</h2>
-<p>Anthropic processes requests under its commercial terms and does not use API data to train its models by default. See Anthropic's privacy policy for details.</p>
+  <h2>What's saved on your device</h2>
+  <p>So you can leave and come back, your browser keeps your interview answers, resume draft, chosen region, work type and plan access. This stays in your browser's storage on that device. We don't receive a copy.</p>
+  <p>Tap <b>Start fresh</b> to erase it, especially on a shared or work computer. Clearing your browser data or using private browsing also erases it. We can't recover a lost draft, so download your resume once it's built.</p>
 
-<h2>Selling the business</h2>
-<p>If PlantReady is sold or merged, any information we hold at that time may transfer to the new owner, who must follow this policy.</p>
+  <h2>Subscriptions and payments</h2>
+  <p>Plans are monthly subscriptions processed by Stripe. Stripe collects your card details and the email you enter at checkout, and keeps a record of your subscription. We can see your email, plan and payment status, but never your card number. See <a href="https://stripe.com/privacy" rel="noopener">Stripe's privacy policy</a>.</p>
+  <p>You can cancel anytime with <b>Manage or cancel</b>. Your plan stays active until the end of the period you've paid for.</p>
+  <p>If you clear your browser or switch devices, use <b>Restore purchase</b> with your checkout email to unlock an active subscription again. Anyone who enters that email can restore access, so use an email address you control.</p>
 
-<h2>Contact</h2>
-<p>PlantReady is a service of Aspis LLC · <a href="mailto:management@aspisllc.com">management@aspisllc.com</a> · Louisiana</p>
+  <h2>Job listings</h2>
+  <p>Live job openings come from Adzuna. We send them only your chosen region and work type, not anything about you. When you open a listing, you leave PlantReady, and the job site's own privacy policy applies.</p>
 
-<p><a href="/">← Back to PlantReady</a></p>
+  <h2>Worker stories</h2>
+  <p>If you share your story, it goes to us by email from your own email app. We post it only if you check the permission box, and only your first name, trade, area and story. Never your email or last name. To have a story taken down, email us and we'll remove it.</p>
+
+  <h2>Emails to us</h2>
+  <p>If you email us, we keep the message and your address so we can help you. We won't add you to a mailing list or share your address.</p>
+
+  <h2>Server logs</h2>
+  <p>Our hosting provider, Vercel, keeps standard logs such as IP address, browser type and the pages requested. These are used for security and to fix problems, and are kept for a short time.</p>
+
+  <h2>What we don't do</h2>
+  <p>We don't sell or rent your information. We don't run ads, use advertising or tracking cookies, or share your information with employers or recruiters.</p>
+
+  <h2>Your choices</h2>
+  <p>You can erase what's on your device at any time with Start fresh. To ask what we hold about you, or to delete your Stripe customer record or a posted story, email us. We'll answer within 30 days. Records Stripe must keep for tax or legal reasons may be kept as long as the law requires.</p>
+
+  <h2>Who PlantReady is for</h2>
+  <p>PlantReady is meant for adults looking for work. It isn't directed at children under 13, and we don't knowingly collect information from them.</p>
+
+  <h2>If the business changes hands</h2>
+  <p>If PlantReady is sold or merged, information we hold at that time may transfer to the new owner, who must follow this policy.</p>
+
+  <h2>Changes to this policy</h2>
+  <p>If we change this policy, we'll post the new version here and update the date at the top.</p>
+
+  <h2>Contact</h2>
+  <p>Aspis LLC · Louisiana<br><a href="mailto:management@aspisllc.com">management@aspisllc.com</a></p>
+
+  <footer>
+    <span>© PlantReady, a service of Aspis LLC</span>
+    <a href="/">Home</a>
+    <a href="/#stories">Worker stories</a>
+    <a href="mailto:management@aspisllc.com">management@aspisllc.com</a>
+  </footer>
 </main>
 </body>
 </html>
