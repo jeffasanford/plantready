@@ -310,6 +310,15 @@ body{font-size:16px}
 .endcta .btnlink{margin-top:8px}
 .pagetitle{margin:8px 0 0;font-family:var(--display);font-weight:800;font-size:clamp(34px,6vw,52px)}
 #storyBox .panel-head{display:none}
+/* Phone tidy-ups */
+@media (max-width:600px){
+  .builtby{flex-direction:column;align-items:flex-start;gap:16px}
+  .builtby .tag{width:56px}
+  .modes{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+  .modes .mode{min-width:0;padding-left:6px;padding-right:6px;font-size:14px;line-height:1.25;white-space:normal;text-align:center}
+  footer{gap:6px 18px}
+  footer>span{flex-basis:100%}
+}
 </style>
 </head>
 <body>
@@ -335,7 +344,7 @@ body{font-size:16px}
     </div>
     <figure class="hero-art" role="img" aria-label="Preview: the PlantReady interview on a phone and the finished resume">
       <div class="sheet" aria-hidden="true">
-        <div class="sh-name">Marcus T.</div>
+        <div class="sh-name">Marcus Thibodeaux</div>
         <div class="sh-role">Process Operator · LNG</div>
         <div class="sh-contact">Lake Charles, LA</div>
         <div class="sh-label">Experience</div>
